@@ -1,7 +1,34 @@
+## Setting up your own Database and creating an Admin user for yourself
 
+1. First, make sure you have `docker-compose`, `gcc`, and `cargo` installed
+```bash
+which docker-compose
+which gcc
+which cargo
+```
+If missing, install them via your package-manager.
 
+2. Create a copy of the EXAMPLE.env file, named .env, and edit it to your needs
+```bash
+cp EXAMPLE.env .env && vim .env
+```
+Choose a secure password, then delete the .env. Don't worry about accidentally pushing, it is in the .gitignore.
 
-docker build --build-arg POSTGRES_USER=$(grep POSTGRES_USER .env | cut -d '=' -f2) \
-             --build-arg POSTGRES_PASSWORD=$(grep POSTGRES_PASSWORD .env | cut -d '=' -f2) \
-             --build-arg POSTGRES_DB=$(grep POSTGRES_DB .env | cut -d '=' -f2) \
-             -t my_postgres_image .
+3. Create a new python venv and activate it; install requirements
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+4. Verify and Generate the user SQL
+```bash
+python GenerateUser.py
+python GenerateUser.py > user.sql
+```
+
+5. Let docker-compose do its thing:
+```bash
+docker-compose up -d
+```
+
+6. Connect to the Database and verify the data user has been created successfully.

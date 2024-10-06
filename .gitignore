@@ -400,3 +400,5 @@ FodyWeavers.xsd
 
 # Database .env
 Data/.env
+Data/user.SQL
+Data/venv

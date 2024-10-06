@@ -8,6 +8,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./user.sql:/docker-entrypoint-initdb.d/user.sql
     restart: unless-stopped
     env_file:
       - .env
@@ -24,4 +25,5 @@ services:
       - .env
 
 volumes:
-  postgres-data:
+  postgres-data: 
+    name: DMS-DB
