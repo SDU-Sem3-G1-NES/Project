@@ -7,10 +7,7 @@ namespace FamicomBackend
 		int UserID { get; set; }
 		string Name { get; set; }
 		string Email { get; set; }
+		IUserPermissions Permissions { get; set; }
 		public void RetrieveUser();
 	}
-public void RetrieveUser()
-    {
-		//Add user retrival logic here
-    }
 }
