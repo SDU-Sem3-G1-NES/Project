@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+# Database .env
+Data/.env
+Data/user.SQL
+Data/venv
