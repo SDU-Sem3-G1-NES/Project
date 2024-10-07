@@ -2,7 +2,11 @@
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="table" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.TableRestaurant">Table</MudNavLink>
     <MudNavLink Href="health" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.HealthAndSafety">Health Panel</MudNavLink>
-    <MudNavLink Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Help">About Us</MudNavLink>
+    <MudNavGroup Title="About us" Expanded="true" Icon="@Icons.Material.Filled.PermDeviceInformation">
+        <MudNavLink Href="/aboutus" Icon="@Icons.Material.Filled.Info">Info</MudNavLink>
+        <MudNavLink Href="/diagram" Icon="@Icons.Material.Filled.BarChart">Diagram</MudNavLink>
+        <MudNavLink Href="/diagram2" Icon="@Icons.Material.Filled.PieChart">Diagram2</MudNavLink>
+    </MudNavGroup>
 </MudNavMenu>
 
 
