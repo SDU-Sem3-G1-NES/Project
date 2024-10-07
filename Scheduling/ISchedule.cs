@@ -1,13 +1,13 @@
 using System;
 
-namespace Scheduling
+namespace FamicomBackend
 {
-    public interface ISchedule //Hangfire seems good for this
+    public interface ISchedule
     {
         int GUID { get; private set; }
         DateTime TimeStamp { get; private set; }
-        int Height { get; private set; }
-        void GetFromDb(int ScheduleGUID, DateTime timeStamp, int[] TableGUID, int height);
-        void DeleteFromDb(int ScheduleGUID);
+        float Height { get; private set; }
+        void GetFromDb();
+        void DeleteFromDb();
     }
 }
