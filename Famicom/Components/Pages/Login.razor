@@ -1,11 +1,13 @@
 ﻿@page "/login"
 <PageTitle>Login</PageTitle>
 
-<MudPaper Width="40%">
-    <MudForm>
-        <MudTextField T="string" Label="Login" Required="true" RequiredError="Login is required!" /> <br />
-        <MudTextField T="string" Label="Password" InputType="InputType.Password" Required="true" RequiredError="Password is required!" /> <br />
+<MudPaper Width="50%" Height="220px" Style="margin:auto">
+    <MudContainer Fixed="true">
+        <MudForm>
+            <MudTextField T="string" Label="Login" Required="true" RequiredError="Login is required!" /> <br />
+            <MudTextField T="string" Label="Password" InputType="InputType.Password" Required="true" RequiredError="Password is required!" /> <br />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary">Login</MudButton>
-    </MudForm>
-</MudPaper>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary">Login</MudButton>
+        </MudForm>
+    </MudContainer>
+</MudPaper> 
