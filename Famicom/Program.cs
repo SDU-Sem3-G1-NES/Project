@@ -1,5 +1,5 @@
 using MudBlazor.Services;
-using Famicon.Components;
+using Famicom.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
