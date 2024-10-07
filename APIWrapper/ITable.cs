@@ -5,7 +5,6 @@ namespace APIWrapper
         int GUID { get; set; }
         string Name { get; set; }
         float Height { get; set; }
-        IUser User { get; set; }
         Status Status { get; set; }
     }
 }

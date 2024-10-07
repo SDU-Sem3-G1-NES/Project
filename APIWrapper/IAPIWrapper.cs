@@ -2,9 +2,8 @@ namespace APIWrapper
 {
     public interface IAPIWrapper
     {
-        ITable Table { get; set; }
-        float GetTableHeight();
-        float SetTableHeight();
+        float GetTableHeight(ITable Table);
+        float SetTableHeight(ITable Table);
         void OnScheduleReceived();
     }
 }

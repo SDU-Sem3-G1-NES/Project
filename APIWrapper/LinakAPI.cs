@@ -1,33 +1,36 @@
 namespace APIWrapper
 {
-    public class LinakAPI : IAPIWrapper
+    public class LinakAPIWrapper : IAPIWrapper
     {
         string Manufacturer { get; set; }
-        public ITable Table { get; set; }
+        public LinakAPIWrapper()
+        {
+            Manufacturer = "Linak";
+        }
 
         void OnCollisionError()
         {
-            
+            throw new NotImplementedException();
         }
 
         void OnActivation()
         {
-            
+            throw new NotImplementedException();
         }
 
         public float GetTableHeight()
         {
-            return 0.0f;
+            throw new NotImplementedException();
         }
 
         public float SetTableHeight()
         {
-            return 0.0f;
+            throw new NotImplementedException();
         }
 
         public void OnScheduleReceived()
         {
-            
+            throw new NotImplementedException();
         }
     }
 }
