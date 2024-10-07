@@ -20,11 +20,14 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
 4. Verify and Generate the user SQL
 ```bash
 python GenerateUser.py
 python GenerateUser.py > user.sql
 ```
+Ensure the file is encoded in UTF-8. Running the above command in Powershell, will result in UTF-16, which PostgreSQL is unable to parse.
+If you have created the database already, ensure that the user exists by selecting all from the USERS table. If not, copy the user.sql contents into your query editor and run them.
 
 5. Let docker-compose do its thing:
 ```bash
