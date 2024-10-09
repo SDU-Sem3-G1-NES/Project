@@ -402,3 +402,6 @@ FodyWeavers.xsd
 Data/*/.env
 Data/*/user.sql
 Data/*/venv
+
+# Embedded
+EmbeddedSolution/build/
