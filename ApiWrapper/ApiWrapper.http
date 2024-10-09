@@ -1,0 +1,6 @@
+@Famicom.ApiWrapper_HostAddress = http://localhost:5040
+
+GET {{Famicom.ApiWrapper_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
