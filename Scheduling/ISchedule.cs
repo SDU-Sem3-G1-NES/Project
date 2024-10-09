@@ -1,6 +1,6 @@
 using System;
 
-namespace FamicomBackend
+namespace Famicom.Scheduling
 {
     public interface ISchedule
     {

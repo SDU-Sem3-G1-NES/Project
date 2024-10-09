@@ -1,11 +1,11 @@
-namespace APIWrapper
+namespace Famicom.ApiWrapper
 {
-    public class LinakAPIWrapper : IAPIWrapper
+    public class LinakAPIWrapper : IApiWrapper
     {
         string Manufacturer { get; set; }
         public LinakAPIWrapper()
         {
-            Manufacturer = "Linak";
+            Manufacturer = "LINAK";
         }
 
         void OnCollisionError()
@@ -18,12 +18,12 @@ namespace APIWrapper
             throw new NotImplementedException();
         }
 
-        public float GetTableHeight()
+        public float GetTableHeight(ITable Table)
         {
             throw new NotImplementedException();
         }
 
-        public float SetTableHeight()
+        public float SetTableHeight(ITable Table)
         {
             throw new NotImplementedException();
         }

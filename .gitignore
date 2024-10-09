@@ -398,7 +398,10 @@ FodyWeavers.xsd
 *.sln.iml
 
 
-# Database .env
-Data/.env
-Data/user.sql
-Data/venv
+# Database
+Data/*/.env
+Data/*/user.sql
+Data/*/venv
+
+# Embedded
+EmbeddedSolution/build/
