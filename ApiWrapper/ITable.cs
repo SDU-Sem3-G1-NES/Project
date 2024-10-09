@@ -1,4 +1,4 @@
-namespace APIWrapper
+namespace Famicom.ApiWrapper
 {
     public interface ITable
     {

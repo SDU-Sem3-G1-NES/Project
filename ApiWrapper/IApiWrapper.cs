@@ -1,6 +1,6 @@
-namespace APIWrapper
+namespace Famicom.ApiWrapper
 {
-    public interface IAPIWrapper
+    public interface IApiWrapper
     {
         float GetTableHeight(ITable Table);
         float SetTableHeight(ITable Table);
