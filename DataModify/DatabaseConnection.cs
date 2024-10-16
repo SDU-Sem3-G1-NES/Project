@@ -5,23 +5,24 @@ namespace DataModify
 {
     internal class DatabaseConnection
     {
-        DatabaseCredentials credentials = new DatabaseCredentials();
-        string connectionString;
+        private readonly DatabaseCredentials credentials;
+        private readonly NpgsqlConnection connection;
+        private string connectionString;
 
-        public DatabaseConnection()
+        public DatabaseConnection(DatabaseCredentials credentials)
         {
+            this.credentials = credentials;
             connectionString = $"Host=my_host;Port={credentials.Port};Database={credentials.DbName};User Id={credentials.User};Password={credentials.Password};";
+            connection = new NpgsqlConnection(connectionString);
         }
 
         public void OpenConnection()
         {
-            using var connection = new NpgsqlConnection(connectionString);
             connection.Open();
         }
 
-        public void CloseConnection() 
+        public void CloseConnection()
         {
-            using var connection = new NpgsqlConnection(connectionString);
             connection.Close();
         }
     }

@@ -12,17 +12,18 @@ namespace DataModify
         public DatabaseCredentials()
         {
             var envPath = @"../DataAccess/_Setup/.env";
+            LoadEnvVariables(envPath);
 
+
+        }
+
+        private void LoadEnvVariables(string envPath)
+        {
             Env.Load(envPath);
-
             User = Env.GetString("DB_USER");
-
             Password = Env.GetString("DB_PASSWORD");
-
             DbName = Env.GetString("DB_NAME");
-
             Port = Env.GetString("DB_PORT");
-
         }
     }
 }
