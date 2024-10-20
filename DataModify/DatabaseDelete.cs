@@ -11,6 +11,7 @@ namespace DataModify
 
         public DatabaseDelete()
         {
+            credentials = new DatabaseCredentials();
             dataSource = NpgsqlDataSource.Create(credentials.GetconnectionString());
         }
 

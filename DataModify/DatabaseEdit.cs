@@ -29,6 +29,7 @@ namespace DataModify
         }
         public DatabaseEdit()
         {
+            credentials = new DatabaseCredentials();
             dataSource = NpgsqlDataSource.Create(credentials.GetconnectionString());
         }
         // 2 methods to update api's.
@@ -184,6 +185,12 @@ namespace DataModify
         {
             var sql = "UPDATE tables SET t_api = @tableApi WHERE t_id = @tableId";
             ExecuteNonQuery(sql, ("@tableApi", tableApi), ("@tableId", tableId));
+        }
+        // Method for changing hashed password.
+        public void EditHashPass(string mail_hash, string newPass_hash)
+        {
+            var sql = "UPDATE user_credentials SET upass_hash = @pass WHERE umail_hash = @mail";
+            ExecuteNonQuery(sql, ("@pass", newPass_hash), ("@mail", mail_hash));
         }
 
     }

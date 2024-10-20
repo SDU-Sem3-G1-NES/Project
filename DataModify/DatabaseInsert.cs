@@ -11,6 +11,7 @@ namespace DataModify
 
         public DatabaseInsert()
         {
+            credentials = new DatabaseCredentials();
             dataSource = NpgsqlDataSource.Create(credentials.GetconnectionString());
         }
 
