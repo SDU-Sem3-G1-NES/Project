@@ -4,7 +4,7 @@
 ```bash
 which docker-compose
 which gcc
-which cargo
+which `cargo`
 ```
 If missing, install them via your package-manager.
 

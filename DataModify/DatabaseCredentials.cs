@@ -25,5 +25,11 @@ namespace DataModify
             DbName = Env.GetString("DB_NAME");
             Port = Env.GetString("DB_PORT");
         }
+
+        public string GetconnectionString()
+        {
+            return $"Host=my_host;Port={Port};Database={DbName};User Id={User};Password={Password};";
+        }
+
     }
 }

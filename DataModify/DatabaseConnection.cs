@@ -1,6 +1,8 @@
 ﻿using System;
 using Npgsql;
-
+// I'm not sure if this is the best way to handle the connection string, but it's a start
+// I'm going to leave this class in case it's useful later on
+// Right now i handle conncetions using NpgsqlDataSource
 namespace DataModify
 {
     internal class DatabaseConnection
