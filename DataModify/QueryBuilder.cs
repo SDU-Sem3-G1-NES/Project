@@ -15,7 +15,7 @@ namespace DataModify
 
 
         // INSERTION
-        public void InsertRoom(string name, string number, string floor)
+        public void InsertRoom(string name, string number, int floor)
         {
             var sql = "INSERT INTO rooms (r_name, r_number, r_floor) VALUES (@name, @number, @floor)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@number", number), ("@floor", floor));

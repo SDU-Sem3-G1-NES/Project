@@ -17,13 +17,13 @@ namespace DataModify
 
         public DbAccess()
         {
-            string envPath = @"../DataAccess/_Setup/.env";
+            string envPath = @"../Data/_Setup/.env";
             Env.Load(envPath);
 
-            user = Env.GetString("DB_USER");
-            password = Env.GetString("DB_PASSWORD");
-            dbName = Env.GetString("DB_NAME");
-            port = Env.GetString("DB_PORT");
+            user = Env.GetString("POSTGRES_USER");
+            password = Env.GetString("POSTGRES_PASSWORD");
+            dbName = Env.GetString("POSTGRES_DB");
+            port = Env.GetString("POSTGRES_PORT");
             connectionString = $"Host=localhost;Port={port};Database={dbName};User Id={user};Password={password};";
 
             dbDataSource = NpgsqlDataSource.Create(connectionString);
