@@ -405,3 +405,7 @@ Data/*/venv
 
 # Embedded
 EmbeddedSolution/build/
+
+EmbeddedSolutionArduino/build/
+EmbeddedSolutionArduino/.pio/
+EmbeddedSolutionArduino/.vscode/
