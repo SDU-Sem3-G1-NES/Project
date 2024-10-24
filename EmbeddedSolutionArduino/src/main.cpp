@@ -54,8 +54,7 @@ void read_rotary_encoder() {
     case 2:
       if(!ROT_A_STATE && !ROT_B_STATE) 
         {
-          rotary_encoder_states[0] = 0;
-          rotary_encoder_states[1] = 0;
+          rotary_encoder_position = 1;
           break;
         }
       else if(ROT_A_STATE && ROT_B_STATE) {
