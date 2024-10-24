@@ -5,10 +5,8 @@
 #define ROT_B 3 // RIght Turn
 #define ROT_C 4 // Push Button
 
-unsigned long _lastIncReadTime = micros(); 
-unsigned long _lastDecReadTime = micros(); 
-int _pauseLength = 25000;
-int _fastIncrement = 10;
+volatile bool rotary_encoder_states[2] = {0, 0};
+volatile int rotary_encoder_position = 0;
 
 void read_rotary_encoder(); // Function declaration
 
@@ -17,26 +15,65 @@ void setup() {
   // Set encoder pins and attach interrupts
   pinMode(ROT_A, INPUT_PULLUP);
   pinMode(ROT_B, INPUT_PULLUP);
-  pinMode(ROT_C, INPUT_PULLUP);
-  //attachInterrupt(digitalPinToInterrupt(ROT_A), read_rotary_encoder, CHANGE);
-  //attachInterrupt(digitalPinToInterrupt(ROT_B), read_rotary_encoder, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ROT_A), read_rotary_encoder, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ROT_B), read_rotary_encoder, CHANGE);
 
   // Start the serial monitor to show output
   Serial.begin(115200);
 }
 
 void loop() {
-  delay(1000);
-  read_rotary_encoder();
+  //delay(2500);
+  //read_rotary_encoder();
 }
 
 void read_rotary_encoder() {
-  //static uint8_t old_AB = 3;  // Lookup table index
-  //static int8_t encval = 0;   // Encoder value  
-  //static const int8_t enc_states[]  = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0}; // Lookup table
+  //Serial.println(String(digitalRead(ROT_A)) + " " + String(digitalRead(ROT_B)));
 
-  //Serial.println("\nRotary Encoder Interrupt Triggered");
-  Serial.print("ROT_A: " + String(digitalRead(ROT_A)) + "\n");
-  Serial.print("ROT_B: " + String(digitalRead(ROT_B)) + "\n");
-  Serial.print("ROT_C: " + String(digitalRead(ROT_C)) + "\n");
+  bool ROT_A_STATE = digitalRead(ROT_A);
+  bool ROT_B_STATE = digitalRead(ROT_B);
+  switch(rotary_encoder_position) 
+  {
+    case 0:
+      // Beginning of rotation measurement
+      if(!ROT_A_STATE && !ROT_B_STATE) rotary_encoder_position = 1; 
+      break;
+      
+    case 1:
+      if(!ROT_A_STATE && !ROT_B_STATE) 
+      {
+        break;
+      }
+      else if(ROT_A_STATE != ROT_B_STATE) {
+        rotary_encoder_states[0] = ROT_A_STATE;
+        rotary_encoder_states[1] = ROT_B_STATE;
+        rotary_encoder_position = 2;
+      }
+      break;
+    
+    case 2:
+      if(!ROT_A_STATE && !ROT_B_STATE) 
+        {
+          rotary_encoder_states[0] = 0;
+          rotary_encoder_states[1] = 0;
+          break;
+        }
+      else if(ROT_A_STATE && ROT_B_STATE) {
+        rotary_encoder_position = 3; // End of rotation measurement
+        if(rotary_encoder_states[0] == 0 && rotary_encoder_states[1] == 1) {
+          Serial.println("Right Turn");
+        } else if(rotary_encoder_states[0] == 1 && rotary_encoder_states[1] == 0) {
+          Serial.println("Left Turn");
+        }
+
+        //delay(100); // Some mild debouncing
+        rotary_encoder_states[0] = 0;
+        rotary_encoder_states[1] = 0;
+        rotary_encoder_position = 0;
+      }
+      break;
+    
+    default:
+      break;
+  }
 } 
