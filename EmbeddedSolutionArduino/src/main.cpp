@@ -1,9 +1,9 @@
 #include<Arduino.h>
 
 // Define rotary encoder pins
-#define ROT_A 2 // Left Turn
-#define ROT_B 3 // RIght Turn
-#define ROT_C 4 // Push Button
+#define ROT_A 11 // Left Turn
+#define ROT_B 12 // RIght Turn
+#define ROT_C 13 // Push Button
 
 volatile bool rotary_encoder_states[2] = {0, 0};
 volatile int rotary_encoder_position = 0;
@@ -15,8 +15,8 @@ void setup() {
   // Set encoder pins and attach interrupts
   pinMode(ROT_A, INPUT_PULLUP);
   pinMode(ROT_B, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(ROT_A), read_rotary_encoder, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(ROT_B), read_rotary_encoder, CHANGE);
+  PCICR |= B00000001; // Enable Port B interrupt
+  PCMSK0 |= B00111000; // Enable interrupt on pins 11, 12, 13
 
   // Start the serial monitor to show output
   Serial.begin(115200);
@@ -25,6 +25,10 @@ void setup() {
 void loop() {
   //delay(2500);
   //read_rotary_encoder();
+}
+
+ISR(PCINT0_vect) {
+  read_rotary_encoder();
 }
 
 void read_rotary_encoder() {
