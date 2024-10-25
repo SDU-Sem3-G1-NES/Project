@@ -35,7 +35,10 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(EmbeddedSolution EmbeddedSolution.cpp )
+add_executable(EmbeddedSolution 
+    EmbeddedSolution.cpp 
+    rotary_encoder.cpp
+)
 
 pico_set_program_name(EmbeddedSolution "EmbeddedSolution")
 pico_set_program_version(EmbeddedSolution "0.1")
@@ -52,6 +55,7 @@ target_link_libraries(EmbeddedSolution
 target_include_directories(EmbeddedSolution PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
   ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
+  ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
 # Add any user requested libraries
