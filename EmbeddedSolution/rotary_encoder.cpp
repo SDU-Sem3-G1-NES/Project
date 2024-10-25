@@ -84,6 +84,6 @@ namespace rotary_encoder {
     }
 
     void input::main_loop() {
-        if(to_ms_since_boot(get_absolute_time()) - last_button_push_time > 200) ROT_C_LAST_STATE = 1;
+        if(to_ms_since_boot(get_absolute_time()) - last_button_push_time > 300) ROT_C_LAST_STATE = 1;
     }
 }
