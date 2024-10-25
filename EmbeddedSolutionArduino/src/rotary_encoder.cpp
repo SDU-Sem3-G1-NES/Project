@@ -10,6 +10,7 @@ namespace rotary_encoder {
 
         rotary_encoder_position = 0;
         ROT_C_LAST_STATE = 1;
+        last_button_push_time = 0;
     }
 
     void input::read_rotary_encoder() 
@@ -19,12 +20,13 @@ namespace rotary_encoder {
             if(digitalRead(ROT_C) == 0) 
             {
                 Serial.println("Button Pressed");
+                last_button_push_time = millis();
                 ROT_C_LAST_STATE = 0;
                 return;
             }
         } else 
         {
-            if(digitalRead(ROT_C) == 1) ROT_C_LAST_STATE = 1;
+            if(digitalRead(ROT_C) == 1 && millis() - last_button_push_time > 150) ROT_C_LAST_STATE = 1;
         }
 
         bool ROT_A_STATE = digitalRead(ROT_A);

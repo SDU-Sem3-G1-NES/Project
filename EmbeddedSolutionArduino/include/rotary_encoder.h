@@ -18,6 +18,8 @@ namespace rotary_encoder {
             volatile bool rotary_encoder_states[2];
             volatile int rotary_encoder_position;
             volatile bool ROT_C_LAST_STATE;
+
+            uint32_t last_button_push_time;
     };
 }
 
