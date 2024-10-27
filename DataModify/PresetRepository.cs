@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataModify
 {
-    internal class PresetRepository
+    public class PresetRepository
     {
         private readonly DbAccess dbAccess;
 
@@ -14,7 +14,12 @@ namespace DataModify
         {
             dbAccess = new DbAccess();
         }
-
+        
+        // Constructor for testing.
+        public PresetRepository(DbAccess dbAccess)
+        {
+            this.dbAccess = dbAccess;
+        }
         #region Insert Methods
 
         public void InsertPreset(string name, int user, int height, string options)

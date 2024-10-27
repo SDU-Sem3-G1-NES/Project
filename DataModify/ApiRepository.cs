@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace DataModify
 {
-    internal class ApiRepository
+    public class ApiRepository
     {
         private readonly DbAccess dbAccess;
 
         public ApiRepository()
         {
             dbAccess = new DbAccess();
+        }
+
+        // Constructor for testing.
+        public ApiRepository(DbAccess dbAccess)
+        {
+            this.dbAccess = dbAccess;
         }
 
         #region Insert Methods

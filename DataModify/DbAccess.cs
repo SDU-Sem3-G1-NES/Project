@@ -29,7 +29,7 @@ namespace DataModify
             dbDataSource = NpgsqlDataSource.Create(connectionString);
         }
 
-        public void ExecuteNonQuery(string sql, params (string, object)[] parameters)
+        public virtual void ExecuteNonQuery(string sql, params (string, object)[] parameters)
         {
             try
             {

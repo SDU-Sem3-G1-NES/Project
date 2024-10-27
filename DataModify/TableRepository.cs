@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataModify
 {
-    internal class TableRepository
+    public class TableRepository
     {
         private readonly DbAccess dbAccess;
 
@@ -14,7 +14,11 @@ namespace DataModify
         {
             dbAccess = new DbAccess();
         }
-
+        // Constructor for testing.
+        public TableRepository(DbAccess dbAccess)
+        {
+            this.dbAccess = dbAccess;
+        }
         #region Insert Methods
 
         public void InsertTable(string name, string manufacturer, int api)
