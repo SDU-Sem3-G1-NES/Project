@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Famicom.Components.Classes;
 
 namespace DataModify
 {
@@ -77,6 +74,38 @@ namespace DataModify
         {
             var sql = "DELETE FROM schedule_tables WHERE s_id = @scheduleId AND t_id = @tableId";
             dbAccess.ExecuteNonQuery(sql, ("@scheduleId", scheduleId), ("@tableId", tableId));
+        }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<Schedules> GetSchedules(int userId)
+        {
+            var sql = "SELECT s_id, s_name, s_config, t_name FROM schedules JOIN schedule_tables ON s_id = s_id JOIN tables ON t_id = t_id WHERE s_owner = @userId";
+
+            List<Schedules> schedules = new List<Schedules>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Schedules shedule = new Schedules()
+                        {
+                            ScheduleId = reader.GetInt32(0),
+                            ScheduleName = reader.GetString(1),
+                            ScheduleConfig = reader.GetString(2),
+                            TableName = reader.GetString(3)
+                        };
+                        schedules.Add(shedule);
+                    }
+                }
+            }
+
+            return schedules;
+
         }
 
         #endregion

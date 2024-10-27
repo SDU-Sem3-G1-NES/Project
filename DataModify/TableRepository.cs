@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Famicom.Components.Classes;
 
 namespace DataModify
 {
@@ -57,6 +54,62 @@ namespace DataModify
         {
             var sql = "DELETE FROM tables WHERE t_id = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
+        }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<Tables> GetTablesUser(int userId)
+        {
+            var sql = $"SELECT * FROM user_tables ut INNER JOIN tables t ON ut.t_id = t.t_id WHERE ut.u_id = {userId}";
+
+            List<Tables> tables = new List<Tables>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Tables table = new Tables()
+                        {
+                            TableId = reader.GetInt32(0),
+                            TableName = reader.GetString(1),
+                            TableManufacturer = reader.GetString(2),
+                            TableApi = reader.GetInt32(3)
+                        };
+                    }
+                }
+            }
+
+            return tables;
+        }
+
+        public List<Tables> GetTablesRoom(int roomId)
+        {
+            var sql = $"SELECT t.* FROM room_tables rm INNER JOIN tables t ON rm.t_id = t.t_id WHERE r_id = {roomId}";
+
+            List<Tables> tables = new List<Tables>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Tables table = new Tables()
+                        {
+                            TableId = reader.GetInt32(0),
+                            TableName = reader.GetString(1),
+                            TableManufacturer = reader.GetString(2),
+                            TableApi = reader.GetInt32(3)
+                        };
+                    }
+                }
+            }
+
+            return tables;
         }
 
         #endregion

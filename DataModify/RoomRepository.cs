@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Famicom.Components.Classes;
 
 namespace DataModify
 {
@@ -63,6 +60,39 @@ namespace DataModify
             var sql = "DELETE FROM rooms WHERE r_id = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<Rooms> GetRooms(int userId)
+        {
+            var sql = "SELECT * FROM rooms";
+
+            List<Rooms> rooms = new List<Rooms>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Rooms room = new Rooms()
+                        {
+                            RoomId = reader.GetInt32(0),
+                            RoomName = reader.GetString(1),
+                            RoomNumber = reader.GetString(2),
+                            RoomFloor = reader.GetInt32(3)
+
+                        };
+                        rooms.Add(room);
+                    }
+                }
+            }
+
+            return rooms;
+        }
+
 
         #endregion
     }

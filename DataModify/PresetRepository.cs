@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Famicom.Components.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,6 +65,39 @@ namespace DataModify
         {
             var sql = "DELETE FROM presets WHERE p_id = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
+        }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<Presets> GetPresetsUser(int userId)
+        {
+            var sql = $"SELECT * FROM presets WHERE p_user = {userId}";
+
+            List<Presets> presets = new List<Presets>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Presets preset = new Presets()
+                        {
+                            PresetId = reader.GetInt32(0),
+                            PresetName = reader.GetString(1),
+                            UserId = reader.GetInt32(2),
+                            Height = reader.GetInt32(3),
+                            Options = reader.GetString(4)
+
+                        };
+                        presets.Add(preset);
+                    }
+                }
+            }
+
+            return presets;
         }
 
         #endregion
