@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataModify\DataModify.csproj" />
+    <ProjectReference Include="..\Famicom\Famicom.csproj" />
+  </ItemGroup>
+
 </Project>

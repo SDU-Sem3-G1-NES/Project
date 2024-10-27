@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Famicom.Components.Classes;
 
 namespace DataModify
 {
@@ -120,6 +117,42 @@ namespace DataModify
             var sql = "DELETE FROM user_habits WHERE uh_id = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<User> GetUser(string email)
+        {
+            var sql = "SELECT u.*, ut.* FROM users u INNER JOIN user_types ut ON u.u_type = ut.ut_id WHERE u.u_mail = @email";
+
+            List<User> users = new List<User>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        User user = new User()
+                        {
+                            UserId = reader.GetInt32(0),
+                            UserName = reader.GetString(1),
+                            UserEmail = reader.GetString(2),
+                            UserTypeId = reader.GetInt32(3),
+                            UserTypeName = reader.GetString(4),
+                            Permisions = reader.GetString(5)
+
+                        };
+                        users.Add(user);
+                    }
+                }
+            }
+
+            return users;
+
+        }
+
 
         #endregion
 
