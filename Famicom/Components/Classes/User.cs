@@ -9,5 +9,8 @@
         public string? UserTypeName { get; set; }
         public string? Permisions { get; set; }
 
+        public User()
+        {
+        }
     }
 }

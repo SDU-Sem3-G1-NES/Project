@@ -3,13 +3,18 @@ using Famicom.Components.Classes;
 
 namespace DataModify
 {
-    internal class ScheduleRepository
+    public class ScheduleRepository
     {
         private readonly DbAccess dbAccess;
 
         public ScheduleRepository()
         {
             dbAccess = new DbAccess();
+        }
+        // Constructor for testing.
+        public ScheduleRepository(DbAccess dbAccess)
+        {
+            this.dbAccess = dbAccess;
         }
 
         #region Insert Methods

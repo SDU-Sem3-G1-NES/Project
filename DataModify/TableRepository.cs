@@ -3,15 +3,20 @@ using Famicom.Components.Classes;
 
 namespace DataModify
 {
-    internal class TableRepository
+    public class TableRepository
     {
         private readonly DbAccess dbAccess;
 
         public TableRepository()
         {
+            
             dbAccess = new DbAccess();
         }
-
+        // Constructor for testing.
+        public TableRepository(DbAccess dbAccess)
+        {
+            this.dbAccess = dbAccess;
+        }
         #region Insert Methods
 
         public void InsertTable(string name, string manufacturer, int api)
