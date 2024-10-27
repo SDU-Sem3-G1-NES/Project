@@ -18,6 +18,13 @@ namespace DataModify
             var sql = "INSERT INTO rooms (r_name, r_number, r_floor) VALUES (@name, @number, @floor)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@number", number), ("@floor", floor));
         }
+
+        public void InsertRoomTable(int roomId, int tableId)
+        {
+            var sql = "INSERT INTO room_tables (r_id, t_id) VALUES (@roomId, @tableId)";
+            dbAccess.ExecuteNonQuery(sql, ("@roomId", roomId), ("@tableId", tableId));
+        }
+
         #endregion
 
         #region Edit Methods
@@ -59,7 +66,7 @@ namespace DataModify
 
         #region Get Methods
 
-        public List<Rooms> GetRooms(int userId)
+        public List<Rooms> GetRooms()
         {
             var sql = "SELECT * FROM rooms";
 
@@ -87,7 +94,7 @@ namespace DataModify
             return rooms;
         }
 
-
+      
         #endregion
     }
 }

@@ -14,9 +14,9 @@ namespace DataModify
 
         #region Insert Methods
 
-        public void InsertSchedule(string name, string config, string owner)
+        public void InsertSchedule(string name, string config, int owner)
         {
-            var sql = "INSERT INTO schedules (s_name, s_config, s_owner) VALUES (@name, @config, @owner)";
+            var sql = "INSERT INTO schedules (s_name, s_config, s_owner) VALUES (@name, @config::jsonb, @owner)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@config", config), ("@owner", owner));
         }
 
@@ -77,7 +77,7 @@ namespace DataModify
 
         public List<Schedules> GetSchedules(int userId)
         {
-            var sql = "SELECT s_id, s_name, s_config, t_name FROM schedules JOIN schedule_tables ON s_id = s_id JOIN tables ON t_id = t_id WHERE s_owner = @userId";
+            var sql = $"SELECT s_id, s_name, s_config, t_name FROM schedules JOIN schedule_tables ON s_id = s_id JOIN tables ON t_id = t_id WHERE s_owner = {userId}";
 
             List<Schedules> schedules = new List<Schedules>();
 

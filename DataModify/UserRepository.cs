@@ -27,7 +27,7 @@ namespace DataModify
 
         public void InsertUserType(string name, string permissions)
         {
-            var sql = "INSERT INTO user_types (ut_name, ut_permissions) VALUES (@name, @permissions)";
+            var sql = "INSERT INTO user_types (ut_name, ut_permissions) VALUES (@name, @permissions::jsonb)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@permissions", permissions));
         }
 
@@ -122,11 +122,12 @@ namespace DataModify
 
         #region Get Methods
 
+
         public List<User> GetUser(string email)
         {
-            var sql = "SELECT u.*, ut.* FROM users u INNER JOIN user_types ut ON u.u_type = ut.ut_id WHERE u.u_mail = @email";
+            var sql = $"SELECT u.*, ut.* FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE u.u_mail = {@email}";
 
-            List<User> users = new List<User>();
+            List<User> Users = new List<User>();
 
             using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
             {
@@ -134,7 +135,8 @@ namespace DataModify
                 {
                     while (reader.Read())
                     {
-                        User user = new User()
+                        
+                        User user = new User
                         {
                             UserId = reader.GetInt32(0),
                             UserName = reader.GetString(1),
@@ -144,12 +146,12 @@ namespace DataModify
                             Permisions = reader.GetString(5)
 
                         };
-                        users.Add(user);
+                        Users.Add(user);
                     }
                 }
             }
 
-            return users;
+            return Users;
 
         }
 

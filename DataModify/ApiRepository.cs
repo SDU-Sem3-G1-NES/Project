@@ -19,7 +19,7 @@ namespace DataModify
 
         public void InsertApi(string name, string config)
         {
-            var sql = "INSERT INTO apis (a_name, a_config) VALUES (@name, @config)";
+            var sql = "INSERT INTO apis (a_name, a_config) VALUES (@name, @config::jsonb)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@config", config));
         }
 

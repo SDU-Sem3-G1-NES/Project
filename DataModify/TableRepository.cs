@@ -20,6 +20,12 @@ namespace DataModify
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
         }
 
+        public void InsertTableUser(int tableId, int userId)
+        {
+            var sql = "INSERT INTO user_tables (t_id, u_id) VALUES (@tableId, @userId)";
+            dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId), ("@userId", userId));
+        }
+
         #endregion
 
         #region Edit Methods

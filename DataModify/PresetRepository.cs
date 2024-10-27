@@ -20,10 +20,10 @@ namespace DataModify
 
         public void InsertPreset(string name, int user, int height, string options)
         {
-            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options)";
+            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options::jsonb)";
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@user", user), ("@height", height), ("@options", options));
         }
-
+       
         #endregion
 
         #region Edit Methods
