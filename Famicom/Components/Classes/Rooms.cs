@@ -14,5 +14,9 @@
             RoomNumber = roomNumber;
             RoomFloor = floor;
         }
+
+        public Rooms()
+        {
+        }
     }
 }

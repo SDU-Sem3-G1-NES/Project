@@ -1,5 +1,6 @@
-using Moq;
 using Xunit;
+using Moq;
+using DataModify;
 
 namespace DataModify.Tests
 {
@@ -15,110 +16,122 @@ namespace DataModify.Tests
         }
 
         [Fact]
-        public void InsertRoom_ShouldExecuteNonQueryWithCorrectParameters()
+        public void InsertRoom_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var name = "Test Room";
-            var number = "101";
-            var floor = 1;
+            string name = "Room1";
+            string number = "101";
+            int floor = 1;
 
             // Act
             _roomRepository.InsertRoom(name, number, floor);
 
             // Assert
+            var param1 = ("@name", (object)name);
+            var param2 = ("@number", (object)number);
+            var param3 = ("@floor", (object)floor);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("INSERT INTO rooms")),
-                It.Is<(string, object)>(p => p.Item1 == "@name" && (string)p.Item2 == name),
-                It.Is<(string, object)>(p => p.Item1 == "@number" && (string)p.Item2 == number),
-                It.Is<(string, object)>(p => p.Item1 == "@floor" && (int)p.Item2 == floor)
+                "INSERT INTO rooms (r_name, r_number, r_floor) VALUES (@name, @number, @floor)",
+                param1, param2, param3
             ), Times.Once);
         }
 
         [Fact]
-        public void EditRoomTable_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditRoomTable_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var roomId = 1;
-            var tableId = 2;
+            int roomId = 1;
+            int tableId = 3;
 
             // Act
             _roomRepository.EditRoomTable(roomId, tableId);
 
             // Assert
+            var param1 = ("@tableId", (object)tableId);
+            var param2 = ("@roomId", (object)roomId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE room_tables SET t_id")),
-                It.Is<(string, object)>(p => p.Item1 == "@tableId" && (int)p.Item2 == tableId),
-                It.Is<(string, object)>(p => p.Item1 == "@roomId" && (int)p.Item2 == roomId)
+                "UPDATE room_tables SET t_id = @tableId WHERE r_id = @roomId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditRoomName_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditRoomName_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var roomId = 3;
-            var roomName = "Updated Room Name";
+            int roomId = 1;
+            string roomName = "UpdatedRoom";
 
             // Act
             _roomRepository.EditRoomName(roomId, roomName);
 
             // Assert
+            var param1 = ("@roomName", (object)roomName);
+            var param2 = ("@roomId", (object)roomId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE rooms SET r_name")),
-                It.Is<(string, object)>(p => p.Item1 == "@roomName" && (string)p.Item2 == roomName),
-                It.Is<(string, object)>(p => p.Item1 == "@roomId" && (int)p.Item2 == roomId)
+                "UPDATE rooms SET r_name = @roomName WHERE r_id = @roomId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditRoomNumber_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditRoomNumber_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var roomId = 4;
-            var roomNumber = "102";
+            int roomId = 1;
+            string roomNumber = "102";
 
             // Act
             _roomRepository.EditRoomNumber(roomId, roomNumber);
 
             // Assert
+            var param1 = ("@roomNumber", (object)roomNumber);
+            var param2 = ("@roomId", (object)roomId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE rooms SET r_number")),
-                It.Is<(string, object)>(p => p.Item1 == "@roomNumber" && (string)p.Item2 == roomNumber),
-                It.Is<(string, object)>(p => p.Item1 == "@roomId" && (int)p.Item2 == roomId)
+                "UPDATE rooms SET r_number = @roomNumber WHERE r_id = @roomId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditRoomFloor_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditRoomFloor_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var roomId = 5;
-            var roomFloor = 2;
+            int roomId = 1;
+            int roomFloor = 2;
 
             // Act
             _roomRepository.EditRoomFloor(roomId, roomFloor);
 
             // Assert
+            var param1 = ("@roomFloor", (object)roomFloor);
+            var param2 = ("@roomId", (object)roomId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE rooms SET r_floor")),
-                It.Is<(string, object)>(p => p.Item1 == "@roomFloor" && (int)p.Item2 == roomFloor),
-                It.Is<(string, object)>(p => p.Item1 == "@roomId" && (int)p.Item2 == roomId)
+                "UPDATE rooms SET r_floor = @roomFloor WHERE r_id = @roomId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void DeleteRoom_ShouldExecuteNonQueryWithCorrectParameters()
+        public void DeleteRoom_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var id = 6;
+            int roomId = 1;
 
             // Act
-            _roomRepository.DeleteRoom(id);
+            _roomRepository.DeleteRoom(roomId);
 
             // Assert
+            var param1 = ("@id", (object)roomId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("DELETE FROM rooms WHERE r_id")),
-                It.Is<(string, object)>(p => p.Item1 == "@id" && (int)p.Item2 == id)
+                "DELETE FROM rooms WHERE r_id = @id",
+                param1
             ), Times.Once);
         }
     }

@@ -9,6 +9,7 @@ namespace DataModify
 
         public TableRepository()
         {
+            
             dbAccess = new DbAccess();
         }
         // Constructor for testing.

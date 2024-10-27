@@ -14,5 +14,9 @@
             ScheduleConfig = scheduleConfig;
             TableName = tableName;
         }
+
+        public Schedules()
+        {
+        }
     }
 }

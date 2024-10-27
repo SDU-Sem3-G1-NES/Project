@@ -19,5 +19,8 @@
             Permisions = permisions;
         }
 
+        public User()
+        {
+        }
     }
 }

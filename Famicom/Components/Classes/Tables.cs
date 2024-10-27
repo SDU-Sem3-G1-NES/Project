@@ -14,6 +14,10 @@
             TableManufacturer = tableManufacturer;
             TableApi = tableApi;
         }
+
+        public Tables()
+        {
+        }
     }
 
 }

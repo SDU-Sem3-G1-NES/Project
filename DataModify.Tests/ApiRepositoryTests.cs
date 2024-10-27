@@ -1,5 +1,6 @@
-using Moq;
 using Xunit;
+using Moq;
+using DataModify;
 
 namespace DataModify.Tests
 {
@@ -15,72 +16,80 @@ namespace DataModify.Tests
         }
 
         [Fact]
-        public void InsertApi_ShouldExecuteNonQueryWithCorrectParameters()
+        public void InsertApi_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var name = "Test API";
-            var config = "Test Config";
+            string name = "Api1";
+            string config = "ConfigData";
 
             // Act
             _apiRepository.InsertApi(name, config);
 
             // Assert
+            var param1 = ("@name", (object)name);
+            var param2 = ("@config", (object)config);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("INSERT INTO apis")),
-                It.Is<(string, object)>(p => p.Item1 == "@name" && (string)p.Item2 == name),
-                It.Is<(string, object)>(p => p.Item1 == "@config" && (string)p.Item2 == config)
+                "INSERT INTO apis (a_name, a_config) VALUES (@name, @config)",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditApiName_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditApiName_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var apiId = 1;
-            var apiName = "Updated API Name";
+            int apiId = 1;
+            string apiName = "UpdatedApi";
 
             // Act
             _apiRepository.EditApiName(apiId, apiName);
 
             // Assert
+            var param1 = ("@apiName", (object)apiName);
+            var param2 = ("@apiId", (object)apiId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE apis SET a_name")),
-                It.Is<(string, object)>(p => p.Item1 == "@apiName" && (string)p.Item2 == apiName),
-                It.Is<(string, object)>(p => p.Item1 == "@apiId" && (int)p.Item2 == apiId)
+                "UPDATE apis SET a_name = @apiName WHERE a_id = @apiId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditApiConfig_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditApiConfig_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var apiId = 2;
-            var apiConfig = "Updated Config";
+            int apiId = 1;
+            string apiConfig = "UpdatedConfig";
 
             // Act
             _apiRepository.EditApiConfig(apiId, apiConfig);
 
             // Assert
+            var param1 = ("@apiConfig", (object)apiConfig);
+            var param2 = ("@apiId", (object)apiId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE apis SET a_config")),
-                It.Is<(string, object)>(p => p.Item1 == "@apiConfig" && (string)p.Item2 == apiConfig),
-                It.Is<(string, object)>(p => p.Item1 == "@apiId" && (int)p.Item2 == apiId)
+                "UPDATE apis SET a_config = @apiConfig WHERE a_id = @apiId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void DeleteApi_ShouldExecuteNonQueryWithCorrectParameters()
+        public void DeleteApi_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var id = 3;
+            int apiId = 1;
 
             // Act
-            _apiRepository.DeleteApi(id);
+            _apiRepository.DeleteApi(apiId);
 
             // Assert
+            var param1 = ("@id", (object)apiId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("DELETE FROM apis WHERE a_id")),
-                It.Is<(string, object)>(p => p.Item1 == "@id" && (int)p.Item2 == id)
+                "DELETE FROM apis WHERE a_id = @id",
+                param1
             ), Times.Once);
         }
     }

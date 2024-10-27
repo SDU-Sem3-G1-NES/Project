@@ -16,5 +16,9 @@
             Height = height;
             Options = options;
         }
+
+        public Presets()
+        {
+        }
     }
 }

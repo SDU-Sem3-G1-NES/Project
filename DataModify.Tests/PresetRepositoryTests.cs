@@ -1,5 +1,6 @@
-using Moq;
 using Xunit;
+using Moq;
+using DataModify;
 
 namespace DataModify.Tests
 {
@@ -15,112 +16,124 @@ namespace DataModify.Tests
         }
 
         [Fact]
-        public void InsertPreset_ShouldExecuteNonQueryWithCorrectParameters()
+        public void InsertPreset_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var name = "Test Preset";
-            var user = 1;
-            var height = 120;
-            var options = "Test Options";
+            string name = "Preset1";
+            int user = 1;
+            int height = 100;
+            string options = "Option1";
 
             // Act
             _presetRepository.InsertPreset(name, user, height, options);
 
             // Assert
+            var param1 = ("@name", (object)name);
+            var param2 = ("@user", (object)user);
+            var param3 = ("@height", (object)height);
+            var param4 = ("@options", (object)options);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("INSERT INTO presets")),
-                It.Is<(string, object)>(p => p.Item1 == "@name" && (string)p.Item2 == name),
-                It.Is<(string, object)>(p => p.Item1 == "@user" && (int)p.Item2 == user),
-                It.Is<(string, object)>(p => p.Item1 == "@height" && (int)p.Item2 == height),
-                It.Is<(string, object)>(p => p.Item1 == "@options" && (string)p.Item2 == options)
+                "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options)",
+                param1, param2, param3, param4
             ), Times.Once);
         }
 
         [Fact]
-        public void EditPresetName_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditPresetName_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var presetId = 2;
-            var presetName = "Updated Preset Name";
+            int presetId = 1;
+            string presetName = "UpdatedPreset";
 
             // Act
             _presetRepository.EditPresetName(presetId, presetName);
 
             // Assert
+            var param1 = ("@presetName", (object)presetName);
+            var param2 = ("@presetId", (object)presetId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE presets SET p_name")),
-                It.Is<(string, object)>(p => p.Item1 == "@presetName" && (string)p.Item2 == presetName),
-                It.Is<(string, object)>(p => p.Item1 == "@presetId" && (int)p.Item2 == presetId)
+                "UPDATE presets SET p_name = @presetName WHERE p_id = @presetId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditPresetUser_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditPresetUser_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var presetId = 3;
-            var presetUser = 4;
+            int presetId = 1;
+            int presetUser = 2;
 
             // Act
             _presetRepository.EditPresetUser(presetId, presetUser);
 
             // Assert
+            var param1 = ("@presetUser", (object)presetUser);
+            var param2 = ("@presetId", (object)presetId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE presets SET p_user")),
-                It.Is<(string, object)>(p => p.Item1 == "@presetUser" && (int)p.Item2 == presetUser),
-                It.Is<(string, object)>(p => p.Item1 == "@presetId" && (int)p.Item2 == presetId)
+                "UPDATE presets SET p_user = @presetUser WHERE p_id = @presetId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditPresetHeight_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditPresetHeight_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var presetId = 5;
-            var presetHeight = 180;
+            int presetId = 1;
+            int presetHeight = 200;
 
             // Act
             _presetRepository.EditPresetHeight(presetId, presetHeight);
 
             // Assert
+            var param1 = ("@presetHeight", (object)presetHeight);
+            var param2 = ("@presetId", (object)presetId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE presets SET p_height")),
-                It.Is<(string, object)>(p => p.Item1 == "@presetHeight" && (int)p.Item2 == presetHeight),
-                It.Is<(string, object)>(p => p.Item1 == "@presetId" && (int)p.Item2 == presetId)
+                "UPDATE presets SET p_height = @presetHeight WHERE p_id = @presetId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditPresetOptions_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditPresetOptions_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var presetId = 6;
-            var presetOptions = "Updated Options";
+            int presetId = 1;
+            string presetOptions = "NewOptions";
 
             // Act
             _presetRepository.EditPresetOptions(presetId, presetOptions);
 
             // Assert
+            var param1 = ("@presetOptions", (object)presetOptions);
+            var param2 = ("@presetId", (object)presetId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE presets SET p_options")),
-                It.Is<(string, object)>(p => p.Item1 == "@presetOptions" && (string)p.Item2 == presetOptions),
-                It.Is<(string, object)>(p => p.Item1 == "@presetId" && (int)p.Item2 == presetId)
+                "UPDATE presets SET p_options = @presetOptions WHERE p_id = @presetId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void DeletePreset_ShouldExecuteNonQueryWithCorrectParameters()
+        public void DeletePreset_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var id = 7;
+            int presetId = 1;
 
             // Act
-            _presetRepository.DeletePreset(id);
+            _presetRepository.DeletePreset(presetId);
 
             // Assert
+            var param1 = ("@id", (object)presetId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("DELETE FROM presets WHERE p_id")),
-                It.Is<(string, object)>(p => p.Item1 == "@id" && (int)p.Item2 == id)
+                "DELETE FROM presets WHERE p_id = @id",
+                param1
             ), Times.Once);
         }
     }

@@ -1,5 +1,6 @@
-using Moq;
 using Xunit;
+using Moq;
+using DataModify;
 
 namespace DataModify.Tests
 {
@@ -10,99 +11,107 @@ namespace DataModify.Tests
 
         public TableRepositoryTests()
         {
-            // Initialize the DbAccess mock
             _dbAccessMock = new Mock<DbAccess>();
-            // Inject the mock into TableRepository
             _tableRepository = new TableRepository(_dbAccessMock.Object);
         }
 
         [Fact]
-        public void InsertTable_ShouldExecuteNonQueryWithCorrectParameters()
+        public void InsertTable_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var name = "Test Table";
-            var manufacturer = "Test Manufacturer";
-            var api = 3;
+            string name = "Table1";
+            string manufacturer = "Manufacturer1";
+            int api = 1;
 
             // Act
             _tableRepository.InsertTable(name, manufacturer, api);
 
             // Assert
+            var param1 = ("@name", (object)name);
+            var param2 = ("@manufacturer", (object)manufacturer);
+            var param3 = ("@api", (object)api);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("INSERT INTO tables")),
-                It.Is<(string, object)>(p => p.Item1 == "@name" && (string)p.Item2 == name),
-                It.Is<(string, object)>(p => p.Item1 == "@manufacturer" && (string)p.Item2 == manufacturer),
-                It.Is<(string, object)>(p => p.Item1 == "@api" && (int)p.Item2 == api)
+                "INSERT INTO tables (t_name, t_manufacturer, t_api) VALUES (@name, @manufacturer, @api)",
+                param1, param2, param3
             ), Times.Once);
         }
 
         [Fact]
-        public void EditTableName_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditTableName_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var tableId = 1;
-            var tableName = "Updated Table Name";
+            int tableId = 1;
+            string tableName = "UpdatedTable";
 
             // Act
             _tableRepository.EditTableName(tableId, tableName);
 
             // Assert
+            var param1 = ("@tableName", (object)tableName);
+            var param2 = ("@tableId", (object)tableId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE tables SET t_name")),
-                It.Is<(string, object)>(p => p.Item1 == "@tableName" && (string)p.Item2 == tableName),
-                It.Is<(string, object)>(p => p.Item1 == "@tableId" && (int)p.Item2 == tableId)
+                "UPDATE tables SET t_name = @tableName WHERE t_id = @tableId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditTableManufacturer_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditTableManufacturer_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var tableId = 2;
-            var tableManufacturer = "Updated Manufacturer";
+            int tableId = 1;
+            string tableManufacturer = "UpdatedManufacturer";
 
             // Act
             _tableRepository.EditTableManufacturer(tableId, tableManufacturer);
 
             // Assert
+            var param1 = ("@tableManufacturer", (object)tableManufacturer);
+            var param2 = ("@tableId", (object)tableId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE tables SET t_manufacturer")),
-                It.Is<(string, object)>(p => p.Item1 == "@tableManufacturer" && (string)p.Item2 == tableManufacturer),
-                It.Is<(string, object)>(p => p.Item1 == "@tableId" && (int)p.Item2 == tableId)
+                "UPDATE tables SET t_manufacturer = @tableManufacturer WHERE t_id = @tableId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void EditTableAPI_ShouldExecuteNonQueryWithCorrectParameters()
+        public void EditTableAPI_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var tableId = 3;
-            var tableApi = 5;
+            int tableId = 1;
+            int tableApi = 2;
 
             // Act
             _tableRepository.EditTableAPI(tableId, tableApi);
 
             // Assert
+            var param1 = ("@tableApi", (object)tableApi);
+            var param2 = ("@tableId", (object)tableId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("UPDATE tables SET t_api")),
-                It.Is<(string, object)>(p => p.Item1 == "@tableApi" && (int)p.Item2 == tableApi),
-                It.Is<(string, object)>(p => p.Item1 == "@tableId" && (int)p.Item2 == tableId)
+                "UPDATE tables SET t_api = @tableApi WHERE t_id = @tableId",
+                param1, param2
             ), Times.Once);
         }
 
         [Fact]
-        public void DeleteTable_ShouldExecuteNonQueryWithCorrectParameters()
+        public void DeleteTable_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            var id = 4;
+            int tableId = 1;
 
             // Act
-            _tableRepository.DeleteTable(id);
+            _tableRepository.DeleteTable(tableId);
 
             // Assert
+            var param1 = ("@id", (object)tableId);
+
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                It.Is<string>(s => s.Contains("DELETE FROM tables WHERE t_id")),
-                It.Is<(string, object)>(p => p.Item1 == "@id" && (int)p.Item2 == id)
+                "DELETE FROM tables WHERE t_id = @id",
+                param1
             ), Times.Once);
         }
     }
