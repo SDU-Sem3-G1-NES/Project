@@ -11,7 +11,7 @@ namespace Famicom.Components.Pages
         public string TableImageUrl { get; set; } = ""; //image URL
 
         // Table Model instance
-        public TableModel Table { get; set; }
+        public TableModel Table { get; set; } = new TableModel();
 
         protected override void OnInitialized()
         {
@@ -28,14 +28,14 @@ namespace Famicom.Components.Pages
         public void MoveTableUp()
         {
             Table.LastPositionChange = "Just now";
-            Console.WriteLine("Table moved up.");
+            //Table move up logic
             StateHasChanged(); // Trigger UI update
         }
 
         public void MoveTableDown()
         {
             Table.LastPositionChange = "Just now";
-            Console.WriteLine("Table moved down.");
+           //Table move down logic
             StateHasChanged(); // Trigger UI update
         }
     }
@@ -43,8 +43,8 @@ namespace Famicom.Components.Pages
     // TableModel class to encapsulate table information
     public class TableModel
     {
-        public string TableName { get; set; }
-        public string Room { get; set; }
-        public string LastPositionChange { get; set; }
+        public string TableName { get; set; } = string.Empty;
+        public string Room { get; set; } = string.Empty;
+        public string LastPositionChange { get; set; } = string.Empty;
     }
 }
