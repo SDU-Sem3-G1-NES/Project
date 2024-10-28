@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Famicom.Components.Classes;
 
 namespace DataModify
@@ -25,10 +26,10 @@ namespace DataModify
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
         }
 
-        public void InsertTableUser(int tableId, int userId)
+        public void InsertTableUser(int userId ,int tableId)
         {
-            var sql = "INSERT INTO user_tables (t_id, u_id) VALUES (@tableId, @userId)";
-            dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId), ("@userId", userId));
+            var sql = "INSERT INTO user_tables (u_id, t_id) VALUES (@userId, @tableId)";
+            dbAccess.ExecuteNonQuery(sql, ("@userId", userId), ("@tableId", tableId));
         }
 
         #endregion
@@ -63,31 +64,37 @@ namespace DataModify
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
 
-        #endregion
-
-        #region Get Methods
-
         public List<Tables> GetTablesUser(int userId)
         {
-            var sql = $"SELECT * FROM user_tables ut INNER JOIN tables t ON ut.t_id = t.t_id WHERE ut.u_id = {userId}";
+            var sql = $"SELECT t.* FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_id = t.t_id WHERE ut.u_id = {userId}";
 
             List<Tables> tables = new List<Tables>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            try
             {
-                using (var reader = cmd.ExecuteReader())
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
                 {
-                    while (reader.Read())
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Tables table = new Tables()
+                        while (reader.Read())
                         {
-                            TableId = reader.GetInt32(0),
-                            TableName = reader.GetString(1),
-                            TableManufacturer = reader.GetString(2),
-                            TableApi = reader.GetInt32(3)
-                        };
+                            Tables table = new Tables()
+                            {
+                                TableId = reader.GetInt32(0),
+                                TableName = reader.GetString(1),
+                                TableManufacturer = reader.GetString(2),
+                                TableApi = reader.GetInt32(3)
+                            };
+                            tables.Add(table);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+                
             }
 
             return tables;
@@ -95,28 +102,37 @@ namespace DataModify
 
         public List<Tables> GetTablesRoom(int roomId)
         {
-            var sql = $"SELECT t.* FROM room_tables rm INNER JOIN tables t ON rm.t_id = t.t_id WHERE r_id = {roomId}";
+            var sql = $"SELECT t.* FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_id = t.t_id WHERE rm.r_id = {roomId}";
 
-            List<Tables> tables = new List<Tables>();
+            List<Tables> roomTables = new List<Tables>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            try
             {
-                using (var reader = cmd.ExecuteReader())
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
                 {
-                    while (reader.Read())
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Tables table = new Tables()
+                        while (reader.Read())
                         {
-                            TableId = reader.GetInt32(0),
-                            TableName = reader.GetString(1),
-                            TableManufacturer = reader.GetString(2),
-                            TableApi = reader.GetInt32(3)
-                        };
+                            Tables table = new Tables()
+                            {
+                                TableId = reader.GetInt32(0),
+                                TableName = reader.GetString(1),
+                                TableManufacturer = reader.GetString(2),
+                                TableApi = reader.GetInt32(3)
+                            };
+                            roomTables.Add(table);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
 
-            return tables;
+            return roomTables;
         }
 
         #endregion
