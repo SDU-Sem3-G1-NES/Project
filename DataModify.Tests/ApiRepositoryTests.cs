@@ -30,7 +30,7 @@ namespace DataModify.Tests
             var param2 = ("@config", (object)config);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO apis (a_name, a_config) VALUES (@name, @config)",
+                "INSERT INTO apis (a_name, a_config) VALUES (@name, @config::jsonb)",
                 param1, param2
             ), Times.Once);
         }

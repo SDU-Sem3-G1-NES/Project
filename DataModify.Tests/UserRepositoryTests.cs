@@ -74,7 +74,7 @@ namespace DataModify.Tests
             var param2 = ("@permissions", (object)permissions);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO user_types (ut_name, ut_permissions) VALUES (@name, @permissions)",
+                "INSERT INTO user_types (ut_name, ut_permissions) VALUES (@name, @permissions::jsonb)",
                 param1, param2
             ), Times.Once);
         }

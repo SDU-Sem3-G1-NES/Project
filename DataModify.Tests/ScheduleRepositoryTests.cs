@@ -21,7 +21,7 @@ namespace DataModify.Tests
             // Arrange
             string name = "Schedule1";
             string config = "ConfigData";
-            string owner = "User1";
+            int owner = 1;
 
             // Act
             _scheduleRepository.InsertSchedule(name, config, owner);
@@ -32,7 +32,7 @@ namespace DataModify.Tests
             var param3 = ("@owner", (object)owner);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO schedules (s_name, s_config, s_owner) VALUES (@name, @config, @owner)",
+                "INSERT INTO schedules (s_name, s_config, s_owner) VALUES (@name, @config::jsonb, @owner)",
                 param1, param2, param3
             ), Times.Once);
         }

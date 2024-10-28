@@ -34,7 +34,7 @@ namespace DataModify.Tests
             var param4 = ("@options", (object)options);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options)",
+                "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options::jsonb)",
                 param1, param2, param3, param4
             ), Times.Once);
         }
