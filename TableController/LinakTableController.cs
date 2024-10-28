@@ -10,23 +10,23 @@ namespace Famicom.TableController
         {
             throw new NotImplementedException();
         }
-        float GetTableSpeed()
+        public float GetTableSpeed()
         {
             throw new NotImplementedException();
         }
-        string GetTableStatus()
+        public string GetTableStatus()
         {
             throw new NotImplementedException();
         }
-        List<ITableError> GetTableError()
+        public List<ITableError> GetTableError()
         {
             throw new NotImplementedException();
         }
-        int GetActivationCounter()
+        public int GetActivationCounter()
         {
             throw new NotImplementedException();
         }
-        int GetSitStandCounter()
+        public int GetSitStandCounter()
         {
             throw new NotImplementedException();
         }
