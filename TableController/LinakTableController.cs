@@ -2,11 +2,16 @@ namespace Famicom.TableController
 {
     public class LinakTableController : ITableController
     {
-        public float GetTableHeight(ITable Table)
+        public LinakTableController(ITable table)
+        {
+            Table = table;
+        }
+        public ITable Table { get; private set;}
+        public int GetTableHeight()
         {
             throw new NotImplementedException();
         }
-        public void SetTableHeight(ITable Table)
+        public void SetTableHeight()
         {
             throw new NotImplementedException();
         }
@@ -18,9 +23,15 @@ namespace Famicom.TableController
         {
             throw new NotImplementedException();
         }
-        public List<ITableError> GetTableError()
+        public void GetTableError()
         {
             throw new NotImplementedException();
+        }
+        public List<ITableError>? ErrorList { get; private set; }
+        public event EventHandler TableCollisionDetected;
+        protected virtual void OnTableCollisionDetected()
+        {
+            TableCollisionDetected?.Invoke(this, EventArgs.Empty);
         }
         public int GetActivationCounter()
         {

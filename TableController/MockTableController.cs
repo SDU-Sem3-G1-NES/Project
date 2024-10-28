@@ -3,12 +3,13 @@ namespace Famicom.TableController
 {
     public class MockTableController : ITableController
     {
-        public float GetTableHeight(ITable Table)
+        public ITable Table { get; private set; }
+        public int GetTableHeight()
         {
             Debug.WriteLine("MockTableController.GetTableHeight");
-            return 0.0f;
+            return 15;
         }
-        public void SetTableHeight(ITable Table)
+        public void SetTableHeight()
         {
             Debug.WriteLine("MockTableController.SetTableHeight");
 
@@ -23,11 +24,11 @@ namespace Famicom.TableController
             Debug.WriteLine("MockTableController.GetTableStatus");
             return "MockTableController.GetTableStatus";
         }
-        public List<ITableError> GetTableError()
+        public void GetTableError()
         {
             Debug.WriteLine("MockTableController.GetTableError");
-            return new List<ITableError>();
         }
+        public List<ITableError>? ErrorList { get; private set; }
         public int GetActivationCounter()
         {
             Debug.WriteLine("MockTableController.GetActivationCounter");

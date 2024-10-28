@@ -4,8 +4,8 @@ namespace Famicom.TableController
     {
         int GUID { get; set; }
         string Name { get; set; }
-        string Manufacturer { get; set; }
-        float Height { get; set; }
+        string Manufacturer { get; }
+        int Height { get; }
         string Status { get; set; }
     }
 }

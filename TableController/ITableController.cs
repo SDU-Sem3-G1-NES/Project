@@ -2,12 +2,12 @@
 {
     public interface ITableController
     {
-        float GetTableHeight(ITable Table);
-        void SetTableHeight(ITable Table);
+        ITable Table { get;}
+        int GetTableHeight();
+        void SetTableHeight();
         float GetTableSpeed();
         string GetTableStatus();
-        List<ITableError> GetTableError();
-        int GetActivationCounter();
-        int GetSitStandCounter();
+        void GetTableError();
+        public List<ITableError>? ErrorList { get;}
     }
 }
