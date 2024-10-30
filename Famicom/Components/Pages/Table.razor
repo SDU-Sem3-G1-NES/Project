@@ -1,5 +1,24 @@
 ﻿@page "/table"
+@inherits TableBase
 
-<PageTitle>Table</PageTitle>
+<PageTitle>Table Management</PageTitle>
 
-<MudText Typo="Typo.h1">Table functions</MudText>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">@TableTitle</MudText>
+        </MudCardHeader>
+
+        <MudCardContent>
+            <MudText Typo="Typo.body1">Table Name: @Table.TableName</MudText>
+            <MudText Typo="Typo.body2">Room: @Table.Room</MudText>
+            <MudText Typo="Typo.caption">Last Position Change: @Table.LastPositionChange</MudText>
+            <img src="@TableImageUrl" alt="Table image" />
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Color="Color.Primary" OnClick="MoveTableDown">Move Table Down</MudButton>
+            <MudButton Color="Color.Secondary" OnClick="MoveTableUp">Move Table Up</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>

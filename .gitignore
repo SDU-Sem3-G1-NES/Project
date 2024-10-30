@@ -399,7 +399,7 @@ FodyWeavers.xsd
 
 
 # Database
-Data/*/.env
+# Data/*/.env
 Data/*/user.sql
 Data/*/venv
 
@@ -409,3 +409,5 @@ EmbeddedSolution/build/
 EmbeddedSolutionArduino/build/
 EmbeddedSolutionArduino/.pio/
 EmbeddedSolutionArduino/.vscode/
+
+.env
