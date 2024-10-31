@@ -1,12 +1,18 @@
+using SharedModels;
+
 namespace Famicom.TableController
 {
     public class LinakTableController : ITableController
     {
-        public LinakTableController(ITable table)
+        public LinakTableController(LinakTable table)
         {
             Table = table;
         }
-        public ITable Table { get; private set;}
+        public LinakTable Table { get; private set;}
+        public List<String> GetAllTables()
+        {
+            throw new NotImplementedException();
+        }
         public int GetTableHeight()
         {
             throw new NotImplementedException();
@@ -37,7 +43,7 @@ namespace Famicom.TableController
         {
             throw new NotImplementedException();
         }
-        public int GetSitStandCounter()
+        public void GetSitStandCounter()
         {
             throw new NotImplementedException();
         }
