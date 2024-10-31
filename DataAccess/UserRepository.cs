@@ -1,5 +1,4 @@
-﻿using System;
-using Famicom.Components.Classes;
+﻿using SharedModels;
 
 namespace DataAccess
 {
@@ -76,16 +75,16 @@ namespace DataAccess
         }
 
         // Method to update user table
-        public void EditUserTable(int userId, int tableId)
+        public void EditUserTable(int userId, string tableId)
         {
-            var sql = "UPDATE user_tables SET t_id = @tableId WHERE u_id = @userId";
+            var sql = "UPDATE user_tables SET t_guid = @tableId WHERE u_id = @userId";
             dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId), ("@userId", userId));
         }
 
         // Method for editing habit event by habit id
         public void EditHabitEvent(int habitId, string habitEvent)
         {
-            var sql = "UPDATE user_habits SET t_id = @habitEvent WHERE h_id = @habitId";
+            var sql = "UPDATE user_habits SET t_guid = @habitEvent WHERE h_id = @habitId";
             dbAccess.ExecuteNonQuery(sql, ("@habitEvent", habitEvent), ("@habitId", habitId));
         }
 
@@ -128,11 +127,11 @@ namespace DataAccess
         #region Get Methods
 
 
-        public List<User> GetUser(string email)
+        public List<Employee> GetEmployee()
         {
-            var sql = $"SELECT u.*, ut.* FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE u.u_mail = {@email}";
+            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'EMPLOYEE'";
 
-            List<User> Users = new List<User>();
+            List<Employee> Employees = new List<Employee>();
 
             using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
             {
@@ -141,22 +140,74 @@ namespace DataAccess
                     while (reader.Read())
                     {
                         
-                        User user = new User
+                        Employee employee = new Employee
                         {
-                            UserId = reader.GetInt32(0),
-                            UserName = reader.GetString(1),
-                            UserEmail = reader.GetString(2),
-                            UserTypeId = reader.GetInt32(3),
-                            UserTypeName = reader.GetString(4),
-                            Permisions = reader.GetString(5)
+                            UserID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Email = reader.GetString(2),
 
                         };
-                        Users.Add(user);
+                        Employees.Add(employee);
                     }
                 }
             }
 
-            return Users;
+            return Employees;
+
+        }
+        public List<Admin> GetAdmin(string email)
+        {
+            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'ADMIN'";
+            List<Admin> Admins = new List<Admin>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        
+                        Admin admin = new Admin
+                        {
+                            UserID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Email = reader.GetString(2)
+
+                        };
+                        Admins.Add(admin);
+                    }
+                }
+            }
+
+            return Admins;
+
+        }
+        public List<Cleaner> GetCleaner(string email)
+        {
+            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'CLEANER'";
+
+            List<Cleaner> Cleaners = new List<Cleaner>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        
+                        Cleaner cleaner = new Cleaner
+                        {
+                            UserID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Email = reader.GetString(2),
+
+                        };
+                        Cleaners.Add(cleaner);
+                    }
+                }
+            }
+
+            return Cleaners;
 
         }
 

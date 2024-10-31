@@ -42,7 +42,7 @@ namespace DataAccess.Tests
         {
             // Arrange
             int roomId = 1;
-            int tableId = 3;
+            string tableId = "3";
 
             // Act
             _roomRepository.EditRoomTable(roomId, tableId);
@@ -52,7 +52,7 @@ namespace DataAccess.Tests
             var param2 = ("@roomId", (object)roomId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE room_tables SET t_id = @tableId WHERE r_id = @roomId",
+                "UPDATE room_tables SET t_guid = @tableId WHERE r_id = @roomId",
                 param1, param2
             ), Times.Once);
         }

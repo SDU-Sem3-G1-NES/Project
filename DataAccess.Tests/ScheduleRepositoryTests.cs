@@ -42,7 +42,7 @@ namespace DataAccess.Tests
         {
             // Arrange
             int scheduleId = 1;
-            int tableId = 2;
+            string tableId = "2";
 
             // Act
             _scheduleRepository.InsertScheduleTable(scheduleId, tableId);
@@ -52,7 +52,7 @@ namespace DataAccess.Tests
             var param2 = ("@tableId", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO schedule_tables (s_id, t_id) VALUES (@scheduleId, @tableId)",
+                "INSERT INTO schedule_tables (s_id, t_guid) VALUES (@scheduleId, @tableId)",
                 param1, param2
             ), Times.Once);
         }
@@ -62,7 +62,7 @@ namespace DataAccess.Tests
         {
             // Arrange
             int scheduleId = 1;
-            int tableId = 3;
+            string tableId = "3";
 
             // Act
             _scheduleRepository.EditScheduleTable(scheduleId, tableId);
@@ -72,7 +72,7 @@ namespace DataAccess.Tests
             var param2 = ("@scheduleId", (object)scheduleId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE schedule_tables SET t_id = @tableId WHERE s_id = @scheduleId",
+                "UPDATE schedule_tables SET t_guid = @tableId WHERE s_id = @scheduleId",
                 param1, param2
             ), Times.Once);
         }
@@ -160,7 +160,7 @@ namespace DataAccess.Tests
         {
             // Arrange
             int scheduleId = 1;
-            int tableId = 2;
+            string tableId = "2";
 
             // Act
             _scheduleRepository.DeleteScheduleTable(scheduleId, tableId);
@@ -170,7 +170,7 @@ namespace DataAccess.Tests
             var param2 = ("@tableId", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "DELETE FROM schedule_tables WHERE s_id = @scheduleId AND t_id = @tableId",
+                "DELETE FROM schedule_tables WHERE s_id = @scheduleId AND t_guid = @tableId",
                 param1, param2
             ), Times.Once);
         }

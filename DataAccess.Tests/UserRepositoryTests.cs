@@ -124,7 +124,7 @@ namespace DataAccess.Tests
         {
             // Arrange
             int userId = 1;
-            int tableId = 2;
+            string tableId = "2";
 
             // Act
             _userRepository.EditUserTable(userId, tableId);
@@ -134,7 +134,7 @@ namespace DataAccess.Tests
             var param2 = ("@userId", (object)userId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE user_tables SET t_id = @tableId WHERE u_id = @userId",
+                "UPDATE user_tables SET t_guid = @tableId WHERE u_id = @userId",
                 param1, param2
             ), Times.Once);
         }

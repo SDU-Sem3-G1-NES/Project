@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SharedModels;
 
 namespace DataAccess
 {
@@ -24,18 +24,18 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@number", number), ("@floor", floor));
         }
 
-        public void InsertRoomTable(int roomId, int tableId)
+        public void InsertRoomTable(int roomId, string tableId)
         {
-            var sql = "INSERT INTO room_tables (r_id, t_id) VALUES (@roomId, @tableId)";
+            var sql = "INSERT INTO room_tables (r_id, t_guid) VALUES (@roomId, @tableId)";
             dbAccess.ExecuteNonQuery(sql, ("@roomId", roomId), ("@tableId", tableId));
         }
 
         #endregion
 
         #region Edit Methods
-        public void EditRoomTable(int roomId, int tableId)
+        public void EditRoomTable(int roomId, string tableId)
         {
-            var sql = "UPDATE room_tables SET t_id = @tableId WHERE r_id = @roomId";
+            var sql = "UPDATE room_tables SET t_guid = @tableId WHERE r_id = @roomId";
             dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId), ("@roomId", roomId));
         }
 

@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SharedModels;
 using System.Diagnostics;
-using Famicom.Components.Classes;
 
 namespace DataAccess
 {
@@ -10,7 +9,7 @@ namespace DataAccess
 
         public TableRepository()
         {
-            
+
             dbAccess = new DbAccess();
         }
         // Constructor for testing.
@@ -18,17 +17,18 @@ namespace DataAccess
         {
             this.dbAccess = dbAccess;
         }
+
         #region Insert Methods
 
-        public void InsertTable(string address, string name, string manufacturer, int api)
+        public void InsertTable(string name, string manufacturer, int api)
         {
-            var sql = "INSERT INTO tables (t_addr, t_name, t_manufacturer, t_api) VALUES (@address, @name, @manufacturer, @api)";
-            dbAccess.ExecuteNonQuery(sql, ("@address", address), ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
+            var sql = "INSERT INTO tables (t_name, t_manufacturer, t_api) VALUES (@name, @manufacturer, @api)";
+            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
         }
 
-        public void InsertTableUser(int userId ,int tableId)
+        public void InsertTableUser(int userId, string tableId)
         {
-            var sql = "INSERT INTO user_tables (u_id, t_id) VALUES (@userId, @tableId)";
+            var sql = "INSERT INTO user_tables (u_id, t_guid) VALUES (@userId, @tableId)";
             dbAccess.ExecuteNonQuery(sql, ("@userId", userId), ("@tableId", tableId));
         }
 
@@ -36,21 +36,21 @@ namespace DataAccess
 
         #region Edit Methods
 
-        public void EditTableName(int tableId, string tableName)
+        public void EditTableName(string tableId, string tableName)
         {
-            var sql = "UPDATE tables SET t_name = @tableName WHERE t_id = @tableId";
+            var sql = "UPDATE tables SET t_name = @tableName WHERE t_guid = @tableId";
             dbAccess.ExecuteNonQuery(sql, ("@tableName", tableName), ("@tableId", tableId));
         }
 
-        public void EditTableManufacturer(int tableId, string tableManufacturer)
+        public void EditTableManufacturer(string tableId, string tableManufacturer)
         {
-            var sql = "UPDATE tables SET t_manufacturer = @tableManufacturer WHERE t_id = @tableId";
+            var sql = "UPDATE tables SET t_manufacturer = @tableManufacturer WHERE t_guid = @tableId";
             dbAccess.ExecuteNonQuery(sql, ("@tableManufacturer", tableManufacturer), ("@tableId", tableId));
         }
 
-        public void EditTableAPI(int tableId, int tableApi)
+        public void EditTableAPI(string tableId, int tableApi)
         {
-            var sql = "UPDATE tables SET t_api = @tableApi WHERE t_id = @tableId";
+            var sql = "UPDATE tables SET t_api = @tableApi WHERE t_guid = @tableId";
             dbAccess.ExecuteNonQuery(sql, ("@tableApi", tableApi), ("@tableId", tableId));
         }
 
@@ -58,17 +58,18 @@ namespace DataAccess
 
         #region Delete Methods
 
-        public void DeleteTable(int id)
+        public void DeleteTable(string id)
         {
-            var sql = "DELETE FROM tables WHERE t_id = @id";
+            var sql = "DELETE FROM tables WHERE t_guid = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
+        #endregion
 
-        public List<Tables> GetTablesUser(int userId)
+        #region Get Methods
+        public List<LinakTable> GetTablesUser(int userId)
         {
-            var sql = $"SELECT t.* FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_id = t.t_id WHERE ut.u_id = {userId}";
-
-            List<Tables> tables = new List<Tables>();
+            var sql = $"SELECT t.t_guid,t.t_name FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_guid = t.t_guid WHERE ut.u_id = {userId}";
+            List<LinakTable> tables = new List<LinakTable>();
 
             try
             {
@@ -78,14 +79,10 @@ namespace DataAccess
                     {
                         while (reader.Read())
                         {
-                            Tables table = new Tables()
-                            {
-                                TableId = reader.GetInt32(0),
-                                TableAddress = reader.GetString(1),
-                                TableName = reader.GetString(2),
-                                TableManufacturer = reader.GetString(3),
-                                TableApi = reader.GetInt32(4)
-                            };
+                            LinakTable table = new LinakTable(
+                                reader.GetString(0),
+                                reader.GetString(1)
+                                );
                             tables.Add(table);
                         }
                     }
@@ -93,19 +90,16 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                
-                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
-                
-            }
 
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
             return tables;
         }
 
-        public List<Tables> GetTablesRoom(int roomId)
+        public List<LinakTable> GetTablesRoom(int roomId)
         {
-            var sql = $"SELECT t.* FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_id = t.t_id WHERE rm.r_id = {roomId}";
-
-            List<Tables> roomTables = new List<Tables>();
+            var sql = $"SELECT t.t_guid,t.t_name FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";
+            List<LinakTable> roomTables = new List<LinakTable>();
 
             try
             {
@@ -115,14 +109,12 @@ namespace DataAccess
                     {
                         while (reader.Read())
                         {
-                            Tables table = new Tables()
-                            {
-                                TableId = reader.GetInt32(0),
-                                TableAddress = reader.GetString(1),
-                                TableName = reader.GetString(2),
-                                TableManufacturer = reader.GetString(3),
-                                TableApi = reader.GetInt32(4)
-                            };
+                            LinakTable table = new LinakTable(
+                                reader.GetString(0),
+                                reader.GetString(1)
+                                );
+                              
+                            
                             roomTables.Add(table);
                         }
                     }
@@ -130,7 +122,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                
+
                 Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
             }
 
@@ -138,5 +130,6 @@ namespace DataAccess
         }
 
         #endregion
+
     }
 }
