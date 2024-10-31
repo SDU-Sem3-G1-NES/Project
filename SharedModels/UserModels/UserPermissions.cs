@@ -1,10 +1,6 @@
 namespace SharedModels;
 
-public interface IUserPermissions
+public enum UserPermissions
 {
-
-}
-public class UserPermissions
-{
-    
+    GODMODE,
 }
