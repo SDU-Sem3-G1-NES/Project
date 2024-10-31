@@ -1,4 +1,4 @@
-﻿namespace Models;
+﻿namespace SharedModels;
 
 public interface IUser
 {

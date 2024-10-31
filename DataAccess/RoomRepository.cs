@@ -1,5 +1,4 @@
 ﻿using System;
-using Famicom.Components.Classes;
 
 namespace DataAccess
 {

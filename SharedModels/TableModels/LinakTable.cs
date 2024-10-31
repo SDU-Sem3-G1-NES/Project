@@ -1,4 +1,4 @@
-namespace Famicom.TableController
+namespace SharedModels
 {
     public class LinakTable : ITable
     {
@@ -9,11 +9,6 @@ namespace Famicom.TableController
             Height = height;
             Status = status;
             Manufacturer = "Linak";
-            SitStandCount = new SitStandCounter
-            {
-                SitCount = 0,
-                StandCount = 0
-            };
         }
         public string GUID { get; set; } 
         public string Name { get; set; }
@@ -23,12 +18,5 @@ namespace Famicom.TableController
         public float Speed { get; set; }
         public List<ITableError>? ErrorList { get; set; }
         public int ActivationCounter { get; set; }
-        public SitStandCounter SitStandCount { get; set; }
-    }
-
-    public class SitStandCounter : ISitStandCounter
-    {
-        public int SitCount { get; set; }
-        public int StandCount { get; set; }
     }
 }

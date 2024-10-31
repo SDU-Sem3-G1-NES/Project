@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health", "Health\Health.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableControllerAPI", "TableControllerAPI\TableControllerAPI.csproj", "{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModels", "SharedModels\SharedModels.csproj", "{9906974C-0C51-4E24-9681-542557EC33B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9906974C-0C51-4E24-9681-542557EC33B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9906974C-0C51-4E24-9681-542557EC33B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9906974C-0C51-4E24-9681-542557EC33B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9906974C-0C51-4E24-9681-542557EC33B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

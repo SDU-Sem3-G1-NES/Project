@@ -1,4 +1,4 @@
-namespace Famicom.TableController
+namespace SharedModels
 {
     public interface ITable
     {
