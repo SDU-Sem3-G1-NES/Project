@@ -1,35 +1,33 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Collections.Generic;
+using System;
+using SharedModels;
+using Famicom.Models;
+using System.Diagnostics;
 
 namespace Famicom.Components.Pages
 {
-    public class DashboardBase : ComponentBase
+    public partial class DashboardBase : ComponentBase
     {
-        public string NotificationsTitle { get; set; } = "Notifications";
-        public string TodayUsageGraphTitle { get; set; } = "Today's Usage Graph";
-        public string WeeklyUsageGraphTitle { get; set; } = "Weekly Usage Graph";
-        public string TodayUsageGraphLabel { get; set; } = "Today's Usage";
-        public string WeeklyUsageGraphLabel { get; set; } = "Weekly Usage";
+        private DashboardModel DashboardModel { get; set; } = new DashboardModel();
 
-        public TableInfo Table { get; set; } = new TableInfo
+        public string NotificationsTitle => DashboardModel.NotificationsTitle;
+        public string TodayUsageGraphTitle => DashboardModel.TodayUsageGraphTitle;
+        public string WeeklyUsageGraphTitle => DashboardModel.WeeklyUsageGraphTitle;
+        public string TodayUsageGraphLabel => DashboardModel.TodayUsageGraphLabel;
+        public string WeeklyUsageGraphLabel => DashboardModel.WeeklyUsageGraphLabel;
+
+        public ITable Table => DashboardModel.Table;
+        public List<int> WeeklyUsageData => DashboardModel.WeeklyUsageData;
+        public List<int> TodayUsageData => DashboardModel.TodayUsageData;
+        public List<DashboardModel.Notification> Notifications => DashboardModel.Notifications;
+
+        public void StoreDashboardData()
         {
-            TableName = "Table #1",
-            Room = "Room 123",
-            LastPositionChange = "20m ago"
-        };
+            DashboardModel.StoreDashboardData();
+        }
 
-        public List<int> WeeklyUsageData { get; set; } = new List<int> { 5, 10, 17, 10, 20 };
-        public List<int> TodayUsageData { get; set; } = new List<int> { 30, 15, 25 };
-
-        public List<Notification> Notifications { get; set; } = new List<Notification>
-        {
-            new Notification { Title = "Health Notification", Message = "You've been sitting too long!", Action = "Raise desk" },
-            new Notification { Title = "Health Panel", Message = "Check new suggestions", Action = "Go to Health Panel" },
-            new Notification { Title = "Collision Detected", Message = "Could not raise the table", Action = "Go to Table tab" }
-        };
-
-        public void HandleNotification(Notification notification)
+        public void HandleNotification(DashboardModel.Notification notification)
         {
             if (notification.Action == "Raise desk")
             {
@@ -37,34 +35,26 @@ namespace Famicom.Components.Pages
             }
             else if (notification.Action == "Go to Health Panel")
             {
-                // Logic
+                //logic to navigate to health view
             }
         }
 
         public void MoveTableUp()
         {
-            //Logic to move the table up
-            Table.LastPositionChange = "Just now";
+            Debug.WriteLine("Table moved up");
+            DashboardModel.Table.LastPositionChange = "Just now";
         }
 
         public void MoveTableDown()
         {
-            // Logic to move the table down
-            Table.LastPositionChange = "Just now";
+            Debug.WriteLine("Table moved Down");
+            DashboardModel.Table.LastPositionChange = "Just now";
         }
 
-        public class TableInfo
+        protected override void OnInitialized()
         {
-            public string TableName { get; set; } = string.Empty;
-            public string Room { get; set; } = string.Empty;
-            public string LastPositionChange { get; set; } = string.Empty;
-        }
-
-        public class Notification
-        {
-            public string Title { get; set; } = string.Empty;
-            public string Message { get; set; } = string.Empty;
-            public string Action { get; set; } = string.Empty;
+            base.OnInitialized();
+            StoreDashboardData();
         }
     }
 }
