@@ -8,17 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetEnv" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../DataAccess/DataAccess.csproj" />
+    <ProjectReference Include="../TableController/TableController.csproj" />
+    <ProjectReference Include="../Health/Health.csproj" />
+    <ProjectReference Include="../Scheduling/Scheduling.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="../.env">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
 </Project>

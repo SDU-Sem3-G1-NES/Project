@@ -397,18 +397,15 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-venv/
-
 # Database
-# Data/*/.env
-Data/*/user.sql
-Data/*/venv
+**/user.sql
+**/venv/
+**/.env
 
 # Embedded
-EmbeddedSolution/build/
+**/.vscode/
+**/.pio/
+**/build/
 
-EmbeddedSolutionArduino/build/
-EmbeddedSolutionArduino/.pio/
-EmbeddedSolutionArduino/.vscode/
 
-.env
+

@@ -9,10 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <PackageReference Include="Npgsql" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,5 +17,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+  </ItemGroup>
+
 </Project>

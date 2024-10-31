@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System;
+using SharedModels;
+using Famicom.Models;
+using System.Diagnostics;
 
 namespace Famicom.Components.Pages
 {
@@ -10,41 +13,24 @@ namespace Famicom.Components.Pages
         public string TableTitle { get; set; } = "Manage Your Table";
         public string TableImageUrl { get; set; } = ""; //image URL
 
-        // Table Model instance
-        public TableModel Table { get; set; } = new TableModel();
+        private TableModel tableModel {get; set; } = new TableModel();
+        public ITable Table { get; set; }
 
         protected override void OnInitialized()
         {
-            // Initialize Table data. Replace with actual data loading logic if needed.
-            Table = new TableModel
-            {
-                TableName = "Table #1",
-                Room = "Room 123",
-                LastPositionChange = "20m ago"
-            };
+            tableModel = new TableModel();
+            Table = tableModel.GetTable();
         }
 
         // Methods for moving the table up and down
         public void MoveTableUp()
         {
-            Table.LastPositionChange = "Just now";
-            //Table move up logic
-            StateHasChanged(); // Trigger UI update
+            Debug.WriteLine("Table moved up");
         }
 
         public void MoveTableDown()
         {
-            Table.LastPositionChange = "Just now";
-           //Table move down logic
-            StateHasChanged(); // Trigger UI update
+            Debug.WriteLine("Table moved down");
         }
-    }
-
-    // TableModel class to encapsulate table information
-    public class TableModel
-    {
-        public string TableName { get; set; } = string.Empty;
-        public string Room { get; set; } = string.Empty;
-        public string LastPositionChange { get; set; } = string.Empty;
     }
 }
