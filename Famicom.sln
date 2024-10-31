@@ -7,19 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Famicom", "Famicom\Famicom.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduling", "Scheduling\Scheduling.csproj", "{B7748A42-C51B-47C5-A6F6-D5C16D91D780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableController", "TableController\TableController.csproj", "{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableController", "TableController\TableController.csproj", "{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{5D77FE3F-DEA4-4A3C-B899-8222E751B053}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{5D77FE3F-DEA4-4A3C-B899-8222E751B053}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{A19AB9AB-41D8-4879-9A65-2CEF23EAF5BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{A19AB9AB-41D8-4879-9A65-2CEF23EAF5BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Tests", "DataAccess.Tests\DataAccess.Tests.csproj", "{40E6F9FC-C890-498D-A631-D724478AD308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Tests", "DataAccess.Tests\DataAccess.Tests.csproj", "{40E6F9FC-C890-498D-A631-D724478AD308}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health", "Health\Health.csproj", "{21EB52CB-1516-4CF5-AB49-7A85AC1C78BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Health", "Health\Health.csproj", "{21EB52CB-1516-4CF5-AB49-7A85AC1C78BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableControllerAPI", "TableControllerAPI\TableControllerAPI.csproj", "{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableControllerAPI", "TableControllerAPI\TableControllerAPI.csproj", "{29DD700D-CE0B-4AD0-A2F4-097DD2C4E47F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModels", "SharedModels\SharedModels.csproj", "{9906974C-0C51-4E24-9681-542557EC33B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{9906974C-0C51-4E24-9681-542557EC33B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +35,10 @@ Global
 		{B7748A42-C51B-47C5-A6F6-D5C16D91D780}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7748A42-C51B-47C5-A6F6-D5C16D91D780}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7748A42-C51B-47C5-A6F6-D5C16D91D780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C259F2C-FF81-44BD-AB06-D5ED41FB0CBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D77FE3F-DEA4-4A3C-B899-8222E751B053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D77FE3F-DEA4-4A3C-B899-8222E751B053}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D77FE3F-DEA4-4A3C-B899-8222E751B053}.Release|Any CPU.ActiveCfg = Release|Any CPU

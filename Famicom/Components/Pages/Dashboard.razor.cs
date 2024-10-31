@@ -42,13 +42,11 @@ namespace Famicom.Components.Pages
         public void MoveTableUp()
         {
             Debug.WriteLine("Table moved up");
-            DashboardModel.Table.LastPositionChange = "Just now";
         }
 
         public void MoveTableDown()
         {
             Debug.WriteLine("Table moved Down");
-            DashboardModel.Table.LastPositionChange = "Just now";
         }
 
         protected override void OnInitialized()
