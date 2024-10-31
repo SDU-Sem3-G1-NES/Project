@@ -1,8 +1,14 @@
 using System.Diagnostics;
+using SharedModels;
+
 namespace Famicom.TableController
 {
     public class MockTableController : ITableController
     {
+        public MockTableController(ITable table)
+        {
+            Table = table;
+        }
         public ITable Table { get; private set; }
         public int GetTableHeight()
         {
@@ -34,10 +40,9 @@ namespace Famicom.TableController
             Debug.WriteLine("MockTableController.GetActivationCounter");
             return 0;
         }
-        public int GetSitStandCounter()
+        public void GetSitStandCounter()
         {
             Debug.WriteLine("MockTableController.GetSitStandCounter");
-            return 0;
         }
         
     }    
