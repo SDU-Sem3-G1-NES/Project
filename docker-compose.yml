@@ -9,8 +9,8 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./users.sql:/docker-entrypoint-initdb.d/users.sql
+      - ./DataModify/_Setup/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./DataModify/_Setup/user.sql:/docker-entrypoint-initdb.d/users.sql
     restart: unless-stopped
     env_file:
       - .env

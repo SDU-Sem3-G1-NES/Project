@@ -4,10 +4,10 @@ namespace Famicom.Scheduling
 {
     public interface ISchedule
     {
-        int GUID { get; private set; }
-        DateTime TimeStamp { get; private set; }
-        float Height { get; private set; }
-        void GetFromDb();
-        void DeleteFromDb();
+        public string GUID { get; private set; }
+        public DateTime TimeStamp { get; private set; }
+        public float Height { get; private set; }
+        public void GetFromDb();
+        public void DeleteFromDb();
     }
 }

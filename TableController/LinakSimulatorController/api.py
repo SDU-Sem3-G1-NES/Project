@@ -1,8 +1,9 @@
 import json
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 VERSION = "v1"
-API_KEY = "E9Y2LxT4g1hQZ7aD8nR3mWx5P0qK6pV7"
+API_KEY = os.getenv('LSAPI_KEY')
 
 desks = [
     {
