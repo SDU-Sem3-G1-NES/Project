@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataModify\DataModify.csproj" />
-    <ProjectReference Include="..\Famicom\Famicom.csproj" />
+    <ProjectReference Include="../Famicom/Famicom.csproj" />
   </ItemGroup>
 
   <ItemGroup>

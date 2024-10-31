@@ -7,4 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../DataAccess/DataAccess.csproj" />
+    <ProjectReference Include="../TableController/TableController.csproj" />
+    <ProjectReference Include="../Health/Health.csproj" />
+    <ProjectReference Include="../Scheduling/Scheduling.csproj" />
+  </ItemGroup>
+
 </Project>
