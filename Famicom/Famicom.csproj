@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Models/Models.csproj" />
+    <!-- ProjectReference Include="../Models/Models.csproj" / -->
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
   </ItemGroup>
 
