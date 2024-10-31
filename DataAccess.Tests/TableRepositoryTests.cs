@@ -41,7 +41,7 @@ namespace DataAccess.Tests
         public void EditTableName_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            int tableId = 1;
+            string tableId = "1";
             string tableName = "UpdatedTable";
 
             // Act
@@ -52,7 +52,7 @@ namespace DataAccess.Tests
             var param2 = ("@tableId", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE tables SET t_name = @tableName WHERE t_id = @tableId",
+                "UPDATE tables SET t_name = @tableName WHERE t_guid = @tableId",
                 param1, param2
             ), Times.Once);
         }
@@ -61,7 +61,7 @@ namespace DataAccess.Tests
         public void EditTableManufacturer_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            int tableId = 1;
+            string tableId = "1";
             string tableManufacturer = "UpdatedManufacturer";
 
             // Act
@@ -72,7 +72,7 @@ namespace DataAccess.Tests
             var param2 = ("@tableId", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE tables SET t_manufacturer = @tableManufacturer WHERE t_id = @tableId",
+                "UPDATE tables SET t_manufacturer = @tableManufacturer WHERE t_guid = @tableId",
                 param1, param2
             ), Times.Once);
         }
@@ -81,7 +81,7 @@ namespace DataAccess.Tests
         public void EditTableAPI_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            int tableId = 1;
+            string tableId = "1";
             int tableApi = 2;
 
             // Act
@@ -92,7 +92,7 @@ namespace DataAccess.Tests
             var param2 = ("@tableId", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE tables SET t_api = @tableApi WHERE t_id = @tableId",
+                "UPDATE tables SET t_api = @tableApi WHERE t_guid = @tableId",
                 param1, param2
             ), Times.Once);
         }
@@ -101,7 +101,7 @@ namespace DataAccess.Tests
         public void DeleteTable_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
-            int tableId = 1;
+            string tableId = "1";
 
             // Act
             _tableRepository.DeleteTable(tableId);
@@ -110,7 +110,7 @@ namespace DataAccess.Tests
             var param1 = ("@id", (object)tableId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "DELETE FROM tables WHERE t_id = @id",
+                "DELETE FROM tables WHERE t_guid = @id",
                 param1
             ), Times.Once);
         }

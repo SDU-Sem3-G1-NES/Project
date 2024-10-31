@@ -1,5 +1,4 @@
-﻿using System;
-using Famicom.Components.Classes;
+﻿using SharedModels;
 
 namespace DataAccess
 {
@@ -25,9 +24,9 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@config", config), ("@owner", owner));
         }
 
-        public void InsertScheduleTable(int scheduleId, int tableId)
+        public void InsertScheduleTable(int scheduleId, string tableId)
         {
-            var sql = "INSERT INTO schedule_tables (s_id, t_id) VALUES (@scheduleId, @tableId)";
+            var sql = "INSERT INTO schedule_tables (s_id, t_guid) VALUES (@scheduleId, @tableId)";
             dbAccess.ExecuteNonQuery(sql, ("@scheduleId", scheduleId), ("@tableId", tableId));
         }
 
@@ -35,9 +34,9 @@ namespace DataAccess
 
         #region Edit Methods
 
-        public void EditScheduleTable(int scheduleId, int tableId)
+        public void EditScheduleTable(int scheduleId, string tableId)
         {
-            var sql = "UPDATE schedule_tables SET t_id = @tableId WHERE s_id = @scheduleId";
+            var sql = "UPDATE schedule_tables SET t_guid = @tableId WHERE s_id = @scheduleId";
             dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId), ("@scheduleId", scheduleId));
         }
 
@@ -70,9 +69,9 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
 
-        public void DeleteScheduleTable(int scheduleId, int tableId)
+        public void DeleteScheduleTable(int scheduleId, string tableId)
         {
-            var sql = "DELETE FROM schedule_tables WHERE s_id = @scheduleId AND t_id = @tableId";
+            var sql = "DELETE FROM schedule_tables WHERE s_id = @scheduleId AND t_guid = @tableId";
             dbAccess.ExecuteNonQuery(sql, ("@scheduleId", scheduleId), ("@tableId", tableId));
         }
 
@@ -82,7 +81,7 @@ namespace DataAccess
 
         public List<Schedules> GetSchedules(int userId)
         {
-            var sql = $"SELECT s_id, s_name, s_config, t_name FROM schedules JOIN schedule_tables ON s_id = s_id JOIN tables ON t_id = t_id WHERE s_owner = {userId}";
+            var sql = $"SELECT s_id, s_name, s_config, t_name FROM schedules JOIN schedule_tables ON s_id = s_id JOIN tables ON t_guid = t_guid WHERE s_owner = {userId}";
 
             List<Schedules> schedules = new List<Schedules>();
 
