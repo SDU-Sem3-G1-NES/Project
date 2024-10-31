@@ -1,0 +1,6 @@
+@TableControllerAPI_HostAddress = http://localhost:5296
+
+GET {{TableControllerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
