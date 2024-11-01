@@ -11,18 +11,28 @@ using Sprache;
 
 namespace TableController;
 
+/// <summary>
+/// Table Controller for the Linak Simulator API given by Krzysztof.
+/// </summary>
 public class LinakSimulatorController : ITableController
 {
     private LinakTable? _table;
     private ILinakSimulatorTasks _tasks;
 
-
+    /// <summary>
+    /// Constructor for LinakSimulatorController
+    /// </summary>
+    /// <param name="table">LinakTable. Optional.</param>
     public LinakSimulatorController(LinakTable? table = null)
     {
         _table = table;
         _tasks = new LinakSimulatorTasks();
     }
 
+    /// <summary>
+    /// Method to get all table GUIDs stored in the API.
+    /// </summary>
+    /// <returns>Array of all found GUIDs as string.</returns>
     public string[] GetAllTableIds()
     {
         try 
@@ -37,6 +47,10 @@ public class LinakSimulatorController : ITableController
         }
     }
 
+    /// <summary>
+    /// Method to get full information of table stored in TableControlelr from the API.
+    /// </summary>
+    /// <returns>LinakTable; Null if not found in API or on other error.</returns>
     public LinakTable? GetFullTableInfo()
     {
         try 
@@ -56,6 +70,10 @@ public class LinakSimulatorController : ITableController
         }
     }
 
+    /// <summary>
+    /// Method to get the height of the table stored in TableController from the API.
+    /// </summary>
+    /// <returns>Height as int; -1 if table not found or other error.</returns>
     public int GetTableHeight()
     {
         try 
@@ -73,6 +91,12 @@ public class LinakSimulatorController : ITableController
         
     }
 
+
+    /// <summary>
+    /// Method to set the height of the table stored in TableController with the API.
+    /// </summary>
+    /// <param name="height">New Height for the table.</param>
+    /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
     public void SetTableHeight(int height)
     {
         _table!.Height = height;
@@ -83,6 +107,10 @@ public class LinakSimulatorController : ITableController
         if (!response.IsSuccessStatusCode) throw new Exception("Failed to set table height!"); 
     }
 
+    /// <summary>
+    /// Method to get the speed of the table stored in TableController from the API.
+    /// </summary>
+    /// <returns>TableSpeed as int; -1 if table not found or other error.</returns>
     public int GetTableSpeed()
     {
         try 
@@ -99,6 +127,11 @@ public class LinakSimulatorController : ITableController
         }
     }
 
+
+    /// <summary>
+    /// Method to get the status of the table stored in TableController from the API.
+    /// </summary>
+    /// <returns>Status as string. Empty string if no status or some error.</returns>
     public string GetTableStatus()
     {
         try 
