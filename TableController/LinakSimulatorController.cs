@@ -16,7 +16,7 @@ namespace TableController;
 /// </summary>
 public class LinakSimulatorController : ITableController
 {
-    private LinakTable? _table;
+    private LinakTable _table;
     private ILinakSimulatorTasks _tasks;
 
     /// <summary>
@@ -25,7 +25,7 @@ public class LinakSimulatorController : ITableController
     /// <param name="table">LinakTable. Optional.</param>
     public LinakSimulatorController(LinakTable? table = null)
     {
-        _table = table;
+        _table = table ?? new LinakTable("", "");
         _tasks = new LinakSimulatorTasks();
     }
 
@@ -51,11 +51,11 @@ public class LinakSimulatorController : ITableController
     /// Method to get full information of table stored in TableControlelr from the API.
     /// </summary>
     /// <returns>LinakTable; Null if not found in API or on other error.</returns>
-    public LinakTable? GetFullTableInfo()
+    public LinakTable? GetFullTableInfo(string? guid = null)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table!.GUID).Result;
+            var response = _tasks.GetTableInfo(guid ?? _table.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
 
             _table.Name = response.name!;
@@ -74,13 +74,13 @@ public class LinakSimulatorController : ITableController
     /// Method to get the height of the table stored in TableController from the API.
     /// </summary>
     /// <returns>Height as int; -1 if table not found or other error.</returns>
-    public int GetTableHeight()
+    public int GetTableHeight(string? guid = null)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table!.GUID).Result;
+            var response = _tasks.GetTableInfo(guid ?? _table.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
-            _table.Height = response.position;
+            if(guid == null) _table.Height = response.position;
             return response.position ?? -1;
         } 
         catch (Exception e) 
@@ -97,11 +97,11 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <param name="height">New Height for the table.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
-    public void SetTableHeight(int height)
+    public void SetTableHeight(int height, string? guid = null)
     {
         try {
-            _table!.Height = height;
-            var tempTable = new LinakApiTable {id = _table.GUID, position = _table.Height};
+            if(guid == null) _table.Height = height;
+            var tempTable = new LinakApiTable {id = guid ?? _table.GUID, position = height};
             var response = _tasks.SetTableInfo(tempTable).Result;
 
             // Because return type is void, we must throw exceptions if something goes wrong
@@ -118,11 +118,11 @@ public class LinakSimulatorController : ITableController
     /// Method to get the speed of the table stored in TableController from the API.
     /// </summary>
     /// <returns>TableSpeed as int; -1 if table not found or other error.</returns>
-    public int GetTableSpeed()
+    public int GetTableSpeed(string? guid = null)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table!.GUID).Result;
+            var response = _tasks.GetTableInfo(guid ?? _table.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
             _table.Speed = response.speed;
             return response.speed ?? -1;
@@ -139,11 +139,11 @@ public class LinakSimulatorController : ITableController
     /// Method to get the status of the table stored in TableController from the API.
     /// </summary>
     /// <returns>Status as string. Empty string if no status or some error.</returns>
-    public string GetTableStatus()
+    public string GetTableStatus(string? guid = null)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table!.GUID).Result;
+            var response = _tasks.GetTableInfo(guid ?? _table.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
             return response.status ?? "";
         } 
@@ -154,19 +154,19 @@ public class LinakSimulatorController : ITableController
         }
     }
 
-    public void GetTableError()
+    public void GetTableError(string? guid = null)
     {
         throw new NotImplementedException();
     }
 
     public List<ITableError>? ErrorList { get; }
 
-    public int GetActivationCounter()
+    public int GetActivationCounter(string? guid = null)
     {
         throw new NotImplementedException();
     }
 
-    public void GetSitStandCounter()
+    public void GetSitStandCounter(string? guid = null)
     {
         throw new NotImplementedException();
     }

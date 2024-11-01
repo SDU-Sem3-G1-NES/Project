@@ -4,13 +4,13 @@ namespace TableController
 {
     public interface ITableController
     {
-        public int GetTableHeight();
-        public void SetTableHeight(int height);
-        public int GetTableSpeed();
-        public string GetTableStatus();
-        public void GetTableError();
+        public int GetTableHeight(string? guid = null);
+        public void SetTableHeight(int height, string? guid = null);
+        public int GetTableSpeed(string? guid = null);
+        public string GetTableStatus(string? guid = null);
+        public void GetTableError(string? guid = null);
         public List<ITableError>? ErrorList { get; }
-        public int GetActivationCounter();
-        public void GetSitStandCounter();
+        public int GetActivationCounter(string? guid = null);
+        public void GetSitStandCounter(string? guid = null);
     }
 }

@@ -14,37 +14,33 @@ namespace TableController
         {
             throw new NotImplementedException();
         }
-        public int GetTableHeight()
+        public int GetTableHeight(string? guid = null)
         {
             throw new NotImplementedException();
         }
-        public void SetTableHeight(int height)
+        public void SetTableHeight(int height, string? guid = null)
         {
             throw new NotImplementedException();
         }
-        public int GetTableSpeed()
+        public int GetTableSpeed(string? guid = null)
         {
             throw new NotImplementedException();
         }
-        public string GetTableStatus()
+        public string GetTableStatus(string? guid = null)
         {
             throw new NotImplementedException();
         }
-        public void GetTableError()
+        public void GetTableError(string? guid = null)
         {
             throw new NotImplementedException();
         }
         public List<ITableError>? ErrorList { get; private set; }
-        public event EventHandler TableCollisionDetected;
-        protected virtual void OnTableCollisionDetected()
-        {
-            TableCollisionDetected?.Invoke(this, EventArgs.Empty);
-        }
-        public int GetActivationCounter()
+
+        public int GetActivationCounter(string? guid = null)
         {
             throw new NotImplementedException();
         }
-        public void GetSitStandCounter()
+        public void GetSitStandCounter(string? guid = null)
         {
             throw new NotImplementedException();
         }
