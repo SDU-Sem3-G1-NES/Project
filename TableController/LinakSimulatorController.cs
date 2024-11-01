@@ -41,7 +41,7 @@ public class LinakSimulatorController : ITableController
     {
         try 
         {
-            var response = _tasks.GetFullTableInfo(_table!.GUID).Result;
+            var response = _tasks.GetTableInfo(_table!.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
 
             _table.Name = response.name!;
@@ -150,7 +150,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var jsonString = response.Content.ReadAsStringAsync();
         var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
 
-        return apiTable;
+        return apiTable ?? new LinakApiTable();
     }
 
     public async Task<HttpResponseMessage> SetTableInfo(LinakApiTable table) {
@@ -189,24 +189,12 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
 
         return apiTables ?? [];
     }
-
-    public async Task<LinakApiTable> GetFullTableInfo(string guid) {
-        var url = $"{_baseUrl}/desks/{guid}";
-        var response = await _client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        var jsonString = response.Content.ReadAsStringAsync();
-        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
-
-        return apiTable ?? new LinakApiTable();
-    }
 }
 
 internal interface ILinakSimulatorTasks {
     Task<LinakApiTable?> GetTableInfo(string guid);
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
     Task<string[]> GetAllTableIds();
-    Task<LinakApiTable> GetFullTableInfo(string guid);
 }
 
 internal class LinakSimulatorControllerOptions {

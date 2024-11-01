@@ -27,7 +27,53 @@ namespace TableController.Tests
 
             var field = typeof(LinakSimulatorController)
                 .GetField("_tasks", BindingFlags.NonPublic | BindingFlags.Instance);
-            field.SetValue(_controller, _linakSimulatorTasksMock.Object);
+            field!.SetValue(_controller, _linakSimulatorTasksMock.Object);
+        }
+
+        [Fact]
+        public void GetAllTableIds_ReturnsAllTableIds() 
+        {
+            // Arrange
+            var tableIds = new []{"test-guid-1", "test-guid-2"};
+            _linakSimulatorTasksMock
+                .Setup(x => x.GetAllTableIds())
+                .ReturnsAsync(tableIds);
+
+            // Act
+            var ids = _controller.GetAllTableIds();
+
+            //Assert
+            Assert.Equal(tableIds, ids);
+        }
+
+        [Fact]
+        public void GetFullTableInfo_ReturnsFullTableInfo() 
+        {
+            // Arrange
+            var apiTable = new LinakApiTable
+            {
+                id = "test-guid",
+                name = "test-name",
+                manufacturer = "Linak A/S",
+                position = 100,
+                speed = 50,
+                status = "active"
+            };
+
+
+            _linakSimulatorTasksMock
+                .Setup(x => x.GetTableInfo(It.IsAny<string>()))
+                .ReturnsAsync(apiTable);
+
+            // Act
+            var table = _controller.GetFullTableInfo();
+
+            // Assert
+            Assert.Equal("test-guid", table!.GUID);
+            Assert.Equal("test-name", table.Name);
+            Assert.Equal("Linak A/S", table.Manufacturer);
+            Assert.Equal(100, table.Height);
+            Assert.Equal(50, table.Speed);
         }
 
         [Fact]
