@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="../.env">
+    <Content Include="../.env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
