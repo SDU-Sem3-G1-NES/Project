@@ -6,8 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using DotNetEnv;
-
 using SharedModels;
+using Sprache;
 
 namespace TableController;
 
@@ -43,7 +43,7 @@ public class LinakSimulatorController : ITableController
     public void SetTableHeight(int height)
     {
         _table.Height = height;
-        var tempTable = new LinakApiTable {position = _table.Height};
+        var tempTable = new LinakApiTable {id = _table.GUID, position = _table.Height};
         var response = _tasks.SetTableInfo(tempTable).Result;
 
         // Because return type is void, we must throw exceptions if something goes wrong
@@ -106,11 +106,11 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
 
     internal LinakSimulatorTasks() {
         _options = new LinakSimulatorControllerOptions();
-        _baseUrl = $"{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
+        _baseUrl = $"http://{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
     }
 
     public async Task<LinakApiTable?> GetTableInfo(string guid) {
-        var url = $"{_baseUrl}/table/{guid}";
+        var url = $"{_baseUrl}/desks/{guid}";
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
@@ -125,21 +125,22 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var tempTable = GetTableInfo(table.id);
         if(tempTable == null) throw new Exception("Table not found on API!");
 
-        var url = $"{_baseUrl}/table/{table.id}";
+        var url = $"{_baseUrl}/desks/{table.id}";
         
         // Loop through all non-null properties of ApiTable, serialise, and send to web API
-        foreach (PropertyInfo prop in table.GetType().GetProperties().Where(x => x != null))
+        foreach (PropertyInfo prop in table.GetType().GetProperties().Where(x => x.GetValue(table) != null && x.Name != "id"))
         {
-            var json = JsonSerializer.Serialize(prop.GetValue(table));
+            var data = new Dictionary<string, object> { { prop.Name, prop.GetValue(table)! } };
+            var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync(url, content);
+            var response = await _client.PutAsync(url, content);
             response.EnsureSuccessStatusCode();
-            var responseBody = response.Content.ReadAsStringAsync();
-            var serialisedResponseBody = JsonSerializer.Deserialize(responseBody.Result, prop.PropertyType);
+            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var serialisedResponseBody = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
             // a check here to ensure that the response body is what we expect it to be.
-            if(!prop.GetValue(table)!.Equals(serialisedResponseBody)) throw new Exception($"Failed to set table {prop.Name}!");
+            if(data[prop.Name].ToString() != serialisedResponseBody![prop.Name].ToString()) new Exception($"Failed to set table {prop.Name}!");
         }
 
         return new HttpResponseMessage(HttpStatusCode.OK);
