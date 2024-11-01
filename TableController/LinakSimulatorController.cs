@@ -13,21 +13,54 @@ namespace TableController;
 
 public class LinakSimulatorController : ITableController
 {
-    private LinakTable _table;
+    private LinakTable? _table;
     private ILinakSimulatorTasks _tasks;
 
 
-    public LinakSimulatorController(LinakTable table)
+    public LinakSimulatorController(LinakTable? table = null)
     {
         _table = table;
         _tasks = new LinakSimulatorTasks();
+    }
+
+    public string[] GetAllTableIds()
+    {
+        try 
+        {
+            var response = _tasks.GetAllTableIds().Result;
+            return response;
+        } 
+        catch (Exception e) 
+        {
+            Debug.WriteLine(e.Message);
+            return new string[] {};
+        }
+    }
+
+    public LinakTable? GetFullTableInfo()
+    {
+        try 
+        {
+            var response = _tasks.GetFullTableInfo(_table!.GUID).Result;
+            if (response == null) throw new Exception("Table not found on API!");
+
+            _table.Name = response.name!;
+            _table.Height = response.position;
+            _table.Speed = response.speed;
+            return _table;
+        } 
+        catch (Exception e) 
+        {
+            Debug.WriteLine(e.Message);
+            return null;
+        }
     }
 
     public int GetTableHeight()
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table.GUID).Result;
+            var response = _tasks.GetTableInfo(_table!.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
             _table.Height = response.position;
             return response.position ?? -1;
@@ -42,7 +75,7 @@ public class LinakSimulatorController : ITableController
 
     public void SetTableHeight(int height)
     {
-        _table.Height = height;
+        _table!.Height = height;
         var tempTable = new LinakApiTable {id = _table.GUID, position = _table.Height};
         var response = _tasks.SetTableInfo(tempTable).Result;
 
@@ -54,7 +87,7 @@ public class LinakSimulatorController : ITableController
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table.GUID).Result;
+            var response = _tasks.GetTableInfo(_table!.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
             _table.Speed = response.speed;
             return response.speed ?? -1;
@@ -70,7 +103,7 @@ public class LinakSimulatorController : ITableController
     {
         try 
         {
-            var response = _tasks.GetTableInfo(_table.GUID).Result;
+            var response = _tasks.GetTableInfo(_table!.GUID).Result;
             if (response == null) throw new Exception("Table not found on API!");
             return response.status ?? "";
         } 
@@ -146,11 +179,34 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         return new HttpResponseMessage(HttpStatusCode.OK);
     }
 
+    public async Task<string[]> GetAllTableIds() {
+        var url = $"{_baseUrl}/desks";
+        var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        var jsonString = response.Content.ReadAsStringAsync();
+        var apiTables = JsonSerializer.Deserialize<string[]>(jsonString.Result);
+
+        return apiTables ?? [];
+    }
+
+    public async Task<LinakApiTable> GetFullTableInfo(string guid) {
+        var url = $"{_baseUrl}/desks/{guid}";
+        var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        var jsonString = response.Content.ReadAsStringAsync();
+        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
+
+        return apiTable ?? new LinakApiTable();
+    }
 }
 
 internal interface ILinakSimulatorTasks {
     Task<LinakApiTable?> GetTableInfo(string guid);
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
+    Task<string[]> GetAllTableIds();
+    Task<LinakApiTable> GetFullTableInfo(string guid);
 }
 
 internal class LinakSimulatorControllerOptions {
