@@ -99,12 +99,19 @@ public class LinakSimulatorController : ITableController
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
     public void SetTableHeight(int height)
     {
-        _table!.Height = height;
-        var tempTable = new LinakApiTable {id = _table.GUID, position = _table.Height};
-        var response = _tasks.SetTableInfo(tempTable).Result;
+        try {
+            _table!.Height = height;
+            var tempTable = new LinakApiTable {id = _table.GUID, position = _table.Height};
+            var response = _tasks.SetTableInfo(tempTable).Result;
 
-        // Because return type is void, we must throw exceptions if something goes wrong
-        if (!response.IsSuccessStatusCode) throw new Exception("Failed to set table height!"); 
+            // Because return type is void, we must throw exceptions if something goes wrong
+            if (!response.IsSuccessStatusCode) throw new Exception("Failed to set table height!"); 
+        } 
+        catch (Exception e) 
+        {
+            Debug.WriteLine(e.Message);
+        }
+        
     }
 
     /// <summary>
