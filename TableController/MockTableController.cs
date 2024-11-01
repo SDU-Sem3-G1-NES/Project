@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using SharedModels;
 
-namespace Famicom.TableController
+namespace TableController
 {
     public class MockTableController : ITableController
     {
@@ -15,15 +15,15 @@ namespace Famicom.TableController
             Debug.WriteLine("MockTableController.GetTableHeight");
             return 15;
         }
-        public void SetTableHeight()
+        public void SetTableHeight(int height)
         {
             Debug.WriteLine("MockTableController.SetTableHeight");
 
         }
-        public float GetTableSpeed()
+        public int GetTableSpeed()
         {
             Debug.WriteLine("MockTableController.GetTableSpeed");
-            return 0.0f;
+            return 0;
         }
         public string GetTableStatus()
         {

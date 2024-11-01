@@ -1,6 +1,6 @@
 ﻿using SharedModels;
 
-namespace Famicom.TableController
+namespace TableController
 {
     public interface ITableController
     {

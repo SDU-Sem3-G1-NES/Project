@@ -1,6 +1,7 @@
+using System.Runtime.CompilerServices;
 using SharedModels;
 
-namespace Famicom.TableController
+namespace TableController
 {
     public class LinakTableController : ITableController
     {
@@ -17,11 +18,11 @@ namespace Famicom.TableController
         {
             throw new NotImplementedException();
         }
-        public void SetTableHeight()
+        public void SetTableHeight(int height)
         {
             throw new NotImplementedException();
         }
-        public float GetTableSpeed()
+        public int GetTableSpeed()
         {
             throw new NotImplementedException();
         }
