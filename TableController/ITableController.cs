@@ -4,13 +4,13 @@ namespace Famicom.TableController
 {
     public interface ITableController
     {
-        int GetTableHeight();
-        void SetTableHeight();
-        float GetTableSpeed();
-        string GetTableStatus();
-        void GetTableError();
-        public List<ITableError>? ErrorList { get;}
-        int GetActivationCounter();
-        void GetSitStandCounter();
+        public int GetTableHeight();
+        public void SetTableHeight(int height);
+        public int GetTableSpeed();
+        public string GetTableStatus();
+        public void GetTableError();
+        public List<ITableError>? ErrorList { get; }
+        public int GetActivationCounter();
+        public void GetSitStandCounter();
     }
 }
