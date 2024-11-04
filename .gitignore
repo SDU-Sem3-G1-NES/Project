@@ -407,5 +407,5 @@ FodyWeavers.xsd
 **/.pio/
 **/build/
 
-
-
+# Testing
+TestProject/

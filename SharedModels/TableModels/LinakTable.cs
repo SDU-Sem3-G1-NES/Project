@@ -11,8 +11,8 @@ namespace SharedModels
         public string GUID { get; set; } 
         public string Name { get; set; }
         public string Manufacturer { get; private set; }
-        public int? Height { get; private set; }
-        public float Speed { get; set; }
+        public int? Height { get; set; }
+        public int? Speed { get; set; }
         public List<ITableError>? ErrorList { get; set; }
         public int ActivationCounter { get; set; }
     }
