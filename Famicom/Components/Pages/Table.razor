@@ -4,21 +4,5 @@
 <PageTitle>Table Management</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small">
-    <MudCard>
-        <MudCardHeader>
-            <MudText Typo="Typo.h5">@TableTitle</MudText>
-        </MudCardHeader>
-
-        <MudCardContent>
-            <MudText Typo="Typo.body1">Table Name: @Table.Name</MudText>
-            <MudText Typo="Typo.body2">GUID: @Table.GUID</MudText>
-            <MudText Typo="Typo.caption">Manufacturer: @Table.Manufacturer</MudText>
-            <img src="@TableImageUrl" alt="Table image" />
-        </MudCardContent>
-
-        <MudCardActions>
-            <MudButton Color="Color.Primary" OnClick="MoveTableDown">Move Table Down</MudButton>
-            <MudButton Color="Color.Secondary" OnClick="MoveTableUp">Move Table Up</MudButton>
-        </MudCardActions>
-    </MudCard>
+   <TableComponent Table="@Table"/>
 </MudContainer>
