@@ -51,6 +51,7 @@ public class LinakSimulatorController : ITableController
     /// Method to get full information of table stored in TableControlelr from the API.
     /// </summary>
     /// <returns>LinakTable; Null if not found in API or on other error.</returns>
+    /// <param name="guid">GUID of the table to get information from. Optional.</param>
     public LinakTable? GetFullTableInfo(string? guid = null)
     {
         try 
@@ -74,6 +75,7 @@ public class LinakSimulatorController : ITableController
     /// Method to get the height of the table stored in TableController from the API.
     /// </summary>
     /// <returns>Height as int; -1 if table not found or other error.</returns>
+    /// <param name="guid">GUID of the table to get height from. Optional.</param>
     public int GetTableHeight(string? guid = null)
     {
         try 
@@ -96,6 +98,7 @@ public class LinakSimulatorController : ITableController
     /// Method to set the height of the table stored in TableController with the API.
     /// </summary>
     /// <param name="height">New Height for the table.</param>
+    /// <param name="guid">GUID of the table to set height for. Optional.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
     public void SetTableHeight(int height, string? guid = null)
     {
@@ -118,6 +121,7 @@ public class LinakSimulatorController : ITableController
     /// Method to get the speed of the table stored in TableController from the API.
     /// </summary>
     /// <returns>TableSpeed as int; -1 if table not found or other error.</returns>
+    /// <param name="guid">GUID of the table to get speed from. Optional.</param>
     public int GetTableSpeed(string? guid = null)
     {
         try 
@@ -139,6 +143,7 @@ public class LinakSimulatorController : ITableController
     /// Method to get the status of the table stored in TableController from the API.
     /// </summary>
     /// <returns>Status as string. Empty string if no status or some error.</returns>
+    /// <param name="guid">GUID of the table to get status from. Optional.</param>
     public string GetTableStatus(string? guid = null)
     {
         try 
