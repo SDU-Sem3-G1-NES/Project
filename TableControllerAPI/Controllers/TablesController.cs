@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SharedModels;
 using TableController;
 
-namespace TableControllerAPI.Controllers;
+namespace TableControllerApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
