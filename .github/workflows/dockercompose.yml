@@ -12,12 +12,14 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+            - name: Copy EXAMPLE.env to .env
+              run: cp EXAMPLE.env .env || true
 
             - name: Run docker-compose
               uses: hoverkraft-tech/compose-action@v2.0.2
               with:
-                up-flags: "--build --abort-on-container-exit"
-                down-flags: "--volumes --rmi"
+                up-flags: "--build -d"
+                down-flags: "--volumes"
             
               env:
                     POSTGRES_USER: "docker"
