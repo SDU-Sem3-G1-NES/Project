@@ -10,7 +10,7 @@ namespace TableController
             Table = table;
         }
         public LinakTable Table { get; private set;}
-        public List<String> GetAllTables()
+        string[] ITableController.GetAllTableIds()
         {
             throw new NotImplementedException();
         }

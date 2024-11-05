@@ -44,6 +44,11 @@ namespace TableController
         {
             Debug.WriteLine("MockTableController.GetSitStandCounter");
         }
-        
+
+        public string[] GetAllTableIds()
+        {
+            Debug.WriteLine("MockTableController.GetAllTableIds");
+            return new string[] { "MockTableController.GetAllTableIds" };
+        }
     }    
 }
