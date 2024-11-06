@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TableControllerApi\TableControllerApi.csproj" />
+    <ProjectReference Include="..\TableControllerApi\TableControllerAPI.csproj" />
     <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
     <ProjectReference Include="..\TableController\TableController.csproj" />
   </ItemGroup>
