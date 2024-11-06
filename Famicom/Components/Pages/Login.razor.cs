@@ -1,55 +1,44 @@
 using System.Text;
 using Microsoft.AspNetCore.Components;
-using DataAccess;
 using Famicom.Models;
+using Models.Services;
 
 namespace Famicom.Components.Pages
 {
     public partial class LoginBase : ComponentBase
     {
-        protected string? ErrorMessage { get; set; }
-
-        protected LoginModel loginModel = new LoginModel();
-
-        private readonly string fixedSalt = "$2b$12$VKSaJPoloZwgNhNqMJFxfu"; // Fixed salt for consistent hashing
-
         [Inject]
         private NavigationManager? Navigation { get; set; }
+        private UserCredentialsService userCredentialsService = new UserCredentialsService();
+        protected string? ErrorMessage { get; set; }
+        protected readonly LoginModel loginModel = new LoginModel();
+        private readonly string fixedSalt;
 
-        [Inject]
-        private UserRepository? userRepository { get; set; }
-
-        protected async Task HandleLogin()
+        public LoginBase()
         {
-            try
+            fixedSalt = userCredentialsService.GetFixedSalt(); // Fixed salt for consistent hashing
+        }
+
+        protected async Task OnSubmitButton()
+        {
+
+            // Hash the email and password
+            string emailHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Email, fixedSalt);
+            string hashedEmailHex = ConvertToHex(emailHash);
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Password, fixedSalt);
+            string hashedPasswordHex = ConvertToHex(passwordHash);
+
+            if(userCredentialsService.ValidateCredentials(hashedEmailHex, hashedPasswordHex))
             {
-
-                // Hash the email and password
-                string emailHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Email, fixedSalt);
-                string hashedEmailHex = ConvertToHex(emailHash);
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Password, fixedSalt);
-                string hashedPasswordHex = ConvertToHex(passwordHash);
-
-                // Retrieve password from database.
-                string? storedPasswordHashHex = userRepository?.GetHashedPassword(hashedEmailHex);
-
-                if (storedPasswordHashHex != null && hashedPasswordHex.Equals(storedPasswordHashHex, StringComparison.OrdinalIgnoreCase))
-                {
-                    // Successful login, navigate to home
-                    Navigation?.NavigateTo("/");
-                }
-                else
-                {
-                    ErrorMessage = "Invalid email or password.";
-                }
-
-                await InvokeAsync(StateHasChanged); // Update the UI
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"An error occurred: {ex.Message}";
+                Navigation?.NavigateTo("/");
                 await InvokeAsync(StateHasChanged);
             }
+            else
+            {
+                ErrorMessage = "Invalid email or password.";
+                await InvokeAsync(StateHasChanged);
+            }
+            
         }
 
         // For converting the hashed password to hex for database querying.

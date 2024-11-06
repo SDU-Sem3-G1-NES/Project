@@ -9,7 +9,7 @@
         <MudCardContent>
             <h3 class="text-center" style="margin-bottom: 24px;">Welcome!</h3>
 
-            <form @onsubmit="HandleLogin" style="display: flex; flex-direction: column; gap: 12px;">
+            <form @onsubmit="OnSubmitButton" style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
                     <label for="email" class="form-label">E-Mail</label>
                     <input type="text" id="email" @bind="loginModel.Email" required class="form-input" />

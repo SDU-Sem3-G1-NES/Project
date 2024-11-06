@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import bcrypt
 import os
+import base64
 
 def main():
     load_dotenv()
@@ -8,7 +9,8 @@ def main():
     UPASS = os.getenv("PGADMIN_DEFAULT_PASSWORD")
     
     # Define a fixed salt. (random salt for now)
-    fixed_salt = b"$2b$12$VKSaJPoloZwgNhNqMJFxfu"
+    base64salt = os.getenv("BCRYPT_SALT")
+    fixed_salt = base64.b64decode(base64salt)
     
     # Hash the email and password using the fixed salt
     UMAIL_HASHED = bcrypt.hashpw(UMAIL.encode('utf-8'), fixed_salt)
