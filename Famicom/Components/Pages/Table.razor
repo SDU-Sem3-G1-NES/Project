@@ -10,9 +10,9 @@
         </MudCardHeader>
 
         <MudCardContent>
-            <MudText Typo="Typo.body1">Table Name: @Table.Name</MudText>
-            <MudText Typo="Typo.body2">GUID: @Table.GUID</MudText>
-            <MudText Typo="Typo.caption">Manufacturer: @Table.Manufacturer</MudText>
+            <MudText Typo="Typo.body1">Table Name: @(Table?.Name ?? "Unknown Table")</MudText>
+            <MudText Typo="Typo.body2">GUID: @(Table?.GUID ?? "Unknown GUID")</MudText>
+            <MudText Typo="Typo.caption">Manufacturer: @(Table?.Manufacturer ?? "Unknown Manufacturer")</MudText>
             <img src="@TableImageUrl" alt="Table image" />
         </MudCardContent>
 
