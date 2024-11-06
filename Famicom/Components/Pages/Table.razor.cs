@@ -14,7 +14,7 @@ namespace Famicom.Components.Pages
         public string TableImageUrl { get; set; } = ""; //image URL
 
         private TableModel tableModel {get; set; } = new TableModel();
-        public ITable Table { get; set; }
+        public ITable ?Table { get; set; }
         protected override void OnInitialized()
         {
             tableModel = new TableModel();
