@@ -17,8 +17,7 @@ public class ApiKeyAuthMiddleware
             await context.Response.WriteAsync("Api Key missing");
             return;
         }
-        var apiKey = "BIz095xUg6KLE2cErBB1Ewc4QJDWwe5n";
-        //Env.GetString("TCAPI_KEY"); and Environment.GetEnvironmentVariable("TCAPI_KEY"); dont work...
+        var apiKey = Env.GetString("TCAPI_KEY");
         if (apiKey == null)
         {
             context.Response.StatusCode = 500;
