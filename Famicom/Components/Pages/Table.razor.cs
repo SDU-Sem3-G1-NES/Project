@@ -15,7 +15,6 @@ namespace Famicom.Components.Pages
 
         private TableModel tableModel {get; set; } = new TableModel();
         public ITable Table { get; set; }
-
         protected override void OnInitialized()
         {
             tableModel = new TableModel();

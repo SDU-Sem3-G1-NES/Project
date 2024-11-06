@@ -1,0 +1,39 @@
+﻿@page "/tableadmin"
+@inherits TableAdminBase
+@using SharedModels
+@using MudBlazor
+
+<PageTitle>Table Administration</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Table Administration</MudText>
+            <MudTextField @bind-Value="SearchTerm" Placeholder="Search tables..." Adornment="Adornment.Start" Icon="@Icons.Material.Filled.Search" Immediate="true" />
+            <MudButton Color="Color.Primary" OnClick="SelectAllTables">Select All</MudButton>
+            <MudButton Color="Color.Secondary" OnClick="DeselectAllTables">Deselect All</MudButton>
+        </MudCardHeader>
+
+        <MudCardContent>
+            <MudTable Items="@FilteredTables" MultiSelection="true" @bind-SelectedItems="SelectedTables">
+                <HeaderContent>
+                    <MudTh>Table Name</MudTh>
+                    <MudTh>GUID</MudTh>
+                    <MudTh>Manufacturer</MudTh>
+                    <MudTh>Height</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Table Name">@context.Name</MudTd>
+                    <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Color="Color.Primary" Disabled="@(!SelectedTables.Any())" OnClick="MoveSelectedTablesUp">Move Selected Up</MudButton>
+            <MudButton Color="Color.Secondary" Disabled="@(!SelectedTables.Any())" OnClick="MoveSelectedTablesDown">Move Selected Down</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
