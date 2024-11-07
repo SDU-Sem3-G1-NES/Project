@@ -1,0 +1,37 @@
+name: Docker Compose
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Copy EXAMPLE.env to .env
+              run: cp EXAMPLE.env .env || true
+
+            - name: Run docker-compose
+              uses: hoverkraft-tech/compose-action@v2.0.2
+              with:
+                up-flags: "--build -d"
+                down-flags: "--volumes"
+            
+              env:
+                    POSTGRES_USER: "docker"
+                    POSTGRES_PASSWORD: "docker"
+                    POSTGRES_DB: "DMS"
+                    POSTGRES_PORT: "5433"
+
+                    PGADMIN_DEFAULT_EMAIL: "somebody@example.com"
+                    PGADMIN_DEFAULT_PASSWORD: "github"
+                    PGADMIN_PORT: "5050"
+
+                    LSAPI_PORT: "8000"
+                    LSAPI_URL: "127.0.0.1"
+                    LSAPI_VERSION: "v1"
+                    LSAPI_KEY: "testkey"
