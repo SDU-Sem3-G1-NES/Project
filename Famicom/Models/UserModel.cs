@@ -4,7 +4,7 @@ namespace Famicom.Models
 {
     public class UserModel
     {
-        //private IUser? user;
+        
 
         public UserModel()
         {

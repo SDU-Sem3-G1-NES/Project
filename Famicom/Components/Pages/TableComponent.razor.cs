@@ -10,10 +10,10 @@ namespace Famicom.Components.Pages
         
         public string TableImageUrl { get; set; } = "";
 
-        private TableModel ?tableModel { get; set; }
+        private TableModel? tableModel { get; set; }
 
         [Parameter]
-        public ITable ?Table { get; set; }
+        public ITable? Table { get; set; }
 
 
         public void MoveTableUp()

@@ -9,10 +9,10 @@ namespace Famicom.Components.Pages
 {
     public partial class TableBase : ComponentBase
     {
-        public string ?PanelTitle { get; set; }
-        private TableModel ?tableModel {get; set; }
+        public string? PanelTitle { get; set; }
+        private TableModel? tableModel {get; set; }
         private UserModel userModel { get; set; } = new UserModel();
-        public ITable ?Table { get; set; }
+        public ITable? Table { get; set; }
 
         protected override void OnInitialized()
         {
