@@ -17,5 +17,11 @@
     <ProjectReference Include="../Models/Models.csproj" />
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
   </ItemGroup>
+   
+  <ItemGroup>
+    <Content Include="../.env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
