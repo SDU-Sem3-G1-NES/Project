@@ -3,7 +3,10 @@
 
 <PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h1">@PanelTitle </MudText>
-<MudContainer MaxWidth="MaxWidth.Small">
-   <TableComponent Table="@Table"/>
+<MudText Align="Align.Center" Typo="Typo.h1" Style="margin:15px">@PanelTitle</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll;">
+    @foreach (var table in Table) 
+    {
+        <TableComponent Table="@table"/>    
+    }
 </MudContainer>

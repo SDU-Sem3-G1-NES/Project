@@ -12,7 +12,7 @@ namespace Famicom.Components.Pages
         public string? PanelTitle { get; set; }
         private TableModel? tableModel {get; set; }
         private UserModel userModel { get; set; } = new UserModel();
-        public ITable? Table { get; set; }
+        public required List<ITable> Table { get; set; }
 
         protected override void OnInitialized()
         {
