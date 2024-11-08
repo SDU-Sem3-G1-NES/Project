@@ -4,6 +4,7 @@ namespace Famicom.Models;
 
 public class TableModel {
     private ITable? table;
+    
 
     public TableModel() {
 

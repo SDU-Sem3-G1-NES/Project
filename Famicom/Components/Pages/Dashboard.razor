@@ -36,9 +36,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">@TodayUsageGraphTitle</MudText>
-                    <MudChart ChartType="ChartType.Bar" T="int">
-                        <MudChartSeries Name="@TodayUsageGraphLabel" Data="@TodayUsageData" />
-                    </MudChart>
+                    <MudChart ChartType="ChartType.Bar" ChartSeries="TodayUsageSeries"/>
                 </MudCardContent>
             </MudCard>
         </MudItem>
@@ -48,9 +46,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">@WeeklyUsageGraphTitle</MudText>
-                    <MudChart ChartType="ChartType.Bar" T="int">
-                        <MudChartSeries Name="@WeeklyUsageGraphLabel" Data="@WeeklyUsageData" />
-                    </MudChart>
+                    <MudChart ChartType="ChartType.Bar" ChartSeries="@WeeklyUsageSeries"/> 
                 </MudCardContent>
             </MudCard>
         </MudItem>
