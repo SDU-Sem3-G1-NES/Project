@@ -3,8 +3,28 @@
 
 <PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h1" Style="margin:15px">@PanelTitle</MudText>
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll;">
+<MudText Align="Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-4" />
+
+<MudToolBar Class="gap-6">
+    <MudSelect T="string" Label="Select order" @bind-Value="orderValue">
+        <MudSelectItem Value="@("Descending")"/>
+        <MudSelectItem Value="@("Ascending")" />
+    </MudSelect>
+
+    <MudSelect T="string" Label="By Room" @bind-Value="selectedRoom">
+        @foreach (var room in roomNames)
+        {
+            <MudSelectItem Value="@room"/>
+        }
+ 
+    </MudSelect>
+</MudToolBar>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-10" />
+
+<MudContainer MaxWidth="MaxWidth.False" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll; justify-content: center;">
     @foreach (var table in Table) 
     {
         <TableComponent Table="@table"/>    

@@ -3,7 +3,6 @@ using MudBlazor;
 using System;
 using SharedModels;
 using Famicom.Models;
-using System.Diagnostics;
 
 namespace Famicom.Components.Pages
 {
@@ -13,6 +12,10 @@ namespace Famicom.Components.Pages
         private TableModel? tableModel {get; set; }
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
+        public string? orderValue { get; set; }
+        public string? selectedRoom { get; set; }
+
+        public List<string> roomNames = new List<string>() {"None","Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
 
         protected override void OnInitialized()
         {
@@ -31,5 +34,7 @@ namespace Famicom.Components.Pages
             }
             return "User Panel";
         }
+
+
     }
 }
