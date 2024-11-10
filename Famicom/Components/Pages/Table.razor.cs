@@ -3,6 +3,7 @@ using MudBlazor;
 using System;
 using SharedModels;
 using Famicom.Models;
+using static MudBlazor.Colors;
 
 namespace Famicom.Components.Pages
 {
@@ -12,10 +13,21 @@ namespace Famicom.Components.Pages
         private TableModel? tableModel {get; set; }
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
+
+        #region Properties for Search, Filter and Sorting
         public string? orderValue { get; set; }
         public string? selectedRoom { get; set; }
+        public string? selectedTable { get; set; }
+        public bool coerceValue { get; set; }
+        public bool resetValueOnEmptyText { get; set; }
+        public bool coerceText { get; set; }
 
+        //Mock data for rooms and tables
         public List<string> roomNames = new List<string>() {"None","Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
+
+        public List<string> tableNames = new List<string>() { "None", "Table 1", "Table 2", "Table 3", "Table 4", "Table 5", "Julka", "Hulk", "SpiderMan", "America", "Razor" };
+
+        #endregion
 
         protected override void OnInitialized()
         {
@@ -33,6 +45,16 @@ namespace Famicom.Components.Pages
                 return "Admin Panel";
             }
             return "User Panel";
+        }
+
+        public async Task<IEnumerable<string>> Search1(string value, CancellationToken token)
+        {
+           
+            await Task.Delay(5, token);
+
+            if (string.IsNullOrEmpty(value))
+                return tableNames;
+            return tableNames.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
 

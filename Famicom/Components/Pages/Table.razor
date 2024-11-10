@@ -20,6 +20,11 @@
         }
  
     </MudSelect>
+    <MudItem xs="12" sm="6" md="4">
+        <MudAutocomplete T="string" Label="Search Table" @bind-Value="selectedTable" SearchFunc="@Search1"
+                         ResetValueOnEmptyText="@resetValueOnEmptyText"
+                         CoerceText="@coerceText" CoerceValue="@coerceValue" />
+    </MudItem>
 </MudToolBar>
 
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
