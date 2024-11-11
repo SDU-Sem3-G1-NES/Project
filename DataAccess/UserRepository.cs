@@ -125,8 +125,8 @@ namespace DataAccess
 
         #region Get Methods
 
-
-        public List<Employee> GetEmployee()
+        // Todo: Implement fetching user by email
+        public List<Employee> GetEmployee(string? email = null)
         {
             var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'EMPLOYEE'";
 
