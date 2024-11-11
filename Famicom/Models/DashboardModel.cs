@@ -19,7 +19,7 @@ namespace Famicom.Models
         public string TodayUsageGraphLabel { get; set; } = "Today's Usage";
         public string WeeklyUsageGraphLabel { get; set; } = "Weekly Usage";
 
-        public List<ITable> Table => tableModel.GetTable();
+        public List<ITable> Table => tableModel.GetTableList();
 
         public List<int> WeeklyUsageData { get; set; } = new List<int> { 5, 10, 17, 10, 20 };
         public List<int> TodayUsageData { get; set; } = new List<int> { 30, 15, 25 };
