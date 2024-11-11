@@ -16,152 +16,26 @@ namespace TableController.Tests
     public class LinakSimulatorControllerTest
     {
         private Mock<ILinakSimulatorTasks> _linakSimulatorTasksMock = null!;
-        private LinakTable _table = null!;
         private LinakSimulatorController _controller = null!;
 
-        private void GetFreshObjects()
+        private Task GetFreshObjects()
         {
-            _table = new LinakTable("test-guid", "test-name");
-            _controller = new LinakSimulatorController(_table);
+            _controller = new LinakSimulatorController();
             _linakSimulatorTasksMock = new Mock<ILinakSimulatorTasks>();
 
             var field = typeof(LinakSimulatorController)
                 .GetField("_tasks", BindingFlags.NonPublic | BindingFlags.Instance);
             field!.SetValue(_controller, _linakSimulatorTasksMock.Object);
+            return Task.CompletedTask;
         }
-
-#region Tests with internal Table
-
-        [Fact]
-        public void GetAllTableIds_ReturnsAllTableIds() 
-        {
-            // Arrange
-            GetFreshObjects();
-            var tableIds = new []{"test-guid-1", "test-guid-2"};
-            _linakSimulatorTasksMock
-                .Setup(x => x.GetAllTableIds())
-                .ReturnsAsync(tableIds);
-
-            // Act
-            var ids = _controller.GetAllTableIds();
-
-            //Assert
-            Assert.Equal(tableIds, ids);
-        }
-
-        [Fact]
-        public void GetFullTableInfo_ReturnsFullTableInfo() 
-        {
-            // Arrange
-            GetFreshObjects();
-            var apiTable = new LinakApiTable
-            {
-                id = "test-guid",
-                name = "test-name",
-                manufacturer = "Linak A/S",
-                position = 100,
-                speed = 50,
-                status = "active"
-            };
-
-
-            _linakSimulatorTasksMock
-                .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(apiTable);
-
-            // Act
-            var table = _controller.GetFullTableInfo();
-
-            // Assert
-            Assert.Equal("test-guid", table!.GUID);
-            Assert.Equal("test-name", table.Name);
-            Assert.Equal("Linak A/S", table.Manufacturer);
-            Assert.Equal(100, table.Height);
-            Assert.Equal(50, table.Speed);
-        }
-
-        [Fact]
-        public void GetTableHeight_ReturnsHeight()
-        {
-            // Arrange
-            GetFreshObjects();
-            var apiTable = new LinakApiTable { position = 100 };
-            _linakSimulatorTasksMock
-                .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(apiTable);
-
-            // Act
-            var height = _controller.GetTableHeight();
-
-            // Assert
-            Assert.Equal(100, height);
-        }
-
-        [Fact]
-        public void SetTableHeight_SetsHeight()
-        {
-            // Arrange
-            GetFreshObjects();
-            var responseMessage = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK
-            };
-
-            _linakSimulatorTasksMock
-                .Setup(x => x.SetTableInfo(It.IsAny<LinakApiTable>()))
-                .ReturnsAsync(responseMessage);
-
-            // Act
-            _controller.SetTableHeight(200);
-
-            var fieldInfo = typeof(LinakSimulatorController).GetField("_table", BindingFlags.NonPublic | BindingFlags.Instance);
-            var compareValue = typeof(LinakTable).GetProperty("Height")!.GetValue(fieldInfo!.GetValue(_controller));
-            // Assert
-            Assert.True(compareValue!.Equals(200));
-        }
-
-        [Fact]
-        public void GetTableSpeed_ReturnsSpeed()
-        {
-            // Arrange
-            GetFreshObjects();
-            var apiTable = new LinakApiTable { speed = 50 };
-            _linakSimulatorTasksMock
-                .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(apiTable);
-
-            // Act
-            var speed = _controller.GetTableSpeed();
-
-            // Assert
-            Assert.Equal(50, speed);
-        }
-
-        [Fact]
-        public void GetTableStatus_ReturnsStatus()
-        {
-            // Arrange
-            GetFreshObjects();
-            var apiTable = new LinakApiTable { status = "active" };
-            _linakSimulatorTasksMock
-                .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(apiTable);
-
-            // Act
-            var status = _controller.GetTableStatus();
-
-            // Assert
-            Assert.Equal("active", status);
-        }
-#endregion
 
 #region Tests with injected GUID
 
 [Fact]
-        public void GetFullTableInfo_ReturnsFullTableInfoWithInjectedGUID() 
+        public async void GetFullTableInfo_ReturnsFullTableInfoWithInjectedGUID() 
         {
             // Arrange
-            GetFreshObjects();
+            await GetFreshObjects();
             var apiTable = new LinakApiTable
             {
                 id = "test-guid",
@@ -178,7 +52,7 @@ namespace TableController.Tests
                 .ReturnsAsync(apiTable);
 
             // Act
-            var table = _controller.GetFullTableInfo();
+            var table = await _controller.GetFullTableInfo("test-guid");
 
             // Assert
             Assert.Equal("test-guid", table!.GUID);
@@ -189,56 +63,57 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public void GetTableHeight_ReturnsHeightWithInjectedGUID()
+        public async void GetTableHeight_ReturnsHeightWithInjectedGUID()
         {
             // Arrange
-            GetFreshObjects();
-            var apiTable = new LinakApiTable { position = 100 };
+            await GetFreshObjects();
             var guid = "test-guid";
+            var apiTable = new LinakApiTable {id = guid, name = "test", position = 100 };
+
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(guid))
                 .ReturnsAsync(apiTable);
 
             // Act
-            var height = _controller.GetTableHeight(guid);
+            var height = await _controller.GetTableHeight(guid);
 
             // Assert
             Assert.Equal(100, height);
         }
 
         [Fact]
-        public void SetTableHeight_SetsHeightWithInjectedGUID()
+        public async Task SetTableHeight_SetsHeightWithInjectedGUIDAsync()
         {
             // Arrange
-            GetFreshObjects();
+            await GetFreshObjects();
             var responseMessage = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK
             };
             var guid = "test-guid";
 
-            var apiTable = new LinakApiTable {id = guid, position = 200 };
+            var apiTable = new LinakApiTable {id = guid, name = "test", position = 200 };
 
             _linakSimulatorTasksMock
-                .Setup(x => x.SetTableInfo(apiTable))
+                .Setup(x => x.SetTableInfo(It.IsAny<LinakApiTable>()))
                 .ReturnsAsync(responseMessage);
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(new LinakApiTable {id = guid,  position = 200 });
+                .ReturnsAsync(new LinakApiTable {id = guid, name = "test", position = 200 });
 
             // Act
-            _controller.SetTableHeight(200, guid);
-            int compareHeight = _controller.GetTableHeight(guid);
+            await _controller.SetTableHeight(200, guid);
+            int compareHeight = await _controller.GetTableHeight(guid);
 
             // Assert
             Assert.Equal(200, compareHeight);
         }
 
         [Fact]
-        public void GetTableSpeed_ReturnsSpeedWithInjectedGUID()
+        public async void GetTableSpeed_ReturnsSpeedWithInjectedGUID()
         {
             // Arrange
-            GetFreshObjects();
+            await GetFreshObjects();
             var apiTable = new LinakApiTable { speed = 50 };
             var guid = "test-guid";
             _linakSimulatorTasksMock
@@ -246,17 +121,17 @@ namespace TableController.Tests
                 .ReturnsAsync(apiTable);
 
             // Act
-            var speed = _controller.GetTableSpeed(guid);
+            var speed = await _controller.GetTableSpeed(guid);
 
             // Assert
             Assert.Equal(50, speed);
         }
 
         [Fact]
-        public void GetTableStatus_ReturnsStatusWithInjectedGUID()
+        public async void GetTableStatus_ReturnsStatusWithInjectedGUID()
         {
             // Arrange
-            GetFreshObjects();
+            await GetFreshObjects();
             var apiTable = new LinakApiTable { status = "active" };
             var guid = "test-guid";
             _linakSimulatorTasksMock
@@ -264,7 +139,7 @@ namespace TableController.Tests
                 .ReturnsAsync(apiTable);
 
             // Act
-            var status = _controller.GetTableStatus(guid);
+            var status = await _controller.GetTableStatus(guid);
 
             // Assert
             Assert.Equal("active", status);
@@ -274,27 +149,27 @@ namespace TableController.Tests
 
 #region Not implemented methods
         [Fact]
-        public void GetTableError_ThrowsNotImplementedException()
+        public async void GetTableError_ThrowsNotImplementedException()
         {
             // Act & Assert
-            GetFreshObjects();
-            Assert.Throws<NotImplementedException>(() => _controller.GetTableError());
+            await GetFreshObjects();
+            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetTableError(""));
         }
 
         [Fact]
-        public void GetActivationCounter_ThrowsNotImplementedException()
+        public async void GetActivationCounter_ThrowsNotImplementedException()
         {
             // Act & Assert
-            GetFreshObjects();
-            Assert.Throws<NotImplementedException>(() => _controller.GetActivationCounter());
+            await GetFreshObjects();
+            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetActivationCounter(""));
         }
 
         [Fact]
-        public void GetSitStandCounter_ThrowsNotImplementedException()
+        public async void GetSitStandCounter_ThrowsNotImplementedException()
         {
             // Act & Assert
-            GetFreshObjects();
-            Assert.Throws<NotImplementedException>(() => _controller.GetSitStandCounter());
+            await GetFreshObjects();
+            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetSitStandCounter(""));
         }
 #endregion
     }
