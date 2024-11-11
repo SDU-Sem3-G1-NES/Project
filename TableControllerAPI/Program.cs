@@ -2,20 +2,17 @@ using TableController;
 using TableControllerApi.Authentication;
 using Microsoft.OpenApi.Models;
 using DotNetEnv;
+using Models.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
-
 builder.Services.AddControllers();
-builder.Services.AddSingleton<ITableController, LinakSimulatorController>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Define the security scheme
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
         Description = "API Key needed for access",
@@ -25,7 +22,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "ApiKeyScheme"
     });
 
-    // Add the security requirement
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -54,9 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseMiddleware<ApiKeyAuthMiddleware>();
+app.UseRouting();
 
 app.UseAuthorization();
 

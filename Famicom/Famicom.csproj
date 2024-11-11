@@ -21,6 +21,8 @@
   <ItemGroup>
     <!-- ProjectReference Include="../Models/Models.csproj" / -->
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../Models/Models.csproj" />
+    <ProjectReference Include="../TableControllerAPI/TableControllerAPI.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SharedModels;
 using TableController;
+using Models.Services;
 
 namespace TableControllerApi.Controllers;
 
@@ -10,15 +11,16 @@ namespace TableControllerApi.Controllers;
 [Produces("application/json")]
 public class TableController : ControllerBase
 {
-    private readonly ITableController _tableController;
-    public TableController(ITableController tableController)
+    private readonly TableControllerService _tableControllerService;
+    public TableController(TableControllerService tableControllerService)
     {
-        _tableController = tableController;
+        _tableControllerService = tableControllerService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<string>>> GetTables()
     {
+        var _tableController = _tableControllerService.GetTableController();
         var tableIds = await _tableController.GetAllTableIds();
         if (tableIds.Length == 0) return NotFound(await Task.FromResult("No tables found."));
         return Ok(await Task.FromResult(tableIds));

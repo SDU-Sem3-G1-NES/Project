@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../Models/Models.csproj" />
     <ProjectReference Include="../TableController/TableController.csproj" />
   </ItemGroup>
 
