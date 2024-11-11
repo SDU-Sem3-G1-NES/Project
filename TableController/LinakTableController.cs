@@ -7,40 +7,49 @@ namespace TableController
     {
         public LinakTableController(LinakTable table)
         {
-            Table = table;
         }
-        public LinakTable Table { get; private set;}
-        string[] ITableController.GetAllTableIds()
-        {
-            throw new NotImplementedException();
-        }
-        public int GetTableHeight(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public void SetTableHeight(int height, string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public int GetTableSpeed(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public string GetTableStatus(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public void GetTableError(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public List<ITableError>? ErrorList { get; private set; }
 
-        public int GetActivationCounter(string? guid = null)
+        public Task<int> GetActivationCounter(string guid)
         {
             throw new NotImplementedException();
         }
-        public void GetSitStandCounter(string? guid = null)
+
+        public Task<string[]> GetAllTableIds()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LinakTable> GetFullTableInfo(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetSitStandCounter(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetTableError(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTableHeight(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTableSpeed(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetTableStatus(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTableHeight(int height, string guid)
         {
             throw new NotImplementedException();
         }
