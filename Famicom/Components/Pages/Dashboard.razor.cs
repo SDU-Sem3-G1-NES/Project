@@ -4,20 +4,27 @@ using System;
 using SharedModels;
 using Famicom.Models;
 using System.Diagnostics;
+using Models.Services;
 
 namespace Famicom.Components.Pages
 {
     public partial class DashboardBase : ComponentBase
     {
-        private DashboardModel DashboardModel { get; set; } = new DashboardModel();
+        private DashboardModel DashboardModel { get; set; } = null!;
 
+        protected override void OnInitialized()
+        {
+            DashboardModel = new DashboardModel();
+            base.OnInitialized();
+            StoreDashboardData();
+        }
         public string NotificationsTitle => DashboardModel.NotificationsTitle;
         public string TodayUsageGraphTitle => DashboardModel.TodayUsageGraphTitle;
         public string WeeklyUsageGraphTitle => DashboardModel.WeeklyUsageGraphTitle;
         public string TodayUsageGraphLabel => DashboardModel.TodayUsageGraphLabel;
         public string WeeklyUsageGraphLabel => DashboardModel.WeeklyUsageGraphLabel;
 
-        public ITable Table => DashboardModel.Table;
+        public ITable? Table => DashboardModel.Table;
         public List<int> WeeklyUsageData => DashboardModel.WeeklyUsageData;
         public List<int> TodayUsageData => DashboardModel.TodayUsageData;
         public List<DashboardModel.Notification> Notifications => DashboardModel.Notifications;
@@ -64,12 +71,6 @@ namespace Famicom.Components.Pages
         public void MoveTableDown()
         {
             Debug.WriteLine("Table moved Down");
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            StoreDashboardData();
         }
     }
 }
