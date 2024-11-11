@@ -1,5 +1,4 @@
 ﻿using SharedModels;
-
 namespace DataAccess
 {
     public class UserRepository
@@ -211,8 +210,29 @@ namespace DataAccess
 
         }
 
+        public string? GetHashedPassword(string hashedEmailHex)
+        {
+            string sql = "SELECT upass_hash FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                cmd.Parameters.Add("@hashedEmailHex", NpgsqlTypes.NpgsqlDbType.Varchar).Value = hashedEmailHex;
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        byte[] passwordHashBytes = (byte[])reader["upass_hash"];
+                        
+                        return BitConverter.ToString(passwordHashBytes).Replace("-", "").ToLower();
+                    }
+                }
+            }
+            return null;
+        }
 
         #endregion
 
     }
+
 }
