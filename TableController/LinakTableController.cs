@@ -5,7 +5,7 @@ namespace TableController
 {
     public class LinakTableController : ITableController
     {
-        public LinakTableController(LinakTable table)
+        public LinakTableController()
         {
         }
 

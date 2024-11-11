@@ -5,11 +5,9 @@ namespace TableController
 {
     public class MockTableController : ITableController
     {
-        public MockTableController(ITable table)
+        public MockTableController()
         {
-            Table = table;
         }
-        public ITable Table { get; private set; }
         public Task<int> GetTableHeight(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableHeight");
