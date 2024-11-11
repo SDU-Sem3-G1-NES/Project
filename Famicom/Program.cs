@@ -2,6 +2,7 @@ using MudBlazor.Services;
 using Famicom.Components;
 using TableControllerApi;
 using Models.Services;
+using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 

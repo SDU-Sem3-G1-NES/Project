@@ -15,4 +15,10 @@
     <ProjectReference Include="../Scheduling/Scheduling.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../.env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
