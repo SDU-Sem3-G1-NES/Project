@@ -19,7 +19,7 @@ public class TableController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<string>>> GetTables()
     {
-        var tableIds = _tableController.GetAllTableIds();
+        var tableIds = await _tableController.GetAllTableIds();
         if (tableIds.Length == 0) return NotFound(await Task.FromResult("No tables found."));
         return Ok(await Task.FromResult(tableIds));
     }
