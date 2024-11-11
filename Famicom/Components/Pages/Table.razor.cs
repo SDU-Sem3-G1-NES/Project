@@ -6,6 +6,7 @@ using Famicom.Models;
 using static MudBlazor.Colors;
 using Models.Services;
 using System.Diagnostics;
+using DotNetEnv;
 
 namespace Famicom.Components.Pages
 {
@@ -15,6 +16,9 @@ namespace Famicom.Components.Pages
         private TableModel? tableModel { get; set; }
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
+        public bool IsTableOverlayActivated { get; set; } = false;
+        public bool IsSelectionOverlayActivated { get; set; } = false;
+        public bool IsUserOverlayActivated { get; set; } = false;
 
         #region Properties for Search, Filter and Sorting
         public string? orderValue { get; set; }
@@ -60,6 +64,43 @@ namespace Famicom.Components.Pages
                 return tableNames;
             return tableNames.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
+
+        
+        public void SelectionOverlay(bool value)
+        {
+            
+            IsSelectionOverlayActivated = value;
+           
+
+        }
+
+        public void AddTableOverlay(bool value)
+        {
+            IsSelectionOverlayActivated = false;
+            IsTableOverlayActivated = value;
+
+        }
+
+        public void AddUserOverlay(bool value)
+        {
+            IsSelectionOverlayActivated = false;
+            IsUserOverlayActivated = value;
+
+        }
+
+        #region Methods for closing overlay from component
+        public async Task HandleUserAdded()
+        {
+            IsUserOverlayActivated = false;
+            await InvokeAsync(StateHasChanged);
+        }
+
+        public async Task HandleTableAdded()
+        {
+            IsTableOverlayActivated = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        #endregion
 
 
     }

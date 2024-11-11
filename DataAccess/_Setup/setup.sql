@@ -1,5 +1,4 @@
 BEGIN;
-
 -- User Related Tables
 
 CREATE TABLE USERS (

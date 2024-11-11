@@ -19,21 +19,23 @@ namespace DataAccess.Tests
         public void InsertTable_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
+            string guid = "sds92922";
             string name = "Table1";
             string manufacturer = "Manufacturer1";
             int api = 1;
 
             // Act
-            _tableRepository.InsertTable(name, manufacturer, api);
+            _tableRepository.InsertTable(guid,name, manufacturer, api);
 
             // Assert
-            var param1 = ("@name", (object)name);
-            var param2 = ("@manufacturer", (object)manufacturer);
-            var param3 = ("@api", (object)api);
+            var param1 = ("@guid", (object)guid);
+            var param2 = ("@name", (object)name);
+            var param3 = ("@manufacturer", (object)manufacturer);
+            var param4 = ("@api", (object)api);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO tables (t_name, t_manufacturer, t_api) VALUES (@name, @manufacturer, @api)",
-                param1, param2, param3
+                "INSERT INTO tables (t_guid ,t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)",
+                param1, param2, param3, param4
             ), Times.Once);
         }
 

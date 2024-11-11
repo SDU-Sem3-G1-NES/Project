@@ -25,9 +25,27 @@
                          ResetValueOnEmptyText="@resetValueOnEmptyText"
                          CoerceText="@coerceText" CoerceValue="@coerceValue" />
     </MudItem>
+
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="() => SelectionOverlay(true)" />
 </MudToolBar>
 
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
+
+<MudOverlay Visible="IsSelectionOverlayActivated" DarkBackground="true">
+    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" Vertical="true">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => AddTableOverlay(true)">Add New Table</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="() => AddUserOverlay(true)">Add New User</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="() => SelectionOverlay(false)">Cancel</MudButton>
+    </MudButtonGroup>
+</MudOverlay>
+
+<MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
+    <AddTableComponent OnTableAdded="HandleTableAdded" />
+</MudOverlay>
+
+<MudOverlay Visible="IsUserOverlayActivated" DarkBackground="true">
+    <AddUserComponent OnUserAdded="HandleUserAdded" />
+</MudOverlay>
 
 <MudContainer MaxWidth="MaxWidth.False" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll; justify-content: center;">
     @foreach (var table in Table) 
