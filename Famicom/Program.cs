@@ -27,7 +27,7 @@ var apiHost = Host.CreateDefaultBuilder()
         Env.Load(envPath);
         string tcapiPort = Env.GetString("TCAPI_PORT");
         
-        webBuilder.UseUrls("http://localhost:" + tcapiPort);
+        webBuilder.UseUrls("https://localhost:" + tcapiPort);
     }).ConfigureServices(services =>
     {
         services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
