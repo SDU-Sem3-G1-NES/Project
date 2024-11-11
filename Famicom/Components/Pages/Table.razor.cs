@@ -35,7 +35,9 @@ namespace Famicom.Components.Pages
         {
 
             tableModel = new TableModel();
-            Table = tableModel.GetTable(1);
+            //Table = tableModel.GetTable(1);
+            //For testing only
+            Table = tableModel.GetTableList();
             PanelTitle = GetUserType();
         }
 
