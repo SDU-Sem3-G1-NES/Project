@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableControllerAPI", "Table
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{9906974C-0C51-4E24-9681-542557EC33B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableController.Tests", "TableController.Tests\TableController.Tests.csproj", "{B66B2EA2-70C8-481E-AB51-246B81675DE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableController.Tests", "TableController.Tests\TableController.Tests.csproj", "{B66B2EA2-70C8-481E-AB51-246B81675DE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

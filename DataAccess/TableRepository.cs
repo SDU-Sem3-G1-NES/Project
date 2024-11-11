@@ -129,6 +129,36 @@ namespace DataAccess
             return roomTables;
         }
 
+        public List<LinakTable> GetAllTables()
+        {
+            var sql = "SELECT t_guid, t_name FROM tables";
+            List<LinakTable> tables = new List<LinakTable>();
+
+            try
+            {
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LinakTable table = new LinakTable(
+                                reader.GetString(0),
+                                reader.GetString(1)
+                                );
+                            tables.Add(table);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
+            return tables;
+        }
+
         #endregion
 
     }

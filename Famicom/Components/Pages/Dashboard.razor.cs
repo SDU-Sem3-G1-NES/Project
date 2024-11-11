@@ -22,6 +22,23 @@ namespace Famicom.Components.Pages
         public List<int> TodayUsageData => DashboardModel.TodayUsageData;
         public List<DashboardModel.Notification> Notifications => DashboardModel.Notifications;
 
+
+        //Series for Weekly Usage Graph used to bind chart data
+        //It's a quick fix
+        //But data should be binded in this way
+        public List<ChartSeries> WeeklyUsageSeries = new()
+        {
+            new ChartSeries() { Name = "Weekly Data", Data = new double[]{40,20,50,50 } }
+        };
+
+        //Series for Weekly Usage Graph used to bind chart data
+        //It's a quick fix
+        //But data should be binded in this way
+        public List<ChartSeries> TodayUsageSeries = new()
+        {
+            new ChartSeries() { Name = " Todays Data", Data = new double[]{420,250,520,504 } }
+        };
+
         public void StoreDashboardData()
         {
             DashboardModel.StoreDashboardData();
