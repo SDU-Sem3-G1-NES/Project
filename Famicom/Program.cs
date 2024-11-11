@@ -3,6 +3,8 @@ using Famicom.Components;
 using TableControllerApi;
 using Models.Services;
 using DataAccess;
+using DotNetEnv;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,12 @@ var apiHost = Host.CreateDefaultBuilder()
     .ConfigureWebHostDefaults(webBuilder =>
     {
         webBuilder.UseStartup<TableControllerApi.Startup>();
-        webBuilder.UseUrls("http://localhost:4488");
+
+        string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
+        Env.Load(envPath);
+        string tcapiPort = Env.GetString("TCAPI_PORT");
+        
+        webBuilder.UseUrls("http://localhost:" + tcapiPort);
     }).ConfigureServices(services =>
     {
         services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
