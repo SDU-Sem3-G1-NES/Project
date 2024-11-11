@@ -19,7 +19,7 @@ namespace rotary_encoder {
         {
             if(digitalRead(ROT_C) == 0) 
             {
-                Serial1.println("Button Pressed");
+                Serial.println("Button Pressed");
                 last_button_push_time = millis();
                 ROT_C_LAST_STATE = 0;
                 return;
@@ -59,9 +59,9 @@ namespace rotary_encoder {
             else if(ROT_A_STATE && ROT_B_STATE) {
                 rotary_encoder_position = 3; // End of rotation measurement
                 if(rotary_encoder_states[0] == 0 && rotary_encoder_states[1] == 1) {
-                Serial1.println("Right Turn");
+                Serial.println("Right Turn");
                 } else if(rotary_encoder_states[0] == 1 && rotary_encoder_states[1] == 0) {
-                Serial1.println("Left Turn");
+                Serial.println("Left Turn");
                 }
 
                 //delay(100); // Some mild debouncing
