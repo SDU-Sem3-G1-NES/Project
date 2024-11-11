@@ -17,18 +17,18 @@ namespace Famicom.Components.Pages
         public EventCallback OnTableAdded { get; set; }
 
 
-        public async Task AddTable()
+        private async Task AddTable()
         {
-            if(TableGuid != null && TableName != null && TableManufacturer != null)
-            {
-                tableService.AddTable(TableGuid, TableName, TableManufacturer, null);
-            }
-            else
+            if (string.IsNullOrEmpty(TableGuid) || string.IsNullOrEmpty(TableName) || string.IsNullOrEmpty(TableManufacturer))
             {
                 ErrorMessage = "Please fill in all fields.";
+                return;
             }
 
-            await OnTableAdded.InvokeAsync(null);
+            tableService.AddTable(TableGuid, TableName, TableManufacturer, null);
+            ErrorMessage = null; 
+
+            await OnTableAdded.InvokeAsync(null); 
         }
     }
 }
