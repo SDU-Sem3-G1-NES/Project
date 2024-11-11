@@ -59,7 +59,7 @@ public class LinakSimulatorController : ITableController
                 || response.name == null
                 || response.position == null) 
             {
-                throw new Exception("Table not found on API!");
+                return Task.FromException<LinakTable>(new Exception("Table not found on API!"));
             } 
 
             var returnTable = new LinakTable(
@@ -93,7 +93,7 @@ public class LinakSimulatorController : ITableController
                 || response.name == null
                 || response.position == null) 
             {
-                throw new Exception("Table not found on API!");
+                return Task.FromException<int>(new Exception("Table not found on API!"));
             } 
 
             return Task.FromResult(response.position.Value);
