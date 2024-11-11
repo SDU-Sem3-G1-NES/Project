@@ -1,11 +1,96 @@
 ﻿@page "/login"
+@inherits LoginBase
+@inject NavigationManager Navigation
+
 <PageTitle>Login</PageTitle>
 
-<MudPaper Width="40%" Style="margin: auto">
-    <MudForm>
-        <MudTextField T="string" Label="Login" Required="true" RequiredError="Login is required!" /> <br />
-        <MudTextField T="string" Label="Password" InputType="InputType.Password" Required="true" RequiredError="Password is required!" /> <br />
+<MudContainer Class="d-flex justify-center" Style="height: 50%;">
+    <MudCard Style="width: 100%; max-width: 400px; margin-top: 40px;">
+        <MudCardContent>
+            <h3 class="text-center" style="margin-bottom: 24px;">Welcome!</h3>
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary">Login</MudButton>
-    </MudForm>
-</MudPaper>
+            <form @onsubmit="OnSubmitButton" style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                    <label for="email" class="form-label">E-Mail</label>
+                    <input type="text" id="email" @bind="loginModel.Email" required class="form-input" />
+                </div>
+
+                <div>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" @bind="loginModel.Password" required class="form-input" />
+                </div>
+
+                <button type="submit" class="form-button">Login</button>
+            </form>
+
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="error-message">@ErrorMessage</p>
+            }
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+<style>
+    /* Center-aligning text */
+    .text-center {
+        text-align: center;
+    }
+
+    /* Centered error message styling */
+    .error-message {
+        color: red;
+        text-align: center;
+        font-size: 0.875rem;
+        margin-top: 12px;
+    }
+
+    /* Form styling */
+    form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* Label styling to match MudBlazor */
+    .form-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    /* Input styling */
+    .form-input {
+        width: 100%;
+        padding: 10px; 
+        font-size: 0.9rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+    .form-input:focus {
+        border-color: #3f51b5;
+        box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.25);
+    }
+
+    /* Button styling to match MudBlazor's primary button */
+    .form-button {
+        width: 100%;
+        padding: 10px; 
+        font-size: 0.9rem; 
+        font-weight: 500;
+        color: #fff;
+        background-color: #3f51b5;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .form-button:hover {
+        background-color: #303f9f;
+    }
+</style>

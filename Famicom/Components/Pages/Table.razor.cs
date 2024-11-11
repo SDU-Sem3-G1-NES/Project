@@ -4,13 +4,15 @@ using System;
 using SharedModels;
 using Famicom.Models;
 using static MudBlazor.Colors;
+using Models.Services;
+using System.Diagnostics;
 
 namespace Famicom.Components.Pages
 {
     public partial class TableBase : ComponentBase
     {
         public string? PanelTitle { get; set; }
-        private TableModel? tableModel {get; set; }
+        private TableModel? tableModel { get; set; }
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
 
@@ -31,10 +33,10 @@ namespace Famicom.Components.Pages
 
         protected override void OnInitialized()
         {
-            tableModel = new TableModel();
-            Table = tableModel.GetTable();
-            PanelTitle = GetUserType();
 
+            tableModel = new TableModel();
+            Table = tableModel.GetTable(1);
+            PanelTitle = GetUserType();
         }
 
         private string GetUserType()

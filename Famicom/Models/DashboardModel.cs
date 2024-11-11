@@ -1,12 +1,17 @@
 using System.Collections.Generic;
-using Famicom.Models;
 using SharedModels;
+using Models.Services;
 
 namespace Famicom.Models
 {
     public class DashboardModel
     {
-        private readonly TableModel tableModel = new TableModel();
+        private readonly TableModel tableModel;
+
+        public DashboardModel()
+        {
+            tableModel = new TableModel();
+        }
 
         public string NotificationsTitle { get; set; } = "Notifications";
         public string TodayUsageGraphTitle { get; set; } = "Today's Usage Graph";
@@ -28,7 +33,7 @@ namespace Famicom.Models
 
         public void StoreDashboardData()
         {
-            //Dashboard data storage logic
+            // Dashboard data storage logic
         }
 
         public class Notification
