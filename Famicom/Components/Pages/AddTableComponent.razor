@@ -1,0 +1,17 @@
+﻿@inherits AddTableComponentBase
+
+<MudCard class="flex" Style="padding 20px">
+    <MudCardHeader>
+        <MudText Typo="Typo.body1" Style="margin:auto "><b>Add Table</b></MudText>
+    </MudCardHeader>
+
+    <MudCardContent Style="margin:auto" Class="gap-8">
+        <MudTextField Label="GUID" @bind-Value="Table.GUID" />
+        <MudTextField Label="Name" @bind-Value="Table.Name" />
+        <MudTextField Label="Manufacturer" @bind-Value="Table.Manufacturer" />
+    </MudCardContent>
+
+    <MudCardActions Class="gap-5" Style="margin:auto ">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTable">Add</MudButton>
+    </MudCardActions>
+</MudCard>

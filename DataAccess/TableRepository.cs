@@ -20,10 +20,10 @@ namespace DataAccess
 
         #region Insert Methods
 
-        public void InsertTable(string name, string manufacturer, int api)
+        public void InsertTable(string guid,string name, string manufacturer)
         {
-            var sql = "INSERT INTO tables (t_name, t_manufacturer, t_api) VALUES (@name, @manufacturer, @api)";
-            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
+            var sql = "INSERT INTO tables (t_guid, t_name, t_manufacturer) VALUES (@guid, @name, @manufacturer)";
+            dbAccess.ExecuteNonQuery(sql, ("@guid", guid), ("@name", name), ("@manufacturer", manufacturer));
         }
 
         public void InsertTableUser(int userId, string tableId)
@@ -48,11 +48,6 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@tableManufacturer", tableManufacturer), ("@tableId", tableId));
         }
 
-        public void EditTableAPI(string tableId, int tableApi)
-        {
-            var sql = "UPDATE tables SET t_api = @tableApi WHERE t_guid = @tableId";
-            dbAccess.ExecuteNonQuery(sql, ("@tableApi", tableApi), ("@tableId", tableId));
-        }
 
         #endregion
 
