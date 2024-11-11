@@ -1,52 +1,27 @@
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using TableController;
-using TableControllerApi.Controllers;
-using Xunit;
 using SharedModels;
+using TableControllerApi.Controllers;
+using Models.Services;
+using Xunit;
+using TableController;
 
 namespace TableControllerApi.Tests
 {
     public class TableControllerTest
     {
+        private readonly Mock<TableControllerService> _mockTableControllerService;
         private readonly Mock<ITableController> _mockTableController;
         private readonly TableControllerApi.Controllers.TableController _controller;
 
         public TableControllerTest()
         {
+            _mockTableControllerService = new Mock<TableControllerService>();
             _mockTableController = new Mock<ITableController>();
-            _controller = new TableControllerApi.Controllers.TableController(_mockTableController.Object);
-        }
-
-        [Fact]
-        public async Task GetTables_ReturnsOkResult_WithListOfTableIds()
-        {
-            // Arrange
-            var tableIds = new[] { "table1", "table2" };
-            _mockTableController.Setup(tc => tc.GetAllTableIds()).ReturnsAsync(tableIds);
-
-            // Act
-            var result = await _controller.GetTables();
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<string[]>(okResult.Value);
-            Assert.Equal(tableIds, returnValue);
-        }
-
-        [Fact]
-        public async Task GetTables_ReturnsNotFound_WhenNoTablesFound()
-        {
-            // Arrange
-            _mockTableController.Setup(tc => tc.GetAllTableIds()).ThrowsAsync(new Exception());
-
-            // Act
-            var result = await _controller.GetTables();
-
-            // Assert
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object);
         }
 
         [Fact]
@@ -55,6 +30,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var table = new LinakTable(guid, "name");
+            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ReturnsAsync(table);
 
             // Act
@@ -62,7 +38,7 @@ namespace TableControllerApi.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<LinakTable>(okResult.Value);
+            var returnValue = Assert.IsAssignableFrom<ITable>(okResult.Value);
             Assert.Equal(table, returnValue);
         }
 
@@ -71,7 +47,8 @@ namespace TableControllerApi.Tests
         {
             // Arrange
             var guid = "table1";
-            _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ThrowsAsync(new KeyNotFoundException());
+            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ThrowsAsync(new Exception("Table not found."));
 
             // Act
             var result = await _controller.GetFullTableInfo(guid);
@@ -86,6 +63,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
+            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).Returns(Task.CompletedTask);
 
             // Act
@@ -102,6 +80,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
+            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).ThrowsAsync(new Exception("Failed to set table height!"));
 
             // Act
@@ -119,7 +98,8 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
-            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).ThrowsAsync(new KeyNotFoundException());
+            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).ThrowsAsync(new Exception("Table not found."));
 
             // Act
             var result = await _controller.SetTableHeight(guid, height);

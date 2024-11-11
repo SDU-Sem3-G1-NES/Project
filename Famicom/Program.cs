@@ -6,7 +6,6 @@ using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var serviceCollection = new ServiceCollection();
 builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services

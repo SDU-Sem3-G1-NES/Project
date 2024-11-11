@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TableController;
 using Microsoft.OpenApi.Models;
+using TableControllerApi.Authentication;
+
 
 namespace TableControllerApi;
 public class Startup
@@ -63,6 +65,8 @@ public class Startup
         }
 
         app.UseRouting();
+
+        app.UseMiddleware<ApiKeyAuthMiddleware>();
 
         app.UseAuthorization();
 

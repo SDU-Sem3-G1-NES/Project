@@ -7,14 +7,6 @@ ApiKey: your-api-key-here
 
 ## Endpoints
 
-# Get All Tables
-
-**GET** `/api/table`
-
-- `200 OK`: Returns an array of table IDs.
-- `404 Not Found`: No tables found.
-
-
 # Get Full Table Info
 
 **GET** `/api/table/{guid}`
