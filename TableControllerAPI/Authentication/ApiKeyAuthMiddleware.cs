@@ -5,9 +5,13 @@ namespace TableControllerApi.Authentication;
 public class ApiKeyAuthMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly string apiKey;
     public ApiKeyAuthMiddleware(RequestDelegate next)
     {
         _next = next;
+        string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
+        Env.Load(envPath);
+        apiKey = Env.GetString("TCAPI_KEY");
     }
     public async Task InvokeAsync(HttpContext context)
     {
@@ -17,7 +21,6 @@ public class ApiKeyAuthMiddleware
             await context.Response.WriteAsync("Api Key missing");
             return;
         }
-        var apiKey = Env.GetString("TCAPI_KEY");
         if (apiKey == null)
         {
             context.Response.StatusCode = 500;

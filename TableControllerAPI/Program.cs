@@ -5,7 +5,6 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.TraversePath().Load();
 
 // Add services to the container.
 

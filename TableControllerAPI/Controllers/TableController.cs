@@ -8,10 +8,10 @@ namespace TableControllerApi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class TablesController : ControllerBase
+public class TableController : ControllerBase
 {
     private readonly ITableController _tableController;
-    public TablesController(ITableController tableController)
+    public TableController(ITableController tableController)
     {
         _tableController = tableController;
     }
@@ -23,7 +23,7 @@ public class TablesController : ControllerBase
         if (tableIds.Length == 0) return NotFound(await Task.FromResult("No tables found."));
         return Ok(await Task.FromResult(tableIds));
     }
-    [HttpGet("{guid}/height")]
+    /*[HttpGet("{guid}/height")]
     public async Task<ActionResult<int>> GetTableHeight(string guid)
     {
         var height = _tableController.GetTableHeight(guid);
@@ -59,5 +59,5 @@ public class TablesController : ControllerBase
     {
         _tableController.GetTableError(guid);
         return Ok(await Task.FromResult(_tableController.ErrorList));
-    }
+    }*/
 }

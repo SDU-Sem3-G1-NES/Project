@@ -12,12 +12,12 @@ namespace TableControllerApi.Tests
     public class TablesControllerTests
     {
         private readonly Mock<ITableController> _mockTableController;
-        private readonly TablesController _controller;
+        private readonly Controllers.TableController _controller;
 
         public TablesControllerTests()
         {
             _mockTableController = new Mock<ITableController>();
-            _controller = new TablesController(_mockTableController.Object);
+            _controller = new Controllers.TableController(_mockTableController.Object);
         }
 
         [Fact]
