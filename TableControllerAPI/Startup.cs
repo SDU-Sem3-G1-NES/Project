@@ -21,7 +21,6 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddSingleton<ITableController, LinakSimulatorController>();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>

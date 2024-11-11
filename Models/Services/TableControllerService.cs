@@ -9,7 +9,11 @@ using TableController;
 
 namespace Models.Services
 {
-    public class TableControllerService
+    public interface ITableControllerService
+    {
+        Task<ITableController> GetTableController(string guid);
+    }
+    public class TableControllerService : ITableControllerService
     {
         private LinakTableController linakTableController;
         private LinakSimulatorController linakSimulatorController;

@@ -23,7 +23,7 @@ var apiHost = Host.CreateDefaultBuilder()
         webBuilder.UseUrls("http://localhost:4488");
     }).ConfigureServices(services =>
     {
-        services.AddSingleton<TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
+        services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
     }).Build();
 
 // Configure the HTTP request pipeline.

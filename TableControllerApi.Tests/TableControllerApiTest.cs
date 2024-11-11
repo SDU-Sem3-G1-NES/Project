@@ -13,13 +13,13 @@ namespace TableControllerApi.Tests
 {
     public class TableControllerTest
     {
-        private readonly Mock<TableControllerService> _mockTableControllerService;
+        private readonly Mock<ITableControllerService> _mockTableControllerService;
         private readonly Mock<ITableController> _mockTableController;
         private readonly TableControllerApi.Controllers.TableController _controller;
 
         public TableControllerTest()
         {
-            _mockTableControllerService = new Mock<TableControllerService>();
+            _mockTableControllerService = new Mock<ITableControllerService>();
             _mockTableController = new Mock<ITableController>();
             _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object);
         }

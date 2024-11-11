@@ -11,8 +11,8 @@ namespace TableControllerApi.Controllers;
 [Produces("application/json")]
 public class TableController : ControllerBase
 {
-    private readonly TableControllerService _tableControllerService;
-    public TableController(TableControllerService tableControllerService)
+    private readonly ITableControllerService _tableControllerService;
+    public TableController(ITableControllerService tableControllerService)
     {
         _tableControllerService = tableControllerService;
     }
