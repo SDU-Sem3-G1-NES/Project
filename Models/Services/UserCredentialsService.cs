@@ -8,6 +8,7 @@ public class UserCredentialsService
     private string fixedSalt { get; set; }
 
     private readonly UserRepository userRepository = new UserRepository();
+    
     public UserCredentialsService()
     {
         string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
@@ -27,6 +28,11 @@ public class UserCredentialsService
             return true;
         }
         return false;
+    }
+
+    public void StoreSessionId(string sessionID, string email)
+    {
+        userRepository.StoreSession(sessionID, email);
     }
 
     public string GetFixedSalt()

@@ -1,15 +1,18 @@
 using MudBlazor.Services;
 using Famicom.Components;
-using DataAccess;
+using Blazored.SessionStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
+builder.Services.AddBlazoredSessionStorage(); 
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 
@@ -24,6 +27,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()

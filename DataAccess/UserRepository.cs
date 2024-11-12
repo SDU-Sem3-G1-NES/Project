@@ -39,6 +39,11 @@ namespace DataAccess
             var sql = "INSERT INTO user_habits (u_id, h_event) VALUES (@userId, @eventJson)";
             dbAccess.ExecuteNonQuery(sql, ("@userId", userId), ("@eventJson", eventJson));
         }
+        public void StoreSession(string sessionID, string mail)
+        {
+            var sql = "INSERT INTO user_sessions (s_id, s_mail) VALUES (@sessionID, @mail)";
+            dbAccess.ExecuteNonQuery(sql, ("@sessionID", sessionID), ("@mail", mail));
+        }
         #endregion
 
         #region Edit Methods
@@ -230,7 +235,7 @@ namespace DataAccess
             }
             return null;
         }
-
+        
         #endregion
 
     }
