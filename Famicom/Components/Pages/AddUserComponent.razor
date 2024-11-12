@@ -1,0 +1,24 @@
+﻿@inherits ComponentBase
+
+<MudCard>
+    <MudCardContent>
+        <MudTextField @bind-Value="UserName" Label="User Name" Variant="Variant.Filled" />
+        <MudTextField @bind-Value="UserEmail" Label="User Email" Variant="Variant.Filled" />
+        <MudTextField @bind-Value="UserPassword" Label="User Password" Variant="Variant.Filled" />
+        <MudSelect T="string" Label="User Type" @bind-Value="UserType">
+            <MudSelectItem Value="@("Admin")" />
+            <MudSelectItem Value="@("Worker")" />
+            <MudSelectItem Value="@("Cleaner")" />
+        </MudSelect>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton OnClick="AddUser" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+        <br/>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="error-message">@ErrorMessage</p>
+        }
+    </MudCardActions>
+</MudCard>
+
+

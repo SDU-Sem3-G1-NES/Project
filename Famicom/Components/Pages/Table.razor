@@ -25,9 +25,23 @@
                          ResetValueOnEmptyText="@resetValueOnEmptyText"
                          CoerceText="@coerceText" CoerceValue="@coerceValue" />
     </MudItem>
+
+    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+    </MudMenu>
+
 </MudToolBar>
 
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
+
+<MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
+    <AddTableComponent OnTableAdded="HandleTableAdded" />
+</MudOverlay>
+
+<MudOverlay Visible="IsUserOverlayActivated" DarkBackground="true">
+    <AddUserComponent OnUserAdded="HandleUserAdded" />
+</MudOverlay>
 
 <MudContainer MaxWidth="MaxWidth.False" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll; justify-content: center;">
     @foreach (var table in Table) 

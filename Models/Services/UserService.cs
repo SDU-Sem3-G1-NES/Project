@@ -7,9 +7,9 @@ namespace Models.Services
     {
         private readonly UserRepository userRepository;
 
-        public UserService(UserRepository userRepository)
+        public UserService()
         {
-            this.userRepository = userRepository;
+            this.userRepository = new UserRepository();
         }
 
         public void AddUser(string name, string email, int userType)
