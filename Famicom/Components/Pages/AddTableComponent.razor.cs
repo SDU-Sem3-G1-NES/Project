@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Models.Services;
+using MudBlazor;
 using System.Diagnostics;
 
 namespace Famicom.Components.Pages
@@ -13,6 +14,9 @@ namespace Famicom.Components.Pages
 
         private string? ErrorMessage { get; set; }
 
+        [Inject]
+        public ISnackbar Snackbar { get; set; } = default!;
+
         [Parameter]
         public EventCallback OnTableAdded { get; set; }
 
@@ -25,10 +29,23 @@ namespace Famicom.Components.Pages
                 return;
             }
 
-            tableService.AddTable(TableGuid, TableName, TableManufacturer, null);
-            ErrorMessage = null; 
+            try
+            {
+                tableService.AddTable(TableGuid, TableName, TableManufacturer, 1);
+                ErrorMessage = null;
+                Snackbar.Add("Table added successfully", Severity.Success);
+                
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                ErrorMessage = "An error occurred while adding the table.";
+                Snackbar.Add("An error occurred while adding the table", Severity.Error);
+                return;
+            }
+            await OnTableAdded.InvokeAsync(null);
 
-            await OnTableAdded.InvokeAsync(null); 
+
         }
     }
 }
