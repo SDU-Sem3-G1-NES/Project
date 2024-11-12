@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableController.Tests", "TableController.Tests\TableController.Tests.csproj", "{B66B2EA2-70C8-481E-AB51-246B81675DE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableControllerApi.Tests", "TableControllerApi.Tests\TableControllerApi.Tests.csproj", "{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{B66B2EA2-70C8-481E-AB51-246B81675DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B66B2EA2-70C8-481E-AB51-246B81675DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B66B2EA2-70C8-481E-AB51-246B81675DE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

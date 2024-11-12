@@ -1,8 +1,15 @@
 using MudBlazor.Services;
 using Famicom.Components;
 using Blazored.SessionStorage;
+using TableControllerApi;
+using Models.Services;
+using DataAccess;
+using DotNetEnv;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
@@ -15,6 +22,20 @@ builder.Services.AddRazorComponents()
 builder.Services.AddAntiforgery();
 
 var app = builder.Build();
+var apiHost = Host.CreateDefaultBuilder()
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<TableControllerApi.Startup>();
+
+        string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
+        Env.Load(envPath);
+        string tcapiPort = Env.GetString("TCAPI_PORT");
+        
+        webBuilder.UseUrls("https://localhost:" + tcapiPort);
+    }).ConfigureServices(services =>
+    {
+        services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
+    }).Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -34,5 +55,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+apiHost.Start();
 
 app.Run();
