@@ -12,15 +12,16 @@
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="MudBlazor" Version="7.*" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../Models/Models.csproj" />
-    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
-  </ItemGroup>
    
   <ItemGroup>
     <Content Include="../.env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../Models/Models.csproj" />
+    <ProjectReference Include="../TableControllerAPI/TableControllerAPI.csproj" />
   </ItemGroup>
 </Project>
