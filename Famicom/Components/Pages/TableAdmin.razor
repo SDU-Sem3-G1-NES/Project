@@ -9,7 +9,7 @@
     <MudCard>
         <MudCardHeader>
             <MudText Typo="Typo.h5">Table Administration</MudText>
-            <MudTextField @bind-Value="SearchTerm" Placeholder="Search tables..." Adornment="Adornment.Start" Icon="@Icons.Material.Filled.Search" Immediate="true" />
+            <MudTextField @bind-Value="SearchTerm" Placeholder="Search tables..." Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Immediate="true" />
             <MudButton Color="Color.Primary" OnClick="SelectAllTables">Select All</MudButton>
             <MudButton Color="Color.Secondary" OnClick="DeselectAllTables">Deselect All</MudButton>
         </MudCardHeader>
