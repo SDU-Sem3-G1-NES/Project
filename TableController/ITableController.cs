@@ -1,16 +1,17 @@
 ﻿using SharedModels;
 
-namespace Famicom.TableController
+namespace TableController
 {
     public interface ITableController
     {
-        int GetTableHeight();
-        void SetTableHeight();
-        float GetTableSpeed();
-        string GetTableStatus();
-        void GetTableError();
-        public List<ITableError>? ErrorList { get;}
-        int GetActivationCounter();
-        void GetSitStandCounter();
+        public Task<string[]> GetAllTableIds();
+        public Task<LinakTable> GetFullTableInfo(string guid);
+        public Task<int> GetTableHeight(string guid);
+        public Task SetTableHeight(int height, string guid);
+        public Task<int> GetTableSpeed(string guid);
+        public Task<string> GetTableStatus(string guid);
+        public Task GetTableError(string guid);
+        public Task<int> GetActivationCounter(string guid);
+        public Task GetSitStandCounter(string guid);
     }
 }

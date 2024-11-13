@@ -1,49 +1,55 @@
+using System.Runtime.CompilerServices;
 using SharedModels;
 
-namespace Famicom.TableController
+namespace TableController
 {
     public class LinakTableController : ITableController
     {
-        public LinakTableController(LinakTable table)
+        public LinakTableController()
         {
-            Table = table;
         }
-        public LinakTable Table { get; private set;}
-        public List<String> GetAllTables()
-        {
-            throw new NotImplementedException();
-        }
-        public int GetTableHeight()
+
+        public Task<int> GetActivationCounter(string guid)
         {
             throw new NotImplementedException();
         }
-        public void SetTableHeight()
+
+        public Task<string[]> GetAllTableIds()
         {
             throw new NotImplementedException();
         }
-        public float GetTableSpeed()
+
+        public Task<LinakTable> GetFullTableInfo(string guid)
         {
             throw new NotImplementedException();
         }
-        public string GetTableStatus()
+
+        public Task GetSitStandCounter(string guid)
         {
             throw new NotImplementedException();
         }
-        public void GetTableError()
+
+        public Task GetTableError(string guid)
         {
             throw new NotImplementedException();
         }
-        public List<ITableError>? ErrorList { get; private set; }
-        public event EventHandler TableCollisionDetected;
-        protected virtual void OnTableCollisionDetected()
-        {
-            TableCollisionDetected?.Invoke(this, EventArgs.Empty);
-        }
-        public int GetActivationCounter()
+
+        public Task<int> GetTableHeight(string guid)
         {
             throw new NotImplementedException();
         }
-        public void GetSitStandCounter()
+
+        public Task<int> GetTableSpeed(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetTableStatus(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTableHeight(int height, string guid)
         {
             throw new NotImplementedException();
         }

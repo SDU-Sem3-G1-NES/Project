@@ -7,17 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="../.env">
+    <Content Include="../.env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../Models/Models.csproj" />
+    <ProjectReference Include="../TableController/TableController.csproj" />
   </ItemGroup>
 
 </Project>
