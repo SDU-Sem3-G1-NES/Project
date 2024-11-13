@@ -7,9 +7,9 @@ namespace Models.Services
     {
         private readonly PresetRepository presetRepository;
 
-        public PresetService(PresetRepository presetRepository)
+        public PresetService()
         {
-            this.presetRepository = presetRepository;
+            presetRepository = new PresetRepository();
         }
 
         public void AddPreset(string name, int user, int height, string options)
