@@ -4,6 +4,7 @@ using SharedModels;
 using Famicom.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace Famicom.Components.Pages
@@ -12,23 +13,30 @@ namespace Famicom.Components.Pages
     {
         private AdminModel adminModel { get; set; } = new AdminModel();
         public List<ITable> AllTables { get; set; } = new List<ITable>();
-
         public HashSet<ITable> SelectedTables { get; set; } = new HashSet<ITable>();
-
-        public List<ITable> FilteredTables =>
-            string.IsNullOrEmpty(SearchTerm) ? AllTables : AllTables.Where(t => t.Name.Contains(SearchTerm, System.StringComparison.OrdinalIgnoreCase)).ToList();
-
         public string SearchTerm { get; set; } = "";
 
-        protected override void OnInitialized()
+        public List<ITable> FilteredTables =>
+            string.IsNullOrEmpty(SearchTerm)
+                ? AllTables
+                : AllTables.Where(t => t.Name.Contains(SearchTerm, System.StringComparison.OrdinalIgnoreCase)).ToList();
+        protected override async Task OnInitializedAsync()
         {
-            AllTables = adminModel.GetAllTables();
+            try
+            {
+                AllTables = await Task.Run(() => adminModel.GetAllTables());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading tables: {ex.Message}");
+            }
         }
 
         public void SelectAllTables()
         {
             SelectedTables = new HashSet<ITable>(FilteredTables);
         }
+
         public void DeselectAllTables()
         {
             SelectedTables.Clear();
@@ -48,7 +56,7 @@ namespace Famicom.Components.Pages
             foreach (var table in SelectedTables)
             {
                 Debug.WriteLine($"Moving table {table.Name} down");
-                //logic to move the table down
+                // logic to move the table down
             }
         }
     }
