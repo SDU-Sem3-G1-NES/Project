@@ -11,6 +11,7 @@ namespace Famicom.Components.Pages
         public enum OverlayMode{ None, Add, Edit }
         private OverlayMode currentOverlayMode = OverlayMode.None;
         private PresetsModel? presetsModel { get; set; }
+        private TableModel? tableModel { get; set; }
         public List<Presets>? userPresets { get; set; }
         private int PresetId { get; set; }
         private string? PresetName { get; set; }
@@ -44,6 +45,13 @@ namespace Famicom.Components.Pages
             PresetName = string.Empty;
             PresetHeight = 0;
             ErrorMessage = null;
+        }
+        private async Task SelectPreset(int presetId)
+        {
+            // This is where the selected preset would be applied to the table
+            // Does it go to the tablecontroller or straight to the database?
+            Console.WriteLine($"Selected preset {presetId}");
+            await Task.CompletedTask;
         }
         private async Task AddPreset()
         {
