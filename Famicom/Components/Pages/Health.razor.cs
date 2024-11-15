@@ -1,27 +1,25 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System;
-using SharedModels;
+using System.Threading.Tasks;
 using Famicom.Models;
-using System.Diagnostics;
 
 namespace Famicom.Components.Pages
 {
     public partial class HealthBase : ComponentBase
     {
-        private HealthModel HealthModel { get; set; } = new HealthModel();
+        protected HealthModel HealthModel { get; set; } = new HealthModel();
 
         public string HealthData => HealthModel.HealthData;
 
-        public void FetchHealthData()
+        public async Task FetchHealthDataAsync()
         {
-            HealthModel.FetchHealthData();
+            await HealthModel.FetchHealthDataAsync();
+            StateHasChanged();
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
-            FetchHealthData();
+            await FetchHealthDataAsync();
         }
     }
 }
