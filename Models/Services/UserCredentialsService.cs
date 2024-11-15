@@ -29,12 +29,6 @@ public class UserCredentialsService
         }
         return false;
     }
-
-    public void StoreSessionId(string sessionID, string email)
-    {
-        userRepository.StoreSession(sessionID, email);
-    }
-
     public string GetFixedSalt()
     {
         return fixedSalt;

@@ -40,8 +40,11 @@ namespace Famicom.Components.Pages
                 {
                     await SessionStorage.SetItemAsync("SessionId", sessionID);
                 }
-                // Store session ID in database
-                userCredentialsService.StoreSessionId(sessionID, loginModel.Email);
+                else
+                {
+                    ErrorMessage = "Session Storage not found."
+                    await InvokeAsync(StateHasChanged);
+                }
                 Navigation?.NavigateTo("/");
                 
                 await InvokeAsync(StateHasChanged);
