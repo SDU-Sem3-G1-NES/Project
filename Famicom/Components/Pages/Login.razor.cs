@@ -42,11 +42,10 @@ namespace Famicom.Components.Pages
                 }
                 else
                 {
-                    ErrorMessage = "Session Storage not found."
+                    ErrorMessage = "Session Storage not found.";
                     await InvokeAsync(StateHasChanged);
                 }
                 Navigation?.NavigateTo("/");
-                
                 await InvokeAsync(StateHasChanged);
             }
             else
