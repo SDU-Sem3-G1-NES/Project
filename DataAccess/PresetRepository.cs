@@ -19,10 +19,10 @@ namespace DataAccess
         }
         #region Insert Methods
 
-        public void InsertPreset(string name, int user, int height, string options)
+        public void InsertPreset(string name, int user, int height, string options, string icon)
         {
-            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options::jsonb)";
-            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@user", user), ("@height", height), ("@options", options));
+            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options, p_icon) VALUES (@name, @user, @height, @options::jsonb, @icon)";
+            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@user", user), ("@height", height), ("@options", options), ("@icon", icon));
         }
        
         #endregion
@@ -51,6 +51,12 @@ namespace DataAccess
         {
             var sql = "UPDATE presets SET p_options = @presetOptions WHERE p_id = @presetId";
             dbAccess.ExecuteNonQuery(sql, ("@presetOptions", presetOptions), ("@presetId", presetId));
+        }
+
+        public void EditPresetIcon(int presetId, string presetIcon)
+        {
+            var sql = "UPDATE presets SET p_icon = @presetIcon WHERE p_id = @presetId";
+            dbAccess.ExecuteNonQuery(sql, ("@presetIcon", presetIcon), ("@presetId", presetId));
         }
 
         #endregion
@@ -85,7 +91,8 @@ namespace DataAccess
                             PresetName = reader.GetString(1),
                             UserId = reader.GetInt32(2),
                             Height = reader.GetInt32(3),
-                            Options = reader.GetString(4)
+                            Options = reader.GetString(4),
+                            Icon = reader.GetString(5)
 
                         };
                         presets.Add(preset);

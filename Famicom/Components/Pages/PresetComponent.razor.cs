@@ -9,6 +9,12 @@ namespace Famicom.Components.Pages
     public partial class PresetComponent : ComponentBase
     {
         public enum OverlayMode{ None, Add, Edit }
+        private List<string> iconOptions = new List<string>
+        {
+            "fa-user",
+            "fa-star",
+            "fa-heart"
+        };
         private OverlayMode currentOverlayMode = OverlayMode.None;
         private PresetsModel? presetsModel { get; set; }
         private TableModel? tableModel { get; set; }
@@ -16,6 +22,7 @@ namespace Famicom.Components.Pages
         private int PresetId { get; set; }
         private string? PresetName { get; set; }
         private int PresetHeight { get; set; }
+        private string? PresetIcon { get; set; }
         private string? ErrorMessage { get; set; }
 
         [Inject]
@@ -34,8 +41,10 @@ namespace Famicom.Components.Pages
                 var preset = userPresets?.FirstOrDefault(p => p.PresetId == presetId);
                 if (preset != null)
                 {
+                    PresetId = preset.PresetId;
                     PresetName = preset.PresetName;
                     PresetHeight = preset.Height;
+                    PresetIcon = preset.Icon;
                 }
             }
         }
@@ -44,18 +53,18 @@ namespace Famicom.Components.Pages
             currentOverlayMode = OverlayMode.None;
             PresetName = string.Empty;
             PresetHeight = 0;
+            PresetIcon = string.Empty;
             ErrorMessage = null;
         }
         private async Task SelectPreset(int presetId)
         {
             // This is where the selected preset would be applied to the table
             // Does it go to the tablecontroller or straight to the database?
-            Console.WriteLine($"Selected preset {presetId}");
             await Task.CompletedTask;
         }
         private async Task AddPreset()
         {
-            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0)
+            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0 || string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Please fill in all fields.";
                 return;
@@ -63,7 +72,7 @@ namespace Famicom.Components.Pages
 
             try
             {
-                await Task.Run(() => presetsModel?.AddPreset(PresetName, 1, PresetHeight, "{}"));
+                await Task.Run(() => presetsModel?.AddPreset(PresetName, 1, PresetHeight, "{}", PresetIcon));
                 ErrorMessage = null;
                 Snackbar.Add("Preset added successfully", Severity.Success);
                 userPresets = await Task.Run(() => presetsModel?.GetAllPresets(1));
@@ -79,7 +88,7 @@ namespace Famicom.Components.Pages
         }
         private async Task EditPreset()
         {
-            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0)
+            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0 || string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Please fill in all fields.";
                 return;
@@ -89,6 +98,7 @@ namespace Famicom.Components.Pages
             {
                 await Task.Run(() => presetsModel?.EditPresetName(PresetId, PresetName));
                 await Task.Run(() => presetsModel?.EditPresetHeight(PresetId, PresetHeight));
+                await Task.Run(() => presetsModel?.EditPresetIcon(PresetId, PresetIcon));
                 ErrorMessage = null;
                 Snackbar.Add("Preset edited successfully", Severity.Success);
                 userPresets = await Task.Run(() => presetsModel?.GetAllPresets(1));

@@ -20,8 +20,11 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6" Style="display: flex; align-items: center;">
-                                    <MudIcon Icon="@Icons.Material.Filled.Height" Color="Color.Default" Style="margin-right: 8px;" />
+                                    <i class="fa @preset.Icon" style="margin-right: 8px;"></i>
                                     @preset.PresetName
+                                </MudText>
+                                <MudText Typo="Typo.body2" Style="color: gray; margin-left: auto;">
+                                @preset.Height
                                 </MudText>
                             </CardHeaderContent>
                             <CardHeaderActions>
@@ -43,6 +46,14 @@
                 <MudCardContent>
                     <MudTextField @bind-Value="PresetName" Label="Preset Name" Variant="Variant.Filled" />
                     <MudTextField @bind-Value="PresetHeight" Label="Table Height" Variant="Variant.Filled" />
+                    <MudSelect T="string" @bind-Value="PresetIcon" Label="Preset Icon" Variant="Variant.Filled">
+                        @foreach (var icon in iconOptions)
+                        {
+                            <MudSelectItem T="string" Value="@icon">
+                                <i class="fa @icon" style="margin-right: 8px;"></i>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
                 </MudCardContent>
                 <MudCardActions>
                     @if (currentOverlayMode == OverlayMode.Add)

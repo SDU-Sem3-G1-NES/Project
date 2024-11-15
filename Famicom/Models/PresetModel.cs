@@ -14,9 +14,9 @@ namespace Famicom.Models
         {
             return presetService.GetPresetsUser(userId);
         }
-        public void AddPreset(string name, int user, int height, string options)
+        public void AddPreset(string name, int user, int height, string options, string icon)
         {
-            presetService.AddPreset(name, user, height, options);
+            presetService.AddPreset(name, user, height, options, icon);
         }
 
         public void EditPresetName(int presetId, string presetName)
@@ -27,6 +27,10 @@ namespace Famicom.Models
         public void EditPresetHeight(int presetId, int presetHeight)
         {
             presetService.UpdatePresetHeight(presetId, presetHeight);
+        }
+        public void EditPresetIcon(int presetId, string presetIcon)
+        {
+            presetService.UpdatePresetIcon(presetId, presetIcon);
         }
 
         public void RemovePreset(int id)

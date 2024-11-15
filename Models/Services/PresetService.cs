@@ -12,9 +12,9 @@ namespace Models.Services
             presetRepository = new PresetRepository();
         }
 
-        public void AddPreset(string name, int user, int height, string options)
+        public void AddPreset(string name, int user, int height, string options, string icon)
         {
-            presetRepository.InsertPreset(name, user, height, options);
+            presetRepository.InsertPreset(name, user, height, options, icon);
         }
 
         public void UpdatePresetName(int presetId, string presetName)
@@ -35,6 +35,11 @@ namespace Models.Services
         public void UpdatePresetOptions(int presetId, string presetOptions)
         {
             presetRepository.EditPresetOptions(presetId, presetOptions);
+        }
+
+        public void UpdatePresetIcon(int presetId, string presetIcon)
+        {
+            presetRepository.EditPresetIcon(presetId, presetIcon);
         }
 
         public void RemovePreset(int id)
