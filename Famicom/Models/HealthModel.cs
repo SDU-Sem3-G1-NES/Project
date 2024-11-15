@@ -11,12 +11,20 @@ namespace Famicom.Models
         public async Task FetchHealthDataAsync()
         {
             await Task.Delay(500); // Simulate network delay
-            HealthData = $"Fetched health data from backend. Recommended desk height: {CalculateDeskHeight(UserHeightInCm)} cm.";
+            var minHeight = CalculateMinDeskHeight(UserHeightInCm);
+            var maxHeight = CalculateMaxDeskHeight(UserHeightInCm);
+
+            HealthData = $"Fetched health data from backend. Recommended desk height range: {minHeight:F1} cm - {maxHeight:F1} cm.";
         }
 
-        public int CalculateDeskHeight(int heightInCm)
+        public double CalculateMinDeskHeight(int heightInCm)
         {
-            return heightInCm + 1;
+            return 1.2037 * heightInCm - 16.9633;
+        }
+
+        public double CalculateMaxDeskHeight(int heightInCm)
+        {
+            return 1.4067 * heightInCm - 23.9376;
         }
     }
 }
