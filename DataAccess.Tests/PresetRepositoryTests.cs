@@ -36,7 +36,7 @@ namespace DataAccess.Tests
             var param5 = ("@icon", (object)icon);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO presets (p_name, p_user, p_height, p_options, p_icon ) VALUES (@name, @user, @height, @options::jsonb, @icon)",
+                "INSERT INTO presets (p_name, p_user, p_height, p_options, p_icon) VALUES (@name, @user, @height, @options::jsonb, @icon)",
                 param1, param2, param3, param4, param5
             ), Times.Once);
         }
