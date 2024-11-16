@@ -14,7 +14,7 @@ namespace Famicom.Models
             var minHeight = CalculateMinDeskHeight(UserHeightInCm);
             var maxHeight = CalculateMaxDeskHeight(UserHeightInCm);
 
-            HealthData = $"Fetched health data from backend. Recommended desk height range: {minHeight:F1} cm - {maxHeight:F1} cm.";
+            HealthData = $"Recommended desk height range: {minHeight:F1} cm - {maxHeight:F1} cm.";
         }
 
         public double CalculateMinDeskHeight(int heightInCm)
