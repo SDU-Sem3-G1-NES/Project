@@ -8,9 +8,11 @@ namespace Famicom.Components.Pages
     public partial class AddTableComponent : ComponentBase
     {
         TableService tableService = new TableService();
+        ApiService apiService = new ApiService();
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
         private string? TableManufacturer { get; set; }
+        private string? TableApi { get; set; }
 
         private string? ErrorMessage { get; set; }
 
@@ -20,6 +22,10 @@ namespace Famicom.Components.Pages
         [Parameter]
         public EventCallback OnTableAdded { get; set; }
 
+        private async Task Cancel()
+        {
+            await OnTableAdded.InvokeAsync(null);
+        }
 
         private async Task AddTable()
         {
@@ -31,6 +37,10 @@ namespace Famicom.Components.Pages
 
             try
             {
+                if (TableApi == "LinakApi")
+                {
+                    apiService.AddApi("LinakApi", "{}");
+                }
                 tableService.AddTable(TableGuid, TableName, TableManufacturer, 1);
                 ErrorMessage = null;
                 Snackbar.Add("Table added successfully", Severity.Success);
