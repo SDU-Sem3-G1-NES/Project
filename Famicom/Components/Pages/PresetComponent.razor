@@ -54,6 +54,12 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
+                    <MudText Typo="Typo.body2">
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Error">@ErrorMessage</MudText>
+                        }
+                    </MudText>
                 </MudCardContent>
                 <MudCardActions>
                     @if (currentOverlayMode == OverlayMode.Add)
@@ -66,12 +72,6 @@
                     }
 
                     <MudButton OnClick="CancelOverlay" Color="Color.Default" Variant="Variant.Filled" Style="margin-left: 8px;">Cancel</MudButton>
-
-                    <br/>
-                    @if (!string.IsNullOrEmpty(ErrorMessage))
-                    {
-                        <p class="error-message">@ErrorMessage</p>
-                    }
                 </MudCardActions>
             </MudCard>
         </MudOverlay>

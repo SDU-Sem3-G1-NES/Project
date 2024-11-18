@@ -29,34 +29,10 @@ namespace DataAccess
 
         #region Edit Methods
 
-        public void EditPresetName(int presetId, string presetName)
+        public void EditPreset(int presetId, string presetName, int presetUser, int presetHeight, string presetOptions, string presetIcon)
         {
-            var sql = "UPDATE presets SET p_name = @presetName WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetName", presetName), ("@presetId", presetId));
-        }
-
-        public void EditPresetUser(int presetId, int presetUser)
-        {
-            var sql = "UPDATE presets SET p_user = @presetUser WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetUser", presetUser), ("@presetId", presetId));
-        }
-
-        public void EditPresetHeight(int presetId, int presetHeight)
-        {
-            var sql = "UPDATE presets SET p_height = @presetHeight WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetHeight", presetHeight), ("@presetId", presetId));
-        }
-
-        public void EditPresetOptions(int presetId, string presetOptions)
-        {
-            var sql = "UPDATE presets SET p_options = @presetOptions WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetOptions", presetOptions), ("@presetId", presetId));
-        }
-
-        public void EditPresetIcon(int presetId, string presetIcon)
-        {
-            var sql = "UPDATE presets SET p_icon = @presetIcon WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetIcon", presetIcon), ("@presetId", presetId));
+            var sql = "UPDATE presets SET p_name = @presetName, p_user = @presetUser, p_height = @presetHeight, p_options = @presetOptions::jsonb, p_icon = @presetIcon WHERE p_id = @presetId";
+            dbAccess.ExecuteNonQuery(sql, ("@presetName", presetName), ("@presetUser", presetUser), ("@presetHeight", presetHeight), ("@presetOptions", presetOptions), ("@presetIcon", presetIcon), ("@presetId", presetId));
         }
 
         #endregion

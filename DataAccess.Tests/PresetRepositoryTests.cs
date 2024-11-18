@@ -42,101 +42,30 @@ namespace DataAccess.Tests
         }
 
         [Fact]
-        public void EditPresetName_ShouldExecuteNonQuery_WithCorrectParameters()
+        public void EditPreset_ShouldExecuteNonQuery_WithCorrectParameters()
         {
             // Arrange
             int presetId = 1;
-            string presetName = "UpdatedPreset";
+            string presetName = "Preset1";
+            int presetUser = 1;
+            int presetHeight = 100;
+            string presetOptions = "Option1";
+            string presetIcon = "Icon1";
 
             // Act
-            _presetRepository.EditPresetName(presetId, presetName);
+            _presetRepository.EditPreset(presetId, presetName, presetUser, presetHeight, presetOptions, presetIcon);
 
             // Assert
             var param1 = ("@presetName", (object)presetName);
-            var param2 = ("@presetId", (object)presetId);
+            var param2 = ("@presetUser", (object)presetUser);
+            var param3 = ("@presetHeight", (object)presetHeight);
+            var param4 = ("@presetOptions", (object)presetOptions);
+            var param5 = ("@presetIcon", (object)presetIcon);
+            var param6 = ("@presetId", (object)presetId);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE presets SET p_name = @presetName WHERE p_id = @presetId",
-                param1, param2
-            ), Times.Once);
-        }
-
-        [Fact]
-        public void EditPresetUser_ShouldExecuteNonQuery_WithCorrectParameters()
-        {
-            // Arrange
-            int presetId = 1;
-            int presetUser = 2;
-
-            // Act
-            _presetRepository.EditPresetUser(presetId, presetUser);
-
-            // Assert
-            var param1 = ("@presetUser", (object)presetUser);
-            var param2 = ("@presetId", (object)presetId);
-
-            _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE presets SET p_user = @presetUser WHERE p_id = @presetId",
-                param1, param2
-            ), Times.Once);
-        }
-
-        [Fact]
-        public void EditPresetHeight_ShouldExecuteNonQuery_WithCorrectParameters()
-        {
-            // Arrange
-            int presetId = 1;
-            int presetHeight = 200;
-
-            // Act
-            _presetRepository.EditPresetHeight(presetId, presetHeight);
-
-            // Assert
-            var param1 = ("@presetHeight", (object)presetHeight);
-            var param2 = ("@presetId", (object)presetId);
-
-            _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE presets SET p_height = @presetHeight WHERE p_id = @presetId",
-                param1, param2
-            ), Times.Once);
-        }
-
-        [Fact]
-        public void EditPresetOptions_ShouldExecuteNonQuery_WithCorrectParameters()
-        {
-            // Arrange
-            int presetId = 1;
-            string presetOptions = "NewOptions";
-
-            // Act
-            _presetRepository.EditPresetOptions(presetId, presetOptions);
-
-            // Assert
-            var param1 = ("@presetOptions", (object)presetOptions);
-            var param2 = ("@presetId", (object)presetId);
-
-            _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE presets SET p_options = @presetOptions WHERE p_id = @presetId",
-                param1, param2
-            ), Times.Once);
-        }
-        [Fact]
-        public void EditPresetIcon_ShouldExecuteNonQuery_WithCorrectParameters()
-        {
-            // Arrange
-            int presetId = 1;
-            string presetIcon = "NewIcon";
-
-            // Act
-            _presetRepository.EditPresetIcon(presetId, presetIcon);
-
-            // Assert
-            var param1 = ("@presetIcon", (object)presetIcon);
-            var param2 = ("@presetId", (object)presetId);
-
-            _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "UPDATE presets SET p_icon = @presetIcon WHERE p_id = @presetId",
-                param1, param2
+                "UPDATE presets SET p_name = @presetName, p_user = @presetUser, p_height = @presetHeight, p_options = @presetOptions::jsonb, p_icon = @presetIcon WHERE p_id = @presetId",
+                param1, param2, param3, param4, param5, param6
             ), Times.Once);
         }
 

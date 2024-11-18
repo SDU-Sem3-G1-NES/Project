@@ -64,9 +64,21 @@ namespace Famicom.Components.Pages
         }
         private async Task AddPreset()
         {
-            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0 || string.IsNullOrEmpty(PresetIcon))
+            if (string.IsNullOrEmpty(PresetName))
             {
-                ErrorMessage = "Please fill in all fields.";
+                ErrorMessage = "Preset name is required.";
+                return;
+            }
+
+            if (PresetHeight <= 0)
+            {
+                ErrorMessage = "Preset height must be greater than zero.";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(PresetIcon))
+            {
+                ErrorMessage = "Preset icon is required.";
                 return;
             }
 
@@ -88,17 +100,27 @@ namespace Famicom.Components.Pages
         }
         private async Task EditPreset()
         {
-            if (string.IsNullOrEmpty(PresetName) || PresetHeight <= 0 || string.IsNullOrEmpty(PresetIcon))
+            if (string.IsNullOrEmpty(PresetName))
             {
-                ErrorMessage = "Please fill in all fields.";
+                ErrorMessage = "Preset name is required.";
+                return;
+            }
+
+            if (PresetHeight <= 0)
+            {
+                ErrorMessage = "Preset height must be greater than zero.";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(PresetIcon))
+            {
+                ErrorMessage = "Preset icon is required.";
                 return;
             }
 
             try
             {
-                await Task.Run(() => presetsModel?.EditPresetName(PresetId, PresetName));
-                await Task.Run(() => presetsModel?.EditPresetHeight(PresetId, PresetHeight));
-                await Task.Run(() => presetsModel?.EditPresetIcon(PresetId, PresetIcon));
+                await Task.Run(() => presetsModel?.EditPreset(PresetId, PresetName, 1, PresetHeight, "{}", PresetIcon));
                 ErrorMessage = null;
                 Snackbar.Add("Preset edited successfully", Severity.Success);
                 userPresets = await Task.Run(() => presetsModel?.GetAllPresets(1));

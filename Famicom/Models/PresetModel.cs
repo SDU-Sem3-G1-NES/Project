@@ -18,21 +18,10 @@ namespace Famicom.Models
         {
             presetService.AddPreset(name, user, height, options, icon);
         }
-
-        public void EditPresetName(int presetId, string presetName)
+        public void EditPreset(int presetId, string presetName, int presetUser, int presetHeight, string presetOptions, string presetIcon)
         {
-            presetService.UpdatePresetName(presetId, presetName);
+            presetService.UpdatePreset(presetId, presetName, presetUser, presetHeight, presetOptions, presetIcon);
         }
-
-        public void EditPresetHeight(int presetId, int presetHeight)
-        {
-            presetService.UpdatePresetHeight(presetId, presetHeight);
-        }
-        public void EditPresetIcon(int presetId, string presetIcon)
-        {
-            presetService.UpdatePresetIcon(presetId, presetIcon);
-        }
-
         public void RemovePreset(int id)
         {
             presetService.RemovePreset(id);
