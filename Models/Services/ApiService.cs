@@ -6,9 +6,9 @@ namespace Models.Services
     {
         private readonly ApiRepository apiRepository;
 
-        public ApiService(ApiRepository apiRepository)
+        public ApiService()
         {
-            this.apiRepository = apiRepository;
+            this.apiRepository = new ApiRepository();
         }
 
         public void AddApi(string name, string config)

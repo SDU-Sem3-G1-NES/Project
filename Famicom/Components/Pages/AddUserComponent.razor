@@ -1,24 +1,24 @@
 ﻿@inherits ComponentBase
 
-<MudCard>
-    <MudCardContent>
-        <MudTextField @bind-Value="UserName" Label="User Name" Variant="Variant.Filled" />
-        <MudTextField @bind-Value="UserEmail" Label="User Email" Variant="Variant.Filled" />
-        <MudTextField @bind-Value="UserPassword" Label="User Password" Variant="Variant.Filled" />
-        <MudSelect T="string" Label="User Type" @bind-Value="UserType">
+<MudPaper Class="pa-4">
+    <MudForm>
+        <MudTextField T="string" Label="User Name" Required="true" RequiredError="User Name is required!" @bind-Value="UserName" Class="mb-4" />
+        <MudTextField T="string" Label="User Email" Required="true" RequiredError="User Email is required!" @bind-Value="UserEmail" Class="mb-4" />
+        <MudTextField T="string" Label="UserPassword" Required="true" RequiredError="User Password is required!" @bind-Value="UserPassword" Class="mb-4" />
+        <MudSelect T="string" Label="User Type" @bind-Value="UserType" Class="mb-4">
             <MudSelectItem Value="@("Admin")" />
             <MudSelectItem Value="@("Worker")" />
             <MudSelectItem Value="@("Cleaner")" />
         </MudSelect>
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton OnClick="AddUser" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
-        <br/>
+        <MudStack Direction="Row" Spacing="2" Class="mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddUser">Add</MudButton>
+        </MudStack>
+        <br />
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {
             <p class="error-message">@ErrorMessage</p>
         }
-    </MudCardActions>
-</MudCard>
-
+    </MudForm>
+</MudPaper>
 

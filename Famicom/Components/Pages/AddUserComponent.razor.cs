@@ -29,7 +29,10 @@ namespace Famicom.Components.Pages
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
 
-        
+        public async Task Cancel()
+        {
+            await OnUserAdded.InvokeAsync(null);
+        }
         public async Task AddUser()
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword) || string.IsNullOrEmpty(UserType))
