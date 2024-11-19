@@ -22,5 +22,11 @@ namespace Famicom.Models
             }
             return this.table;
         }
+        public void UpdateAllTablesMaxHeight(bool isMaxHeight)
+        {
+            string state = isMaxHeight ? "maximum height" : "normal height";
+
+            Console.WriteLine($"Updating all tables to {state} in the database.");
+        }
     }
 }
