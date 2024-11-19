@@ -1,0 +1,28 @@
+﻿@page "/cleaner"
+@inherits CleanerBase
+
+<PageTitle>Cleaner Panel</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudText Typo="Typo.h1">Cleaner Panel</MudText>
+
+    <!-- Cleaning Mode Toggle -->
+    <MudCard Class="mt-4">
+        <MudCardContent>
+            <MudText Typo="Typo.subtitle1">
+                Current Status: @("Cleaning Mode is " + (IsCleaningMode ? "ON" : "OFF"))
+            </MudText>
+            <MudButton Color="Color.Primary"
+                       OnClick="@ToggleCleaningMode"
+                       Disabled="!CanActivateCleaningMode">
+                @(IsCleaningMode ? "Deactivate Cleaning Mode" : "Activate Cleaning Mode")
+            </MudButton>
+            @if (!CanActivateCleaningMode)
+            {
+                <MudText Color="Color.Warning">
+                    Cleaning mode can only be activated after 6 PM.
+                </MudText>
+            }
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
