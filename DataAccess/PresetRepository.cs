@@ -19,38 +19,20 @@ namespace DataAccess
         }
         #region Insert Methods
 
-        public void InsertPreset(string name, int user, int height, string options)
+        public void InsertPreset(string name, int user, int height, string options, string icon)
         {
-            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options) VALUES (@name, @user, @height, @options::jsonb)";
-            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@user", user), ("@height", height), ("@options", options));
+            var sql = "INSERT INTO presets (p_name, p_user, p_height, p_options, p_icon) VALUES (@name, @user, @height, @options::jsonb, @icon)";
+            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@user", user), ("@height", height), ("@options", options), ("@icon", icon));
         }
        
         #endregion
 
         #region Edit Methods
 
-        public void EditPresetName(int presetId, string presetName)
+        public void EditPreset(int presetId, string presetName, int presetUser, int presetHeight, string presetOptions, string presetIcon)
         {
-            var sql = "UPDATE presets SET p_name = @presetName WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetName", presetName), ("@presetId", presetId));
-        }
-
-        public void EditPresetUser(int presetId, int presetUser)
-        {
-            var sql = "UPDATE presets SET p_user = @presetUser WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetUser", presetUser), ("@presetId", presetId));
-        }
-
-        public void EditPresetHeight(int presetId, int presetHeight)
-        {
-            var sql = "UPDATE presets SET p_height = @presetHeight WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetHeight", presetHeight), ("@presetId", presetId));
-        }
-
-        public void EditPresetOptions(int presetId, string presetOptions)
-        {
-            var sql = "UPDATE presets SET p_options = @presetOptions WHERE p_id = @presetId";
-            dbAccess.ExecuteNonQuery(sql, ("@presetOptions", presetOptions), ("@presetId", presetId));
+            var sql = "UPDATE presets SET p_name = @presetName, p_user = @presetUser, p_height = @presetHeight, p_options = @presetOptions::jsonb, p_icon = @presetIcon WHERE p_id = @presetId";
+            dbAccess.ExecuteNonQuery(sql, ("@presetName", presetName), ("@presetUser", presetUser), ("@presetHeight", presetHeight), ("@presetOptions", presetOptions), ("@presetIcon", presetIcon), ("@presetId", presetId));
         }
 
         #endregion
@@ -85,7 +67,8 @@ namespace DataAccess
                             PresetName = reader.GetString(1),
                             UserId = reader.GetInt32(2),
                             Height = reader.GetInt32(3),
-                            Options = reader.GetString(4)
+                            Options = reader.GetString(4),
+                            Icon = reader.GetString(5)
 
                         };
                         presets.Add(preset);

@@ -7,34 +7,19 @@ namespace Models.Services
     {
         private readonly PresetRepository presetRepository;
 
-        public PresetService(PresetRepository presetRepository)
+        public PresetService()
         {
-            this.presetRepository = presetRepository;
+            presetRepository = new PresetRepository();
         }
 
-        public void AddPreset(string name, int user, int height, string options)
+        public void AddPreset(string name, int user, int height, string options, string icon)
         {
-            presetRepository.InsertPreset(name, user, height, options);
+            presetRepository.InsertPreset(name, user, height, options, icon);
         }
 
-        public void UpdatePresetName(int presetId, string presetName)
+        public void UpdatePreset(int presetId, string presetName, int presetUser, int presetHeight, string presetOptions, string presetIcon)
         {
-            presetRepository.EditPresetName(presetId, presetName);
-        }
-
-        public void UpdatePresetUser(int presetId, int presetUser)
-        {
-            presetRepository.EditPresetUser(presetId, presetUser);
-        }
-
-        public void UpdatePresetHeight(int presetId, int presetHeight)
-        {
-            presetRepository.EditPresetHeight(presetId, presetHeight);
-        }
-
-        public void UpdatePresetOptions(int presetId, string presetOptions)
-        {
-            presetRepository.EditPresetOptions(presetId, presetOptions);
+            presetRepository.EditPreset(presetId, presetName, presetUser, presetHeight, presetOptions, presetIcon);
         }
 
         public void RemovePreset(int id)
