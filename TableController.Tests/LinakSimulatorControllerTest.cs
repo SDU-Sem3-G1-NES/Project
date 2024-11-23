@@ -32,7 +32,7 @@ namespace TableController.Tests
 #region Tests with injected GUID
 
 [Fact]
-        public async void GetFullTableInfo_ReturnsFullTableInfoWithInjectedGUID() 
+        public async Task GetFullTableInfo_ReturnsFullTableInfoWithInjectedGUID() 
         {
             // Arrange
             await GetFreshObjects();
@@ -63,7 +63,7 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public async void GetTableHeight_ReturnsHeightWithInjectedGUID()
+        public async Task GetTableHeight_ReturnsHeightWithInjectedGUID()
         {
             // Arrange
             await GetFreshObjects();
@@ -110,7 +110,7 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public async void GetTableSpeed_ReturnsSpeedWithInjectedGUID()
+        public async Task GetTableSpeed_ReturnsSpeedWithInjectedGUID()
         {
             // Arrange
             await GetFreshObjects();
@@ -128,7 +128,7 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public async void GetTableStatus_ReturnsStatusWithInjectedGUID()
+        public async Task GetTableStatus_ReturnsStatusWithInjectedGUID()
         {
             // Arrange
             await GetFreshObjects();
@@ -149,7 +149,7 @@ namespace TableController.Tests
 
 #region Not implemented methods
         [Fact]
-        public async void GetTableError_ThrowsNotImplementedException()
+        public async Task GetTableError_ThrowsNotImplementedException()
         {
             // Act & Assert
             await GetFreshObjects();
@@ -157,7 +157,7 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public async void GetActivationCounter_ThrowsNotImplementedException()
+        public async Task GetActivationCounter_ThrowsNotImplementedException()
         {
             // Act & Assert
             await GetFreshObjects();
@@ -165,7 +165,7 @@ namespace TableController.Tests
         }
 
         [Fact]
-        public async void GetSitStandCounter_ThrowsNotImplementedException()
+        public async Task GetSitStandCounter_ThrowsNotImplementedException()
         {
             // Act & Assert
             await GetFreshObjects();
