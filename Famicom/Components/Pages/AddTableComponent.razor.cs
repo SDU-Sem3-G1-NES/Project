@@ -13,8 +13,13 @@ namespace Famicom.Components.Pages
         private string? TableName { get; set; }
         private string? TableManufacturer { get; set; }
         private string? TableApi { get; set; }
-
+        private bool IsAddingTableVisible { get; set; }
         private string? ErrorMessage { get; set; }
+
+        public AddTableComponent()
+        {
+            IsAddingTableVisible = false;
+        }
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
@@ -25,6 +30,11 @@ namespace Famicom.Components.Pages
         private async Task Cancel()
         {
             await OnTableAdded.InvokeAsync(null);
+        }
+
+        private void ShowAddUser()
+        {
+            IsAddingTableVisible = !IsAddingTableVisible;
         }
 
         private async Task AddTable()
@@ -43,6 +53,7 @@ namespace Famicom.Components.Pages
                 }
                 tableService.AddTable(TableGuid, TableName, TableManufacturer, 1);
                 ErrorMessage = null;
+                ShowAddUser(); // Show the add user question overlay
                 Snackbar.Add("Table added successfully", Severity.Success);
                 
             }
