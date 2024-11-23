@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Famicom.Models;
 
@@ -12,67 +11,78 @@ namespace Famicom.Components.Pages
         protected HealthModel HealthModel { get; set; } = new HealthModel();
         public string HealthData => HealthModel.HealthData;
 
-        private Timer? SittingTimer;
-        private Timer? ElapsedTimeUpdater;
+        private Timer? TimerUpdater;
         private DateTime TimerStart;
 
         protected bool IsTimerRunning { get; private set; } = false;
-
+        protected bool IsHeightLocked { get; set; } = true;
         public string SittingNotification { get; private set; } = "You are sitting comfortably.";
+        public string HeightWarning { get; private set; } = string.Empty;
         public TimeSpan ElapsedTime => IsTimerRunning ? DateTime.Now - TimerStart : TimeSpan.Zero;
+
+        private const int DeskMinHeight = 68; // Min desk height
+        private const int DeskMaxHeight = 132; // Max desk height
 
         public async Task FetchHealthDataAsync()
         {
             await HealthModel.FetchHealthDataAsync();
+
+            var minHeight = HealthModel.CalculateMinDeskHeight(HealthModel.UserHeightInCm);
+            var maxHeight = HealthModel.CalculateMaxDeskHeight(HealthModel.UserHeightInCm);
+
+            if (minHeight < DeskMinHeight || maxHeight > DeskMaxHeight)
+            {
+                HeightWarning = $"Recommended height range exceeds desk capabilities ({DeskMinHeight} cm - {DeskMaxHeight} cm).";
+            }
+            else
+            {
+                HeightWarning = string.Empty;
+            }
+
             StateHasChanged();
         }
 
         protected override async Task OnInitializedAsync()
         {
             await FetchHealthDataAsync();
+            StartAutomaticTimer();
         }
 
-        protected void StartSittingTimer()
+        protected void ToggleHeightLock()
         {
-            if (IsTimerRunning) return;
-
-            TimerStart = DateTime.Now;
-            IsTimerRunning = true;
-
-            SittingTimer = new Timer(async _ => await NotifySittingTimerElapsed(), null, TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));
-            ElapsedTimeUpdater = new Timer(_ => InvokeAsync(StateHasChanged), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            IsHeightLocked = !IsHeightLocked;
         }
 
-        protected void StopSittingTimer()
+        private void StartAutomaticTimer()
         {
-            IsTimerRunning = false;
+            TimerUpdater = new Timer(_ =>
+            {
+                // Simulate reading the current desk height (mock value for now)
+                var currentDeskHeight = 70; // Mock value
 
-            SittingTimer?.Dispose();
-            SittingTimer = null;
+                var minHeight = HealthModel.CalculateMinDeskHeight(HealthModel.UserHeightInCm);
+                var maxHeight = HealthModel.CalculateMaxDeskHeight(HealthModel.UserHeightInCm);
 
-            ElapsedTimeUpdater?.Dispose();
-            ElapsedTimeUpdater = null;
+                if (currentDeskHeight < minHeight)
+                {
+                    SittingNotification = "Desk height too low for sitting.";
+                }
+                else if (currentDeskHeight > maxHeight)
+                {
+                    SittingNotification = "Desk height too high for standing.";
+                }
+                else
+                {
+                    SittingNotification = "Desk height is in the recommended range.";
+                }
 
-            SittingNotification = "Timer stopped.";
-        }
-
-        protected async Task NotifySittingTimerElapsed()
-        {
-            SittingNotification = "Time to stand up and stretch!";
-            await InvokeAsync(StateHasChanged);
-        }
-
-        protected void ResetSittingTimer()
-        {
-            StopSittingTimer();
-            StartSittingTimer();
-            SittingNotification = "Timer reset. Keep working comfortably.";
+                InvokeAsync(StateHasChanged);
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
         }
 
         public void Dispose()
         {
-            SittingTimer?.Dispose();
-            ElapsedTimeUpdater?.Dispose();
+            TimerUpdater?.Dispose();
         }
     }
 }

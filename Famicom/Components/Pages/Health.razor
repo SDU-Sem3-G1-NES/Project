@@ -11,10 +11,17 @@
         <MudCardContent>
             <MudText Typo="Typo.h6">Health Data</MudText>
             <MudText Typo="Typo.subtitle1">@HealthData</MudText>
-            <MudTextField Label="Enter Your Height (cm)" @bind-Value="HealthModel.UserHeightInCm" />
-            <MudButton Color="Color.Primary" OnClick="FetchHealthDataAsync">Fetch Health Data</MudButton>
+            <MudTextField Label="Enter Your Height (cm)" @bind-Value="HealthModel.UserHeightInCm" Disabled="@IsHeightLocked" />
+            <MudIconButton Icon="@((IsHeightLocked) ? Icons.Material.Filled.Edit : Icons.Material.Filled.Lock)" OnClick="ToggleHeightLock" />
+            <MudButton Color="Color.Primary" OnClick="FetchHealthDataAsync">Calculate</MudButton>
         </MudCardContent>
     </MudCard>
+
+    <!-- Warnings -->
+    @if (!string.IsNullOrEmpty(HeightWarning))
+    {
+        <MudAlert Severity="Severity.Warning">@HeightWarning</MudAlert>
+    }
 
     <!-- Sitting Timer -->
     <MudCard Class="mt-4">
@@ -22,9 +29,6 @@
             <MudText Typo="Typo.h6">Sitting Timer</MudText>
             <MudText Typo="Typo.subtitle1">Notification: @SittingNotification</MudText>
             <MudText Typo="Typo.subtitle2">Elapsed Time: @ElapsedTime.ToString("hh\\:mm\\:ss")</MudText>
-            <MudButton Color="Color.Success" OnClick="StartSittingTimer" Disabled="IsTimerRunning">Start Timer</MudButton>
-            <MudButton Color="Color.Error" OnClick="StopSittingTimer" Disabled="!IsTimerRunning">Stop Timer</MudButton>
-            <MudButton Color="Color.Secondary" OnClick="ResetSittingTimer">Reset Timer</MudButton>
         </MudCardContent>
     </MudCard>
 </MudContainer>

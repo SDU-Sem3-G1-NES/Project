@@ -1,12 +1,10 @@
-using System.Threading.Tasks;
-
 namespace Famicom.Models
 {
     public class HealthModel
     {
         public string HealthData { get; private set; } = "Mock health data";
 
-        public int UserHeightInCm { get; set; } = 170;
+        public int UserHeightInCm { get; set; } = 0;
 
         public async Task FetchHealthDataAsync()
         {
@@ -17,14 +15,14 @@ namespace Famicom.Models
             HealthData = $"Recommended desk height range: {minHeight:F1} cm - {maxHeight:F1} cm.";
         }
 
-        public double CalculateMinDeskHeight(int heightInCm)
+        public int CalculateMinDeskHeight(int heightInCm)
         {
-            return 1.2037 * heightInCm - 16.9633;
+            return (int)(0.48 * heightInCm);
         }
 
-        public double CalculateMaxDeskHeight(int heightInCm)
+        public int CalculateMaxDeskHeight(int heightInCm)
         {
-            return 1.4067 * heightInCm - 23.9376;
+            return (int)(0.56 * heightInCm);
         }
     }
 }
