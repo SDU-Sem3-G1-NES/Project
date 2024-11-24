@@ -15,11 +15,12 @@ namespace Famicom.Components.Pages
         public string? UserPassword { get; set; }
         public string? UserType { get; set; }
         public string? ErrorMessage { get; set; }
-
+        private bool IsAssignOverlayActivated { get; set; }
         private string fixedSalt { get; set; }
 
         protected override void OnInitialized()
         {
+            IsAssignOverlayActivated = false;
             fixedSalt = userCredentialsService.GetFixedSalt();
         }
 
@@ -57,6 +58,7 @@ namespace Famicom.Components.Pages
                    userRepo.AddUser(UserName, UserEmail, 1);
                    
                 }
+
             }
             catch (Exception e)
             {

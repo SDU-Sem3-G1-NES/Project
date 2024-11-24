@@ -107,6 +107,36 @@ namespace DataAccess
             return tables;
         }
 
+        public List<ITable> GetUserFreeTable()
+        {
+            var sql = $"SELECT t.t_guid, t.t_name FROM tables AS t LEFT JOIN user_tables AS ut ON t.t_guid = ut.t_guid WHERE ut.t_guid IS NULL; ";
+            List<ITable> tables = new List<ITable>();
+
+            try
+            {
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ITable table = new LinakTable(
+                                reader.GetString(0),
+                                reader.GetString(1)
+                                );
+                            tables.Add(table);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
+            return tables;
+        }
+
         public List<ITable> GetTablesRoom(int roomId)
         {
             var sql = $"SELECT t.t_guid,t.t_name FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";

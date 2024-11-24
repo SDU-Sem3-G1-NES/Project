@@ -106,5 +106,10 @@ namespace Models.Services
         {
             return userRepository.GetCleaner(email);
         }
+
+        public List<Employee> GetAllUsers()
+        {
+            return userRepository.GetAllUsers();
+        }
     }
 }

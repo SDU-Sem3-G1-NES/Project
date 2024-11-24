@@ -60,5 +60,12 @@ namespace Models.Services
         {
             return tableRepository.GetAllTables();
         }
+
+        public List<ITable> GetUserFreeTable()
+        {
+            return tableRepository.GetUserFreeTable();
+        }
+
+
     }
 }

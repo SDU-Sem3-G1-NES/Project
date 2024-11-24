@@ -125,6 +125,35 @@ namespace DataAccess
 
         #region Get Methods
 
+        public List<Employee> GetAllUsers()
+        {
+            var sql = $"SELECT u_id,u_name,u_mail FROM users";
+
+            List<Employee> Users = new List<Employee>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+
+                        Employee employee = new Employee
+                        {
+                            UserID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Email = reader.GetString(2),
+
+                        };
+                        Users.Add(employee);
+                    }
+                }
+            }
+
+            return Users;
+
+        }
+
         // Todo: Implement fetching user by email
         public List<Employee> GetEmployee(string? email = null)
         {

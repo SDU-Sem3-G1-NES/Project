@@ -1,4 +1,5 @@
 ﻿@inherits ComponentBase
+@using Famicom.Components.Pages;
 
 <MudPaper Class="pa-4">
     <MudForm>
@@ -22,3 +23,6 @@
     </MudForm>
 </MudPaper>
 
+<MudOverlay Visible="IsAssignOverlayActivated" DarkBackground="true">
+    <AssignUserComponent />
+</MudOverlay>

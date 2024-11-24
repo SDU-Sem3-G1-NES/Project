@@ -1,7 +1,33 @@
 ﻿@inherits AssignUserComponent 
 
-<MudPaper Class="pa-4">
-    @if     
+@if (ShouldAskQuestion)
+{
+    <MudPaper Class="pa-4">
+        <MudText>Do you want to assign table to user ?</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ChangeView">Assign</MudButton>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Class="pa-4">
+       <MudText>Assign table:</MudText>
+         <MudSelect T="string" Label="Select Table" @bind-Value="selectedTable">
+            @foreach (var table in Tables)
+              {
+                <MudSelectItem Value="@table.TableId">@table.TableName</MudSelectItem>
+              }
+         </MudSelect>
+        <MudText>To user:</MudText>
+        <MudSelect T="string" Label="Select User" @bind-Value="selectedUser">
+            @foreach (var user in Users)
+              {
+                <MudSelectItem Value="@user.UserId">@user.UserName</MudSelectItem>
+              }
+        </MudSelect>
 
-        }
-</MudPaper>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AssignTable">Assign</MudButton>
+    </MudPaper>
+}
+
