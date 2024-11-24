@@ -102,4 +102,9 @@ CREATE TABLE SCHEDULE_TABLES (
     FOREIGN KEY (T_GUID) REFERENCES TABLES(T_GUID)
 );
 
+INSERT INTO APIS (A_NAME, A_CONFIG) VALUES 
+('Linak Simulator API V2', '{"controller": "LinakSimulatorController"}'),
+('Mock API', '{"controller": "MockTableController"}'),
+('Linak API', '{"controller": "LinakTableController"}');
+
 COMMIT;
