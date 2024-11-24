@@ -107,4 +107,8 @@ INSERT INTO APIS (A_NAME, A_CONFIG) VALUES
 ('Mock API', '{"controller": "MockTableController"}'),
 ('Linak API', '{"controller": "LinakTableController"}');
 
+INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES 
+('cd:fb:1a:53:fb:e6', 'DESK 4486', 'Linak A/S', 1);
+
+
 COMMIT;
