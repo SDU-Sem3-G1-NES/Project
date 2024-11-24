@@ -246,7 +246,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
             // a check here to ensure that the response body is what we expect it to be.
-            if(data.Any(x => !serialisedResponseBody!.ContainsKey(x.Key) || serialisedResponseBody[x.Key] != x.Value)) {
+            if(data.Any(x => x.Value.Equals(serialisedResponseBody![x.Key.ToString()]))) {
                 throw new Exception("Response body does not match request body.");
             }
         }
