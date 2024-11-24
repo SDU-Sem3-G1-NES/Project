@@ -246,16 +246,8 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
             // a check here to ensure that the response body is what we expect it to be.
-            foreach (var x in data)
-            {
-                if (x.Key.ToString() == "position_mm")
-                {
-                    return new HttpResponseMessage(HttpStatusCode.OK);
-                }
-                else if (serialisedResponseBody![x.Key] != x.Value)
-                {
-                    throw new Exception($"Failed to set table {prop.Name}!");
-                }
+            if(data.Any(x => !serialisedResponseBody!.ContainsKey(x.Key) || serialisedResponseBody[x.Key] != x.Value)) {
+                throw new Exception("Response body does not match request body.");
             }
         }
 
@@ -274,18 +266,41 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
     }
 
     public async Task<int> WatchTableAsItMoves(string guid, int newPosition) {
+
+        // Get last error
         var tempTable = await GetTableInfo(guid);
         var lastError = tempTable!.lastErrors.LastOrDefault();
+
         bool check = true;
         while(check) {
             var table = await GetTableInfo(guid);
+
+            // GET errors
             if(table == null) throw new Exception("Table not found on API!");
             if(table.state.position_mm == null) throw new Exception("Could not get position.");
+
+            // Table Errors
             if(table.lastErrors.LastOrDefault()!.time_s < lastError!.time_s || 
                 (table.lastErrors.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
-                {
+            {
                 return (int)table.lastErrors.LastOrDefault()!.errorCode!;
             }
+
+            // Other Table Properties relating to collisions, etc...
+            if(table.state.isPositionLost ?? false) {
+                return 1;
+            }
+            if(table.state.isOverloadProtectionUp ?? false) {
+                return 2;
+            }
+            if(table.state.isOverloadProtectionDown ?? false) {
+                return 3;
+            }
+            if(table.state.isAntiCollision ?? false) {
+                return 9;
+            }
+
+            // Success if table has reached new position
             if(table.state.position_mm == newPosition) {
                 check = false;
             }
