@@ -191,13 +191,18 @@ public class LinakSimulatorController : ITableController
 }
 
 internal class LinakSimulatorTasks : ILinakSimulatorTasks {
-    private readonly  HttpClient _client = new HttpClient();
+    private readonly  HttpClient _client = null!;
     private readonly LinakSimulatorControllerOptions _options;
     private readonly string _baseUrl;
 
     internal LinakSimulatorTasks() {
         _options = new LinakSimulatorControllerOptions();
-        _baseUrl = $"http://{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
+        _baseUrl = $"https://{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
+
+        var handler = new HttpClientHandler {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        _client = new HttpClient(handler);
     }
 
     public async Task<LinakApiTable?> GetTableInfo(string guid) {
