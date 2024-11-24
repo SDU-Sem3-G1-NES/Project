@@ -56,18 +56,18 @@ public class LinakSimulatorController : ITableController
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null
                 || response.id == null
-                || response.name == null
-                || response.position == null) 
+                || response.config.name == null
+                || response.state.position_mm == null) 
             {
                 return Task.FromException<LinakTable>(new Exception("Table not found on API!"));
             } 
 
             var returnTable = new LinakTable(
                 response.id,
-                response.name
+                response.config.name
             );
-            returnTable.Height = response.position;
-            returnTable.Speed = response.speed; 
+            returnTable.Height = response.state.position_mm;
+            returnTable.Speed = response.state.speed_mm; 
 
             return Task.FromResult(returnTable);
         } 
@@ -90,13 +90,13 @@ public class LinakSimulatorController : ITableController
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null
                 || response.id == null
-                || response.name == null
-                || response.position == null) 
+                || response.config.name == null
+                || response.state.position_mm == null) 
             {
                 return Task.FromException<int>(new Exception("Table not found on API!"));
             } 
 
-            return Task.FromResult(response.position.Value);
+            return Task.FromResult(response.state.position_mm.Value);
         } 
         catch (Exception e) 
         {
@@ -113,21 +113,23 @@ public class LinakSimulatorController : ITableController
     /// <param name="height">New Height for the table.</param>
     /// <param name="guid">GUID of the table to set height for.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
-    public Task SetTableHeight(int height, string guid)
+    public async Task SetTableHeight(int height, string guid)
     {
         try {
-            var tempTable = new LinakApiTable {id = guid, position = height};
+            var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
+            tempTable.state.position_mm = height;
             var response = _tasks.SetTableInfo(tempTable).Result;
+            var result = await _tasks.WatchTableAsItMoves(guid, height);
 
             // Because return type is void, we must throw exceptions if something goes wrong
-            if (!response.IsSuccessStatusCode) return Task.FromException(new Exception("Failed to set table height!"));
-            return Task.CompletedTask; 
+            if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
+            await Task.CompletedTask; 
 
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException(new Exception(e.Message));
+            await Task.FromException(new Exception(e.Message));
         }
         
     }
@@ -143,8 +145,8 @@ public class LinakSimulatorController : ITableController
         {
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null) throw new Exception("Table not found on API!");
-            if(response.speed == null) return Task.FromException<int>(new Exception("Could not get speed."));
-            return Task.FromResult(response.speed!.Value);
+            if(response.state.speed_mm == null) return Task.FromException<int>(new Exception("Could not get speed."));
+            return Task.FromResult(response.state.speed_mm!.Value);
         } 
         catch (Exception e) 
         {
@@ -165,7 +167,7 @@ public class LinakSimulatorController : ITableController
         {
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null) throw new Exception("Table not found on API!");
-            return Task.FromResult(response.status ?? "");
+            return Task.FromResult(response.state.status ?? "");
         } 
         catch (Exception e) 
         {
@@ -213,6 +215,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var jsonString = response.Content.ReadAsStringAsync();
         var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
 
+        apiTable!.id = guid;
         return apiTable ?? new LinakApiTable();
     }
 
@@ -226,17 +229,34 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         // Loop through all non-null properties of ApiTable, serialise, and send to web API
         foreach (PropertyInfo prop in table.GetType().GetProperties().Where(x => x.GetValue(table) != null && x.Name != "id"))
         {
-            var data = new Dictionary<string, object> { { prop.Name, prop.GetValue(table)! } };
+            var requestUrl = $"{url}/{prop.Name}";
+            var data = new Dictionary<string, object> {};
+
+            foreach (PropertyInfo subProp in prop.GetValue(table)!.GetType().GetProperties().Where(x => x.GetValue(prop.GetValue(table)) != null))
+            {
+                if(subProp.GetValue(prop.GetValue(table)) != null) data.Add(subProp.Name, subProp.GetValue(prop.GetValue(table))!);
+            }
+
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync(url, content);
+            var response = await _client.PutAsync(requestUrl, content);
             response.EnsureSuccessStatusCode();
             var responseBody = response.Content.ReadAsStringAsync().Result;
             var serialisedResponseBody = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
             // a check here to ensure that the response body is what we expect it to be.
-            if(data[prop.Name].ToString() != serialisedResponseBody![prop.Name].ToString()) new Exception($"Failed to set table {prop.Name}!");
+            foreach (var x in data)
+            {
+                if (x.Key.ToString() == "position_mm")
+                {
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+                else if (serialisedResponseBody![x.Key] != x.Value)
+                {
+                    throw new Exception($"Failed to set table {prop.Name}!");
+                }
+            }
         }
 
         return new HttpResponseMessage(HttpStatusCode.OK);
@@ -252,12 +272,34 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
 
         return apiTables ?? [];
     }
+
+    public async Task<int> WatchTableAsItMoves(string guid, int newPosition) {
+        var tempTable = await GetTableInfo(guid);
+        var lastError = tempTable!.lastErrors.LastOrDefault();
+        bool check = true;
+        while(check) {
+            var table = await GetTableInfo(guid);
+            if(table == null) throw new Exception("Table not found on API!");
+            if(table.state.position_mm == null) throw new Exception("Could not get position.");
+            if(table.lastErrors.LastOrDefault()!.time_s < lastError!.time_s || 
+                (table.lastErrors.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
+                {
+                return (int)table.lastErrors.LastOrDefault()!.errorCode!;
+            }
+            if(table.state.position_mm == newPosition) {
+                check = false;
+            }
+            await Task.Delay(200); 
+        }
+        return 0;
+    }
 }
 
 internal interface ILinakSimulatorTasks {
     Task<LinakApiTable?> GetTableInfo(string guid);
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
     Task<string[]> GetAllTableIds();
+    Task<int> WatchTableAsItMoves(string guid, int newPosition);
 }
 
 internal class LinakSimulatorControllerOptions {
@@ -280,10 +322,38 @@ internal class LinakSimulatorControllerOptions {
 
 [Serializable]
 internal class LinakApiTable {
-    public string? id { get; set; }
+    public string id { get; set; } = null!;
+    public LinakApiTableConfig config { get; set; } = null!;
+    public LinakApiTableState state { get; set; } = null!;
+    public LinakApiTableUsage usage { get; set; } = null!;
+    public LinakApiTableError[] lastErrors { get; set; } = null!;
+}
+
+[Serializable]
+internal class LinakApiTableConfig {
     public string? name { get; set; }
     public string? manufacturer { get; set; }
-    public int? position { get; set; }
-    public int? speed { get; set; }
+}
+
+[Serializable]
+internal class LinakApiTableState {
+    public int? position_mm { get; set; }
+    public int? speed_mm { get; set; }
     public string? status { get; set; }
+    public bool? isPositionLost { get; set; }
+    public bool? isOverloadProtectionUp { get; set; }
+    public bool? isOverloadProtectionDown { get; set; }
+    public bool? isAntiCollision { get; set; }
+}
+
+[Serializable]
+internal class LinakApiTableUsage {
+    public int? activationCounter { get; set; }
+    public int? sitStandCounter { get; set; }
+}
+
+[Serializable]
+internal class LinakApiTableError {
+    public int? time_s { get; set; }
+    public int? errorCode { get; set; }
 }
