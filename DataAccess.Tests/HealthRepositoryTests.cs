@@ -1,6 +1,10 @@
 ﻿using Xunit;
 using Moq;
 using DataAccess;
+using SharedModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace DataAccess.Tests
 {
@@ -16,7 +20,7 @@ namespace DataAccess.Tests
         }
 
         [Fact]
-        public void InsertHealth_ShouldExecuteNonQuery_WithCorrectParameters()
+        public void InsertHealth_ShouldExecuteNonQuery_WithCorrectParameters_WhenPresetIdIsNotNull()
         {
             // Arrange
             int userId = 1;
@@ -27,34 +31,38 @@ namespace DataAccess.Tests
             _healthRepository.InsertHealth(userId, presetID, position);
 
             // Assert
-            var param1 = ("@userId", (object)userId);
-            var param2 = ("@presetID", (object?)presetID ?? DBNull.Value);
-            var param3 = ("@position", (object)position);
-
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO health (h_user, h_preset, h_position) VALUES (@userId, @presetID, @position)",
-                param1, param2, param3
-            ), Times.Once);
+            "INSERT INTO HEALTH (H_DATE, U_ID, P_ID, H_POSITION) VALUES (@H_DATE, @U_ID, @P_ID, @H_POSITION)",
+        It.Is<(string, object)[]>(parameters =>
+        parameters.Any(p => p.Item1 == "@H_DATE" && p.Item2 is DateTime) && // Match H_DATE is DateTime
+        parameters.Any(p => p.Item1 == "@U_ID" && (int)p.Item2 == userId) && // Match U_ID
+        parameters.Any(p => p.Item1 == "@P_ID" && (int)p.Item2 == presetID) && // Match P_ID
+        parameters.Any(p => p.Item1 == "@H_POSITION" && (int)p.Item2 == position) // Match H_POSITION
+    )
+), Times.Once);
         }
 
         [Fact]
-        public void GetHealthByUser_ShouldExecuteQuery_WithCorrectParameters()
+        public void InsertHealth_ShouldExecuteNonQuery_WithCorrectParameters_WhenPresetIdIsNull()
         {
             // Arrange
-            int userID = 1;
-            DateTime? endtime = null;
+            int userId = 1;
+            int? presetID = null;
+            int position = 1;
 
             // Act
-            _healthRepository.GetHealthByUser(userID, endtime);
+            _healthRepository.InsertHealth(userId, presetID, position);
 
             // Assert
-            var param1 = ("@userID", (object)userID);
-            var param2 = ("@endtime", (object?)endtime ?? DBNull.Value);
-
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "SELECT * FROM health WHERE h_user = @userID AND h_time < @endtime",
-                param1, param2
-            ), Times.Once);
+            "INSERT INTO HEALTH (H_DATE, U_ID, H_POSITION) VALUES (@H_DATE, @U_ID, @H_POSITION)",
+            It.Is<(string, object)[]>(parameters =>
+            parameters.Any(p => p.Item1 == "@H_DATE" && p.Item2 is DateTime) && // Match H_DATE is DateTime
+            parameters.Any(p => p.Item1 == "@U_ID" && (int)p.Item2 == userId) && // Match U_ID
+            parameters.Any(p => p.Item1 == "@H_POSITION" && (int)p.Item2 == position) // Match H_POSITION
+            )
+        ), Times.Once);
         }
+
     }
 }
