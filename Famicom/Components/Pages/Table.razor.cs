@@ -18,6 +18,7 @@ namespace Famicom.Components.Pages
         public required List<ITable> Table { get; set; }
         public bool IsTableOverlayActivated { get; set; } = false;
         public bool IsUserOverlayActivated { get; set; } = false;
+        public bool IsAssignOverlayActivated { get; set; } = false;
 
         #region Properties for Search, Filter and Sorting
         public string? orderValue { get; set; }
@@ -77,20 +78,34 @@ namespace Famicom.Components.Pages
             IsUserOverlayActivated = value;
         }
 
+
+        public void AssignOverlay(bool value)
+        {
+            IsAssignOverlayActivated = value;
+        }
+
         #region Methods for closing overlay from component
         public async Task HandleUserAdded()
         {
             IsUserOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
+            AssignOverlay(true);
         }
 
         public async Task HandleTableAdded()
         {
             IsTableOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
+            AssignOverlay(true);
+        }
+
+        public async Task HandleUserAssigned()
+        {
+            IsAssignOverlayActivated = false;
+            await InvokeAsync(StateHasChanged);
         }
         #endregion
 
-       
+
     }
 }

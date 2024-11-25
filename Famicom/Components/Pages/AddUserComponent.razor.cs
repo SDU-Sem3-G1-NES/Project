@@ -15,12 +15,10 @@ namespace Famicom.Components.Pages
         public string? UserPassword { get; set; }
         public string? UserType { get; set; }
         public string? ErrorMessage { get; set; }
-        private bool IsAssignOverlayActivated { get; set; }
-        private string fixedSalt { get; set; }
+        public required string fixedSalt { get; set; }
 
         protected override void OnInitialized()
         {
-            IsAssignOverlayActivated = false;
             fixedSalt = userCredentialsService.GetFixedSalt();
         }
 
@@ -34,6 +32,7 @@ namespace Famicom.Components.Pages
         {
             await OnUserAdded.InvokeAsync(null);
         }
+
         public async Task AddUser()
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword) || string.IsNullOrEmpty(UserType))
@@ -63,8 +62,8 @@ namespace Famicom.Components.Pages
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                ErrorMessage = "An error occurred while adding the user.";
                 Snackbar.Add("An error occurred while adding the user", Severity.Error);
+                await OnUserAdded.InvokeAsync(null);
                 return;
             }
 
@@ -72,6 +71,7 @@ namespace Famicom.Components.Pages
 
             Snackbar.Add("User added successfully", Severity.Success);
             await OnUserAdded.InvokeAsync(null);
+            
         }
 
     }

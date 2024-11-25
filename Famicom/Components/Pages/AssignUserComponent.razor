@@ -1,4 +1,4 @@
-﻿@inherits AssignUserComponent 
+﻿@inherits ComponentBase 
 
 @if (ShouldAskQuestion)
 {
@@ -15,14 +15,14 @@ else
          <MudSelect T="string" Label="Select Table" @bind-Value="selectedTable">
             @foreach (var table in Tables)
               {
-                <MudSelectItem Value="@table.TableId">@table.TableName</MudSelectItem>
+                <MudSelectItem Value="@table.GUID">@table.Name</MudSelectItem>
               }
          </MudSelect>
         <MudText>To user:</MudText>
-        <MudSelect T="string" Label="Select User" @bind-Value="selectedUser">
+        <MudSelect T="int" Label="Select User" @bind-Value="selectedUser">
             @foreach (var user in Users)
               {
-                <MudSelectItem Value="@user.UserId">@user.UserName</MudSelectItem>
+                <MudSelectItem Value="@user.UserID">@user.Name</MudSelectItem>
               }
         </MudSelect>
 

@@ -11,10 +11,10 @@ namespace Famicom.Components.Pages
         private bool AddUserVisible { get; set; }
 
         private bool ShouldAskQuestion { get; set; }
-        private List<Employee> Users { get; set; }
-        public string selectedTable { get; set; }
+        public required List<Employee> Users { get; set; }
+        public required string selectedTable { get; set; }
         public int selectedUser { get; set; }
-        private List<ITable> Tables { get; set; }
+        public required List<ITable> Tables { get; set; }
 
         private UserService userService = new UserService();
 
@@ -26,11 +26,12 @@ namespace Famicom.Components.Pages
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
 
-        public AssignUserComponent()
+        protected override void OnInitialized()
         {
             ShouldAskQuestion = true;
+            Users = userService.GetAllUsers();
+            Tables = tableService.GetUserFreeTable();
             AddUserVisible = false;
-            
         }
 
 
@@ -43,9 +44,9 @@ namespace Famicom.Components.Pages
         private void ChangeView()
         {
             ShouldAskQuestion = !ShouldAskQuestion;
-            Users = userService.GetAllUsers();
-            Tables = tableService.GetUserFreeTable();
         }
+
+
 
         private async Task AssignTable()
         {
