@@ -4,10 +4,10 @@
         <MudTextField T="string" Label="Table Name" Required="true" RequiredError="Table Name is required!" @bind-Value="TableName" Class="mb-4" />
         <MudTextField T="string" Label="Table Manufacturer" Required="true" RequiredError="Table Manufacturer is required!" @bind-Value="TableManufacturer" Class="mb-4" />
         <MudSelect T="string" Label="Choose Table API" @bind-Value="TableApi" Class="mb-4">
-            <MudSelectItem Value="@("LinakApi")" Label="Linak Api" />
-            <MudSelectItem Value="@("NotImplemented")" Label="NotImplemented" />
+            <MudSelectItem Value="@("LinakApi")">Linak Api</MudSelectItem>
+            <MudSelectItem Value="@("NotImplemented")">NotImplemented</MudSelectItem>
         </MudSelect>
-        <MudStack Direction="Row" Spacing="2" Class="mt-4">
+        <MudStack Spacing="2" Class="mt-4">
             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTable">Add</MudButton>
         </MudStack>
