@@ -6,29 +6,34 @@
 <MudContainer MaxWidth="MaxWidth.Medium">
     <MudText Typo="Typo.h1">Health Panel</MudText>
 
-    <!-- Health Data Display -->
+    <!-- Posture Guidance -->
     <MudCard Class="mt-4">
         <MudCardContent>
-            <MudText Typo="Typo.h6">Health Data</MudText>
-            <MudText Typo="Typo.subtitle1">@HealthData</MudText>
-            <MudTextField Label="Enter Your Height (cm)" @bind-Value="HealthModel.UserHeightInCm" Disabled="@IsHeightLocked" />
-            <MudIconButton Icon="@((IsHeightLocked) ? Icons.Material.Filled.Edit : Icons.Material.Filled.Lock)" OnClick="ToggleHeightLock" />
-            <MudButton Color="Color.Primary" OnClick="FetchHealthDataAsync">Calculate</MudButton>
+            <MudText Typo="Typo.h6">Optimal Posture Guidance</MudText>
+            <img src="https://www.csueastbay.edu/riskmanagement/files/images/2021-ergonomic-graphic-01.jpg" alt="Optimal Posture" style="width: 100%; max-height: 400px;" />
+            <MudText Typo="Typo.body1">
+                Adjust your workspace according to the postures shown in the image, then input your desk height presets below.
+            </MudText>
         </MudCardContent>
     </MudCard>
 
-    <!-- Warnings -->
-    @if (!string.IsNullOrEmpty(HeightWarning))
-    {
-        <MudAlert Severity="Severity.Warning">@HeightWarning</MudAlert>
-    }
-
-    <!-- Sitting Timer -->
+    <!-- Desk Height Presets -->
     <MudCard Class="mt-4">
         <MudCardContent>
-            <MudText Typo="Typo.h6">Sitting Timer</MudText>
+            <MudText Typo="Typo.h6">Desk Height Presets</MudText>
+            <MudTextField Label="Sitting Desk Height (cm)" @bind-Value="HealthModel.SittingHeightPreset" />
+            <MudTextField Label="Standing Desk Height (cm)" @bind-Value="HealthModel.StandingHeightPreset" />
+            <MudButton Color="Color.Primary" OnClick="SavePresets">Save Presets</MudButton>
+        </MudCardContent>
+    </MudCard>
+
+    <!-- Mode and Notifications -->
+    <MudCard Class="mt-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h6">Mode Detection</MudText>
+            <MudText Typo="Typo.subtitle1">Current Mode: @CurrentMode</MudText>
             <MudText Typo="Typo.subtitle1">Notification: @SittingNotification</MudText>
-            <MudText Typo="Typo.subtitle2">Elapsed Time: @ElapsedTime.ToString("hh\\:mm\\:ss")</MudText>
+            <MudText Typo="Typo.subtitle2">Elapsed Sitting Time: @ElapsedTime.ToString("hh\\:mm\\:ss")</MudText>
         </MudCardContent>
     </MudCard>
 </MudContainer>

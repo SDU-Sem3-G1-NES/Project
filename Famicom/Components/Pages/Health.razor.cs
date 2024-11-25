@@ -9,75 +9,65 @@ namespace Famicom.Components.Pages
     public partial class HealthBase : ComponentBase, IDisposable
     {
         protected HealthModel HealthModel { get; set; } = new HealthModel();
-        public string HealthData => HealthModel.HealthData;
+        public string CurrentMode { get; private set; } = "Sitting";
+        public string SittingNotification { get; private set; } = "You are sitting comfortably.";
+        public TimeSpan ElapsedTime => IsTimerRunning ? DateTime.Now - TimerStart : TimeSpan.Zero;
 
         private Timer? TimerUpdater;
         private DateTime TimerStart;
+        private bool IsTimerRunning = false;
+        private const int ModeSwitchInterval = 30; // Minutes
 
-        protected bool IsTimerRunning { get; private set; } = false;
-        protected bool IsHeightLocked { get; set; } = true;
-        public string SittingNotification { get; private set; } = "You are sitting comfortably.";
-        public string HeightWarning { get; private set; } = string.Empty;
-        public TimeSpan ElapsedTime => IsTimerRunning ? DateTime.Now - TimerStart : TimeSpan.Zero;
-
-        private const int DeskMinHeight = 68; // Min desk height
-        private const int DeskMaxHeight = 132; // Max desk height
-
-        public async Task FetchHealthDataAsync()
+        protected override Task OnInitializedAsync()
         {
-            await HealthModel.FetchHealthDataAsync();
-
-            var minHeight = HealthModel.CalculateMinDeskHeight(HealthModel.UserHeightInCm);
-            var maxHeight = HealthModel.CalculateMaxDeskHeight(HealthModel.UserHeightInCm);
-
-            if (minHeight < DeskMinHeight || maxHeight > DeskMaxHeight)
-            {
-                HeightWarning = $"Recommended height range exceeds desk capabilities ({DeskMinHeight} cm - {DeskMaxHeight} cm).";
-            }
-            else
-            {
-                HeightWarning = string.Empty;
-            }
-
-            StateHasChanged();
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            await FetchHealthDataAsync();
             StartAutomaticTimer();
+            return Task.CompletedTask;
         }
 
-        protected void ToggleHeightLock()
+        public void SavePresets()
         {
-            IsHeightLocked = !IsHeightLocked;
+            // Save the desk height presets to the backend or local storage (mocked for now)
+            StateHasChanged();
         }
 
         private void StartAutomaticTimer()
         {
             TimerUpdater = new Timer(_ =>
             {
-                // Simulate reading the current desk height (mock value for now)
-                var currentDeskHeight = 70; // Mock value
+                DetectMode();
 
-                var minHeight = HealthModel.CalculateMinDeskHeight(HealthModel.UserHeightInCm);
-                var maxHeight = HealthModel.CalculateMaxDeskHeight(HealthModel.UserHeightInCm);
-
-                if (currentDeskHeight < minHeight)
+                if (CurrentMode == "Sitting" && ElapsedTime.TotalMinutes >= ModeSwitchInterval)
                 {
-                    SittingNotification = "Desk height too low for sitting.";
-                }
-                else if (currentDeskHeight > maxHeight)
-                {
-                    SittingNotification = "Desk height too high for standing.";
+                    SittingNotification = "You’ve been sitting for 30 minutes. Consider switching to standing mode.";
                 }
                 else
                 {
-                    SittingNotification = "Desk height is in the recommended range.";
+                    SittingNotification = string.Empty;
                 }
 
                 InvokeAsync(StateHasChanged);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        }
+
+        private void DetectMode()
+        {
+            // Mock current desk height (In real application, fetch from hardware or input)
+            int currentDeskHeight = 70; // Example mock value
+            if (Math.Abs(currentDeskHeight - HealthModel.SittingHeightPreset) <= 2)
+            {
+                CurrentMode = "Sitting";
+                if (!IsTimerRunning)
+                {
+                    TimerStart = DateTime.Now;
+                    IsTimerRunning = true;
+                }
+            }
+            else if (Math.Abs(currentDeskHeight - HealthModel.StandingHeightPreset) <= 2)
+            {
+                CurrentMode = "Standing";
+                TimerStart = DateTime.Now;
+                IsTimerRunning = false;
+            }
         }
 
         public void Dispose()
