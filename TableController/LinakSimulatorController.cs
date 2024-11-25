@@ -67,7 +67,7 @@ public class LinakSimulatorController : ITableController
                 response.config.name
             );
             returnTable.Height = response.state.position_mm;
-            returnTable.Speed = response.state.speed_mm; 
+            returnTable.Speed = response.state.speed_mms; 
 
             return Task.FromResult(returnTable);
         } 
@@ -152,15 +152,15 @@ public class LinakSimulatorController : ITableController
         {
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null) throw new Exception("Table not found on API!");
-            if(response.state.speed_mm == null) return Task.FromException<int>(new Exception("Could not get speed."));
-            return Task.FromResult(response.state.speed_mm!.Value);
+            if(response.state.speed_mms == null) return Task.FromException<int>(new Exception("Could not get speed."));
+            return Task.FromResult(response.state.speed_mms!.Value);
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
             return Task.FromException<int>(new Exception(e.Message));
         }
-    }
+    9
 
 
     /// <summary>
@@ -622,7 +622,7 @@ public class LinakTableError : ITableError
 [Serializable]
 internal class LinakApiTableState {
     public int? position_mm { get; set; }
-    public int? speed_mm { get; set; }
+    public int? speed_mms { get; set; }
     public string? status { get; set; }
     public bool? isPositionLost { get; set; }
     public bool? isOverloadProtectionUp { get; set; }
