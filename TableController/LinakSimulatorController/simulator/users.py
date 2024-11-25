@@ -8,6 +8,7 @@ class UserType(Enum):
     SEATED = "seated"
     STANDING = "standing"
     ACTIVE = "active"
+    DISABLED = "disabled"
 
 class UserBehavior:
     """Base class for user behaviors."""
@@ -77,3 +78,10 @@ class ActiveUser(UserBehavior):
             )
             logging.info(f"ActiveUser adjusting desk {self.desk.desk_id} to {'standing' if self.next_position == self.standing_position else 'seated'} position {self.next_position}.")
             self.desk.set_target_position(self.next_position)
+
+class DisabledUser(UserBehavior):
+    """User who never interacts with the desk."""
+    def __init__(self, desk, position_cycle_time_s=3600, seated_position=0, standing_position=0):
+        super().__init__(desk)
+    def simulate(self, time_delta_s):
+        pass

@@ -5,7 +5,7 @@ import os
 import random
 import logging
 from desk import Desk
-from users import SeatedUser, StandingUser, ActiveUser, UserType
+from users import DisabledUser, SeatedUser, StandingUser, ActiveUser, UserType
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -107,6 +107,8 @@ class DeskManager:
             return StandingUser(desk)
         elif user_type == UserType.ACTIVE:
             return ActiveUser(desk)
+        elif user_type == UserType.DISABLED:
+            return DisabledUser(desk)
         else:
             raise ValueError(f"Unknown behavior type: {user_type}")
                             

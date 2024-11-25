@@ -15,18 +15,18 @@ def generate_desk_id():
 def generate_desk_name():
     return f"DESK {random.randint(1000, 9999)}"
 
-def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000, use_https=False, cert_file=None, key_file=None, desks=2, speed=60):
+def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000, disable_simulation=False, use_https=False, cert_file=None, key_file=None, desks=2, speed=60):
     logging.info(f"Initializing DeskManager with simulation speed: {speed}")
     desk_manager = DeskManager(speed)
     
     logging.info("Adding default desks...")
-    desk_manager.add_desk("cd:fb:1a:53:fb:e6", "DESK 4486", "Linak A/S", UserType.ACTIVE)
-    desk_manager.add_desk("ee:62:5b:b8:73:1d", "DESK 6743", "Linak A/S", UserType.STANDING)
+    desk_manager.add_desk("cd:fb:1a:53:fb:e6", "DESK 4486", "Linak A/S", UserType.DISABLED if disable_simulation else UserType.ACTIVE)
+    desk_manager.add_desk("ee:62:5b:b8:73:1d", "DESK 6743", "Linak A/S", UserType.DISABLED if disable_simulation else UserType.STANDING)
     
     if len(desk_manager.get_desk_ids()) < desks:
         logging.info(f"Adding {desks - len(desk_manager.get_desk_ids())} additional desks.")
         for i in range(desks - len(desk_manager.get_desk_ids())):
-            desk_manager.add_desk(generate_desk_id(), generate_desk_name(), "Linak A/S", UserType.ACTIVE)
+            desk_manager.add_desk(generate_desk_id(), generate_desk_name(), "Linak A/S", UserType.DISABLED if disable_simulation else UserType.ACTIVE)
     
     desk_manager.start_updates()
 
@@ -75,6 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("--keyfile", type=str, help="Path to the SSL key file")
     parser.add_argument("--desks", type=int, default=2, help="Minimum number of desks to simulate (default: 2)")
     parser.add_argument("--speed", type=int, default=60, help="Simulation speed (default: 60)")
+    parser.add_argument("--disablesim", action="store_true", default=False, help="Disable simulation (default: False)")
 
     args = parser.parse_args()
 
@@ -93,5 +94,6 @@ if __name__ == "__main__":
         cert_file=args.certfile,
         key_file=args.keyfile,
         desks=args.desks,
-        speed=args.speed
+        speed=args.speed,
+        disable_simulation=args.disablesim
     )
