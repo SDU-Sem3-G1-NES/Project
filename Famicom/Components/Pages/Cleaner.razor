@@ -13,8 +13,7 @@
                 Current Status: @("Cleaning Mode is " + (IsCleaningMode ? "ON" : "OFF"))
             </MudText>
             <MudButton Color="Color.Primary"
-                       OnClick="@ToggleCleaningMode"
-                       Disabled="!CanActivateCleaningMode">
+                       OnClick="@ToggleCleaningMode">
                 @(IsCleaningMode ? "Deactivate Cleaning Mode" : "Activate Cleaning Mode")
             </MudButton>
         </MudCardContent>

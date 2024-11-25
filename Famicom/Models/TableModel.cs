@@ -13,6 +13,7 @@ namespace Famicom.Models
             this.tableService = new TableService();
         }
 
+        // Method to retrieve a table based on a user ID
         public ITable? GetTable(int userId)
         {
             var tables = tableService.GetTablesUser(userId);
@@ -22,6 +23,7 @@ namespace Famicom.Models
             }
             return this.table;
         }
+
         public void UpdateAllTablesMaxHeight(bool isMaxHeight)
         {
             string state = isMaxHeight ? "maximum height" : "normal height";
