@@ -160,7 +160,7 @@ public class LinakSimulatorController : ITableController
             Debug.WriteLine(e.Message);
             return Task.FromException<int>(new Exception(e.Message));
         }
-    9
+    }
 
 
     /// <summary>
