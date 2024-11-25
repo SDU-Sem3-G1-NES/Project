@@ -113,13 +113,13 @@ public class LinakSimulatorController : ITableController
     /// <param name="height">New Height for the table.</param>
     /// <param name="guid">GUID of the table to set height for.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
-    public async Task SetTableHeight(int height, string guid, IProgress<TableStatusReport> progress)
+    public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
     {
         var taskProgress = new Progress<int>(message =>
         {
             var parsedStattus = ParseTableStatus(message);
             progress.Report( 
-                new TableStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
+                new LinakStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
                 );
         });
         try {
@@ -183,9 +183,25 @@ public class LinakSimulatorController : ITableController
         }
     }
 
-    public Task GetTableError(string guid)
+    public Task<ITableError[]> GetTableError(string guid)
     {
-        throw new NotImplementedException();
+        var returnArray = new List<LinakTableError>();
+        try 
+        {
+            var response = _tasks.GetTableInfo(guid).Result;
+            if (response == null) throw new Exception("Table not found on API!");
+            if(response.lastErrors.Length == 0) return (Task<ITableError[]>)Task.FromException(new Exception("No errors found."));
+            foreach(var error in response.lastErrors) {
+                var parsedError = ParseTableStatus(error.errorCode!.Value);
+                returnArray.Add(new LinakTableError(guid, error.time_s!.Value, error.errorCode!.Value, parsedError.Values.First()));
+            }
+        } 
+        catch (Exception e) 
+        {
+            Debug.WriteLine(e.Message);
+            return (Task<ITableError[]>)Task.FromException(new Exception(e.Message));
+        }
+        return Task.FromResult(returnArray.Cast<ITableError>().ToArray());
     }
 
     private Dictionary<TableStatus, string> ParseTableStatus(int errorCode)
@@ -571,6 +587,36 @@ internal class LinakApiTable {
 internal class LinakApiTableConfig {
     public string? name { get; set; }
     public string? manufacturer { get; set; }
+}
+
+public class LinakStatusReport : ITableStatusReport
+{
+    public string guid { get; set; }
+    public TableStatus Status { get; set; }
+    public string Message { get; set; }
+
+    public LinakStatusReport(string guid, TableStatus status, string message)
+    {
+        this.guid = guid;
+        Status = status;
+        Message = message;
+    }
+}
+
+public class LinakTableError : ITableError
+{
+    public string guid { get; set; }
+    public int TimeSinceError { get; set; }
+    public int ErrorCode { get; set; }
+    public string Message { get; set; }
+
+    public LinakTableError(string guid, int timeSinceError, int errorCode, string message)
+    {
+        this.guid = guid;
+        TimeSinceError = timeSinceError;
+        ErrorCode = errorCode;
+        Message = message;
+    }
 }
 
 [Serializable]
