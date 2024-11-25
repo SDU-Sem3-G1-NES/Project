@@ -10,20 +10,22 @@ namespace Famicom.Components.Pages
 
         private TableModel tableModel = new TableModel();
 
+        // Method to toggle cleaning mode
         public void ToggleCleaningMode()
         {
-                IsCleaningMode = !IsCleaningMode;
+            IsCleaningMode = !IsCleaningMode;
 
-                if (IsCleaningMode)
-                {
-                    SetAllTablesToMaxHeight();
-                }
-                else
-                {
-                    ResetTablesToNormalHeight();
-                }
+            if (IsCleaningMode)
+            {
+                SetAllTablesToMaxHeight(); // Set all tables to max height when cleaning mode is activated
             }
+            else
+            {
+                ResetTablesToNormalHeight(); // Reset tables to normal height when cleaning mode is deactivated
+            }
+        }
 
+        // Method to set all tables to max height
         private void SetAllTablesToMaxHeight()
         {
             try
@@ -36,6 +38,7 @@ namespace Famicom.Components.Pages
             }
         }
 
+        // Method to reset all tables to normal height
         private void ResetTablesToNormalHeight()
         {
             try
