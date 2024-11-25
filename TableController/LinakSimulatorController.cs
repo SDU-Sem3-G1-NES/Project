@@ -190,7 +190,7 @@ public class LinakSimulatorController : ITableController
         {
             var response = _tasks.GetTableInfo(guid).Result;
             if (response == null) throw new Exception("Table not found on API!");
-            if(response.lastErrors.Length == 0) return (Task<ITableError[]>)Task.FromException(new Exception("No errors found."));
+            if(response.lastErrors!.Length == 0) return (Task<ITableError[]>)Task.FromException(new Exception("No errors found."));
             foreach(var error in response.lastErrors) {
                 var parsedError = ParseTableStatus(error.errorCode!.Value);
                 returnArray.Add(new LinakTableError(guid, error.time_s!.Value, error.errorCode!.Value, parsedError.Values.First()));
@@ -482,7 +482,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
 
         // Get last error
         var tempTable = await GetTableInfo(guid);
-        var lastError = tempTable!.lastErrors.LastOrDefault();
+        var lastError = tempTable!.lastErrors!.LastOrDefault();
         var lastPosition = tempTable.state.position_mm;
         var positionSameCounter = 0;
         var returnValue = -1;
@@ -496,10 +496,10 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             if(table.state.position_mm == null) throw new Exception("Could not get position.");
 
             // Table Errors
-            if(table.lastErrors.LastOrDefault()!.time_s < lastError!.time_s || 
-                (table.lastErrors.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
+            if(table.lastErrors!.LastOrDefault()!.time_s < lastError!.time_s || 
+                (table.lastErrors!.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
             {
-                progress.Report((int)table.lastErrors.LastOrDefault()!.errorCode!);
+                progress.Report((int)table.lastErrors!.LastOrDefault()!.errorCode!);
             }
 
             // Other Table Properties relating to collisions, etc...
@@ -574,21 +574,6 @@ internal class LinakSimulatorControllerOptions {
     }
 }
 
-[Serializable]
-internal class LinakApiTable {
-    public string id { get; set; } = null!;
-    public LinakApiTableConfig config { get; set; } = null!;
-    public LinakApiTableState state { get; set; } = null!;
-    public LinakApiTableUsage usage { get; set; } = null!;
-    public LinakApiTableError[] lastErrors { get; set; } = null!;
-}
-
-[Serializable]
-internal class LinakApiTableConfig {
-    public string? name { get; set; }
-    public string? manufacturer { get; set; }
-}
-
 public class LinakStatusReport : ITableStatusReport
 {
     public string guid { get; set; }
@@ -617,6 +602,21 @@ public class LinakTableError : ITableError
         ErrorCode = errorCode;
         Message = message;
     }
+}
+
+[Serializable]
+internal class LinakApiTable {
+    public string id { get; set; } = null!;
+    public LinakApiTableConfig config { get; set; } = null!;
+    public LinakApiTableState state { get; set; } = null!;
+    public LinakApiTableUsage usage { get; set; } = null!;
+    public LinakApiTableError[]? lastErrors { get; set; } = null!;
+}
+
+[Serializable]
+internal class LinakApiTableConfig {
+    public string? name { get; set; }
+    public string? manufacturer { get; set; }
 }
 
 [Serializable]

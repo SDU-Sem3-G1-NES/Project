@@ -10,6 +10,7 @@ using SharedModels;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Reflection;
+using FluentAssertions;
 
 namespace TableController.Tests
 {
@@ -17,8 +18,10 @@ namespace TableController.Tests
     {
         private Mock<ILinakSimulatorTasks> _linakSimulatorTasksMock = null!;
         private LinakSimulatorController _controller = null!;
+        private LinakApiTable apiTable = null!;
+        private IProgress<ITableStatusReport> _progress = null!;
 
-        private Task GetFreshObjects()
+        private async Task GetFreshObjects()
         {
             _controller = new LinakSimulatorController();
             _linakSimulatorTasksMock = new Mock<ILinakSimulatorTasks>();
@@ -26,7 +29,46 @@ namespace TableController.Tests
             var field = typeof(LinakSimulatorController)
                 .GetField("_tasks", BindingFlags.NonPublic | BindingFlags.Instance);
             field!.SetValue(_controller, _linakSimulatorTasksMock.Object);
-            return Task.CompletedTask;
+
+            apiTable = await GenerateTable();
+            _progress = new Progress<ITableStatusReport>();
+
+        }
+
+        private static Task<LinakApiTable> GenerateTable(int position = 100, int speed = 50) {
+            var returnTable = new LinakApiTable
+            {
+                id = "test-guid",
+                config = new LinakApiTableConfig
+                {
+                    name = "test-name",
+                    manufacturer = "Linak A/S"
+                },
+                state = new LinakApiTableState
+                {
+                    position_mm = position,
+                    speed_mms = speed,
+                    status = "active",
+                    isPositionLost = false,
+                    isAntiCollision = false,
+                    isOverloadProtectionUp = false,
+                    isOverloadProtectionDown = false
+                },
+                usage = new LinakApiTableUsage
+                {
+                    activationCounter = 0,
+                    sitStandCounter = 0
+                },
+                lastErrors = new LinakApiTableError[]
+                {
+                    new LinakApiTableError
+                    {
+                        time_s = 1,
+                        errorCode = 1
+                    }
+                }
+            };
+            return Task.FromResult(returnTable);
         }
 
 #region Tests with injected GUID
@@ -36,16 +78,6 @@ namespace TableController.Tests
         {
             // Arrange
             await GetFreshObjects();
-            var apiTable = new LinakApiTable
-            {
-                id = "test-guid",
-                name = "test-name",
-                manufacturer = "Linak A/S",
-                position = 100,
-                speed = 50,
-                status = "active"
-            };
-
 
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(It.IsAny<string>()))
@@ -68,7 +100,6 @@ namespace TableController.Tests
             // Arrange
             await GetFreshObjects();
             var guid = "test-guid";
-            var apiTable = new LinakApiTable {id = guid, name = "test", position = 100 };
 
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(guid))
@@ -92,17 +123,15 @@ namespace TableController.Tests
             };
             var guid = "test-guid";
 
-            var apiTable = new LinakApiTable {id = guid, name = "test", position = 200 };
-
             _linakSimulatorTasksMock
                 .Setup(x => x.SetTableInfo(It.IsAny<LinakApiTable>()))
                 .ReturnsAsync(responseMessage);
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(It.IsAny<string>()))
-                .ReturnsAsync(new LinakApiTable {id = guid, name = "test", position = 200 });
+                .ReturnsAsync(await GenerateTable(200, 50));
 
             // Act
-            await _controller.SetTableHeight(200, guid);
+            await _controller.SetTableHeight(200, guid, _progress);
             int compareHeight = await _controller.GetTableHeight(guid);
 
             // Assert
@@ -114,7 +143,6 @@ namespace TableController.Tests
         {
             // Arrange
             await GetFreshObjects();
-            var apiTable = new LinakApiTable { speed = 50 };
             var guid = "test-guid";
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(guid))
@@ -132,7 +160,6 @@ namespace TableController.Tests
         {
             // Arrange
             await GetFreshObjects();
-            var apiTable = new LinakApiTable { status = "active" };
             var guid = "test-guid";
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(guid))
@@ -144,32 +171,24 @@ namespace TableController.Tests
             // Assert
             Assert.Equal("active", status);
         }
-#endregion
-
-
-#region Not implemented methods
-        [Fact]
-        public async void GetTableError_ThrowsNotImplementedException()
-        {
-            // Act & Assert
-            await GetFreshObjects();
-            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetTableError(""));
-        }
 
         [Fact]
-        public async void GetActivationCounter_ThrowsNotImplementedException()
+        public async void GetTableError_ReturnsErrorWithInjectedGUID()
         {
-            // Act & Assert
+            // Arrange
             await GetFreshObjects();
-            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetActivationCounter(""));
-        }
+            var guid = "test-guid";
+            _linakSimulatorTasksMock
+                .Setup(x => x.GetTableInfo(guid))
+                .ReturnsAsync(apiTable);
 
-        [Fact]
-        public async void GetSitStandCounter_ThrowsNotImplementedException()
-        {
-            // Act & Assert
-            await GetFreshObjects();
-            await Assert.ThrowsAsync<NotImplementedException>(async () => await _controller.GetSitStandCounter(""));
+            // Act
+            var errorArray = await _controller.GetTableError(guid);
+            var error = errorArray.FirstOrDefault();
+            var compareError = new LinakTableError("test-guid", 1, 1, "Position Lost: The desk has an unknown position and needs to be initialized");
+
+            // Assert
+            error.Should().BeEquivalentTo(compareError);
         }
 #endregion
     }
@@ -177,6 +196,41 @@ namespace TableController.Tests
     public class LinakSimulatorTasksTests
     {
         private LinakApiTable _table = null!;
+        private static Task<LinakApiTable> GenerateTable(int position = 100, int speed = 50) {
+            var returnTable = new LinakApiTable
+            {
+                id = "test-guid",
+                config = new LinakApiTableConfig
+                {
+                    name = "test-name",
+                    manufacturer = "Linak A/S"
+                },
+                state = new LinakApiTableState
+                {
+                    position_mm = position,
+                    speed_mms = speed,
+                    status = "active",
+                    isPositionLost = false,
+                    isAntiCollision = false,
+                    isOverloadProtectionUp = false,
+                    isOverloadProtectionDown = false
+                },
+                usage = new LinakApiTableUsage
+                {
+                    activationCounter = 0,
+                    sitStandCounter = 0
+                },
+                lastErrors = new LinakApiTableError[]
+                {
+                    new LinakApiTableError
+                    {
+                        time_s = 1,
+                        errorCode = 1
+                    }
+                }
+            };
+            return Task.FromResult(returnTable);
+        }
         private Mock<HttpMessageHandler> _httpMessageHandlerMock = null!;
         private HttpClient _httpClient = null!;
         private LinakSimulatorTasks _tasks = null!;
@@ -190,18 +244,10 @@ namespace TableController.Tests
 #region LinakSimulatorTasksTests
         private void GetFreshObjects()
         {
-            _table = new LinakApiTable
-            {
-                id = "test-guid",
-                name = "test-name",
-                manufacturer = "Linak A/S",
-                position = 100,
-                speed = 50,
-                status = "active"
-            };
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
             _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
             _tasks = new LinakSimulatorTasks();
+            _table = GenerateTable().Result;
 
             var clientField = typeof(LinakSimulatorTasks)
                 .GetField("_client", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -242,54 +288,55 @@ namespace TableController.Tests
         {
             // Arrange
             GetFreshObjects();
-            var expectedResponse = new Dictionary<string, string>
-            {
-                {"id", "test-guid"},
-                {"name", "test-name2"},
-                {"manufacturer", "test-manufacturer2"},
-                {"position", "1002"},
-                {"speed", "502"},
-                {"status", "test-status2"}
-            };
 
-            var expectedTable = new LinakApiTable
-            {
-                id = "test-guid",
-                name = "test-name2",
-                //manufacturer = "test-manufacturer2", // Left out on purpose
-                //position = 1002, // Left out on purpose
-                speed = 502,
-                status = "test-status2"
-            };
+            var expectedTable = await GenerateTable(502, 50);
 
             var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonSerializer.Serialize(expectedResponse))
+                Content = new StringContent(JsonSerializer.Serialize(expectedTable))
+            };
+
+            var propertyResponses = new Dictionary<string, HttpResponseMessage>
+            {
+                { "config", new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonSerializer.Serialize(expectedTable.config))
+                    }
+                },
+                { "state", new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonSerializer.Serialize(expectedTable.state))
+                    }
+                },
+                { "usage", new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonSerializer.Serialize(expectedTable.usage))
+                    }
+                },
             };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(r => r.RequestUri == new Uri($"{_baseUrl}/desks/{_table.id}") && r.Method == HttpMethod.Put), 
+                    ItExpr.Is<HttpRequestMessage>(r => 
+                        r.RequestUri!.ToString().StartsWith($"{_baseUrl}/desks/{_table.id}") && 
+                        r.Method == HttpMethod.Put), 
                     ItExpr.IsAny<CancellationToken>())
-                .Returns(async (HttpRequestMessage request, CancellationToken token) =>
+                .Returns((HttpRequestMessage request, CancellationToken token) =>
                 {
-                    // Make sure only the current property is part of the http response body, not the whole object.
-                    // The Method we are testing loops through the properties and sets them one by one.
-                    var requestBody = request.Content != null ? await request.Content.ReadAsStringAsync() : string.Empty;
-                    var requestData = JsonSerializer.Deserialize<Dictionary<string, object>>(requestBody) ?? new Dictionary<string, object>();
-                    var responseData = new Dictionary<string, string> {{requestData.Keys.First().ToString(), expectedResponse[requestData.Keys.First().ToString()]}};
-
-                    var response = new HttpResponseMessage
+                    var propertyName = request.RequestUri!.ToString().Split('/').Last();
+                    if (propertyResponses.ContainsKey(propertyName))
                     {
-                        StatusCode = HttpStatusCode.OK,
-                        Content = new StringContent(JsonSerializer.Serialize(responseData))
-                    };
-
-                    return await Task.FromResult(response);
+                        return Task.FromResult(propertyResponses[propertyName]);
+                    }
+                    return Task.FromResult(response);
                 });
 
             // Act
+            expectedTable.lastErrors = null;
             var result = await _tasks.SetTableInfo(expectedTable);
 
             // Assert
