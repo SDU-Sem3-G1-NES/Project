@@ -102,59 +102,13 @@ CREATE TABLE SCHEDULE_TABLES (
     FOREIGN KEY (T_GUID) REFERENCES TABLES(T_GUID)
 );
 
--- Insert data into USER_TYPES
-INSERT INTO USER_TYPES (UT_NAME, UT_PERMISSIONS) VALUES
-('Admin', '{"can_create": true, "can_edit": true, "can_delete": true}'),
-('User', '{"can_create": true, "can_edit": false, "can_delete": false}');
+INSERT INTO APIS (A_NAME, A_CONFIG) VALUES 
+('Linak Simulator API V2', '{"controller": "LinakSimulatorController"}'),
+('Mock API', '{"controller": "MockTableController"}'),
+('Linak API', '{"controller": "LinakTableController"}');
 
--- Insert data into USERS
-INSERT INTO USERS (U_NAME, U_MAIL, U_TYPE) VALUES
-('John Doe', 'john.doe@example.com', 1),
-('Jane Smith', 'jane.smith@example.com', 2);
+INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES 
+('cd:fb:1a:53:fb:e6', 'DESK 4486', 'Linak A/S', 1);
 
--- Insert data into USER_CREDENTIALS
-INSERT INTO USER_CREDENTIALS (UMAIL_HASH, UPASS_HASH) VALUES
-('\x1234567890abcdef', '\xabcdef1234567890'),
-('\xabcdef1234567890', '\x1234567890abcdef');
-
--- Insert data into USER_HABITS
-INSERT INTO USER_HABITS (U_ID, H_EVENT) VALUES
-(1, '{"habit": "running", "frequency": "daily"}'),
-(2, '{"habit": "reading", "frequency": "weekly"}');
-
--- Insert data into APIS
-INSERT INTO APIS (A_NAME, A_CONFIG) VALUES
-('API1', '{"config1": "value1"}'),
-('API2', '{"config2": "value2"}');
-
--- Insert data into TABLES
-INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES
-('guid1', 'Table1', 'Manufacturer1', 1),
-('guid2', 'Table2', 'Manufacturer2', 2);
-
--- Insert data into ROOMS
-INSERT INTO ROOMS (R_NAME, R_NUMBER, R_FLOOR) VALUES
-('Room1', '101', 1),
-('Room2', '102', 2);
-
--- Insert data into SCHEDULES
-INSERT INTO SCHEDULES (S_NAME, S_CONFIG, S_OWNER) VALUES
-('Schedule1', '{"config1": "value1"}', 1),
-('Schedule2', '{"config2": "value2"}', 2);
-
--- Insert data into USER_TABLES
-INSERT INTO USER_TABLES (U_ID, T_GUID) VALUES
-(1, 'guid1'),
-(2, 'guid2');
-
--- Insert data into ROOM_TABLES
-INSERT INTO ROOM_TABLES (R_ID, T_GUID) VALUES
-(1, 'guid1'),
-(2, 'guid2');
-
--- Insert data into SCHEDULE_TABLES
-INSERT INTO SCHEDULE_TABLES (S_ID, T_GUID) VALUES
-(1, 'guid1'),
-(2, 'guid2');
 
 COMMIT;

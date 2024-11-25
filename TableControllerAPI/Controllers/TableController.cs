@@ -12,6 +12,11 @@ namespace TableControllerApi.Controllers;
 public class TableController : ControllerBase
 {
     private readonly ITableControllerService _tableControllerService;
+
+    private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
+    {
+        Debug.WriteLine(message);
+    });
     public TableController(ITableControllerService tableControllerService)
     {
         _tableControllerService = tableControllerService;
@@ -37,7 +42,7 @@ public class TableController : ControllerBase
         try
         {
         var _tableController = await _tableControllerService.GetTableController(guid);
-        await _tableController.SetTableHeight(height, guid);
+        await _tableController.SetTableHeight(height, guid, _progress);
         return Ok(await Task.FromResult("Table height set successfully."));
         }
         catch (Exception e)

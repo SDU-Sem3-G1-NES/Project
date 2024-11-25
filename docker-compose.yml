@@ -29,7 +29,7 @@ services:
     build:
       context: ./TableController/LinakSimulatorController
     ports:
-      - "${LSAPI_PORT}:8000"
+      - "${LSAPI_PORT}:8433"
     restart: unless-stopped
     env_file:
       - .env
