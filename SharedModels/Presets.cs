@@ -7,6 +7,7 @@
         public int UserId { get; set; }
         public int Height { get; set; }
         public string? Options { get; set; }
+        public string? Icon { get; set; }
     }
 }
 
