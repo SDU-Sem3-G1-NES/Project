@@ -113,13 +113,20 @@ public class LinakSimulatorController : ITableController
     /// <param name="height">New Height for the table.</param>
     /// <param name="guid">GUID of the table to set height for.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
-    public async Task SetTableHeight(int height, string guid)
+    public async Task SetTableHeight(int height, string guid, IProgress<TableStatusReport> progress)
     {
+        var taskProgress = new Progress<int>(message =>
+        {
+            var parsedStattus = ParseTableStatus(message);
+            progress.Report( 
+                new TableStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
+                );
+        });
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
             var response = _tasks.SetTableInfo(tempTable).Result;
-            var result = await _tasks.WatchTableAsItMoves(guid, height);
+            var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
             if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
@@ -181,14 +188,201 @@ public class LinakSimulatorController : ITableController
         throw new NotImplementedException();
     }
 
-    public Task<int> GetActivationCounter(string guid)
+    private Dictionary<TableStatus, string> ParseTableStatus(int errorCode)
     {
-        throw new NotImplementedException();
-    }
+        var statusDictionary = new Dictionary<TableStatus, string>();
 
-    public Task GetSitStandCounter(string guid)
-    {
-        throw new NotImplementedException();
+        switch (errorCode)
+        {
+            case 1:
+                statusDictionary[TableStatus.Lost] = "Position Lost: The desk has an unknown position and needs to be initialized";
+                break;
+            case 2:
+                statusDictionary[TableStatus.Overload] = "General Overload Up: Overload in upward direction has occurred";
+                break;
+            case 3:
+                statusDictionary[TableStatus.Overload] = "General Overload Down: Overload in downward direction has occurred";
+                break;
+            case 8:
+                statusDictionary[TableStatus.OtherError] = "Watchdog: Indicate that software failed to kick watchdog";
+                break;
+            case 9:
+                statusDictionary[TableStatus.Collision] = "LIN collision: Collisions detected on the LIN bus";
+                break;
+            case 10:
+                statusDictionary[TableStatus.OtherError] = "Power fail: Power fail happened or power regulator adjusted below 10%";
+                break;
+            case 11:
+                statusDictionary[TableStatus.OtherError] = "Channel mismatch: Change in number of actuators since initialization";
+                break;
+            case 12:
+                statusDictionary[TableStatus.OtherError] = "Position error: One channel have position different than others";
+                break;
+            case 13:
+                statusDictionary[TableStatus.OtherError] = "Short circuit: Short circuit detected during operation";
+                break;
+            case 15:
+                statusDictionary[TableStatus.OtherError] = "Power limit: System has reached its power limitation";
+                break;
+            case 16:
+                statusDictionary[TableStatus.OtherError] = "Key Error: Illegal keys pressed (handled internally in DP1C)";
+                break;
+            case 17:
+                statusDictionary[TableStatus.OtherError] = "Safety missing: LIN bus unit does not support safety feature";
+                break;
+            case 18:
+                statusDictionary[TableStatus.OtherError] = "Missing Initialization plug: A special service tool is required to change number of channels to the system";
+                break;
+            case 23:
+                statusDictionary[TableStatus.OtherError] = "Ch1 missing: Channel 1 is detected missing";
+                break;
+            case 24:
+                statusDictionary[TableStatus.OtherError] = "Ch2 missing: Channel 2 is detected missing";
+                break;
+            case 25:
+                statusDictionary[TableStatus.OtherError] = "Ch3 missing: Channel 3 is detected missing";
+                break;
+            case 26:
+                statusDictionary[TableStatus.OtherError] = "Ch4 missing: Channel 4 is detected missing";
+                break;
+            case 29:
+                statusDictionary[TableStatus.OtherError] = "Ch1 type: Channel 1 is not same type as when initialized";
+                break;
+            case 30:
+                statusDictionary[TableStatus.OtherError] = "Ch2 type: Channel 2 is not same type as when initialized or not same type as channel 1";
+                break;
+            case 31:
+                statusDictionary[TableStatus.OtherError] = "Ch3 type: Channel 3 is not same type as when initialized or not same type as channel 1";
+                break;
+            case 32:
+                statusDictionary[TableStatus.OtherError] = "Ch4 type: Channel 4 is not same type as when initialized or not same type as channel 1";
+                break;
+            case 35:
+                statusDictionary[TableStatus.OtherError] = "Ch1 pulse fail: Channel 1 had too many pulse errors";
+                break;
+            case 36:
+                statusDictionary[TableStatus.OtherError] = "Ch2 pulse fail: Channel 2 had too many pulse errors";
+                break;
+            case 37:
+                statusDictionary[TableStatus.OtherError] = "Ch3 pulse fail: Channel 3 had too many pulse errors";
+                break;
+            case 38:
+                statusDictionary[TableStatus.OtherError] = "Ch4 pulse fail: Channel 4 had too many pulse errors";
+                break;
+            case 41:
+                statusDictionary[TableStatus.Overload] = "Ch1 overload up: Overload up occurred on channel 1";
+                break;
+            case 42:
+                statusDictionary[TableStatus.Overload] = "Ch2 overload up: Overload up occurred on channel 2";
+                break;
+            case 43:
+                statusDictionary[TableStatus.Overload] = "Ch3 overload up: Overload up occurred on channel 3";
+                break;
+            case 44:
+                statusDictionary[TableStatus.Overload] = "Ch4 overload up: Overload up occurred on channel 4";
+                break;
+            case 47:
+                statusDictionary[TableStatus.Overload] = "Ch1 overload down: Overload down occurred on channel 1";
+                break;
+            case 48:
+                statusDictionary[TableStatus.Overload] = "Ch2 overload down: Overload down occurred on channel 2";
+                break;
+            case 49:
+                statusDictionary[TableStatus.Overload] = "Ch3 overload down: Overload down occurred on channel 3";
+                break;
+            case 50:
+                statusDictionary[TableStatus.Overload] = "Ch4 overload down: Overload down occurred on channel 4";
+                break;
+            case 53:
+                statusDictionary[TableStatus.Collision] = "Ch1 anti-col: Anti-collision triggered on channel 1";
+                break;
+            case 54:
+                statusDictionary[TableStatus.Collision] = "Ch2 anti-col: Anti-collision triggered on channel 2";
+                break;
+            case 55:
+                statusDictionary[TableStatus.Collision] = "Ch3 anti-col: Anti-collision triggered on channel 3";
+                break;
+            case 56:
+                statusDictionary[TableStatus.Collision] = "Ch4 anti-col: Anti-collision triggered on channel 4";
+                break;
+            case 59:
+                statusDictionary[TableStatus.Collision] = "Ch1 SLS/PIEZO: Safety limit switch activated on channel 1";
+                break;
+            case 60:
+                statusDictionary[TableStatus.Collision] = "Ch2 SLS/PIEZO: Safety limit switch activated on channel 2";
+                break;
+            case 61:
+                statusDictionary[TableStatus.Collision] = "Ch3 SLS/PIEZO: Safety limit switch activated on channel 3";
+                break;
+            case 62:
+                statusDictionary[TableStatus.Collision] = "Ch4 SLS/PIEZO: Safety limit switch activated on channel 4";
+                break;
+            case 65:
+                statusDictionary[TableStatus.OtherError] = "Ch1 pulse dir: Pulses counted wrong direction in channel 1";
+                break;
+            case 66:
+                statusDictionary[TableStatus.OtherError] = "Ch2 pulse dir: Pulses counted wrong direction in channel 2";
+                break;
+            case 67:
+                statusDictionary[TableStatus.OtherError] = "Ch3 pulse dir: Pulses counted wrong direction in channel 3";
+                break;
+            case 68:
+                statusDictionary[TableStatus.OtherError] = "Ch4 pulse dir: Pulses counted wrong direction in channel 4";
+                break;
+            case 71:
+                statusDictionary[TableStatus.OtherError] = "Ch1A short: Short circuit on channel 1 [If T-splitter is used short circuit on 1A]";
+                break;
+            case 72:
+                statusDictionary[TableStatus.OtherError] = "Ch1B short: Short circuit on channel 1 [If T-splitter is used short circuit on 1B]";
+                break;
+            case 73:
+                statusDictionary[TableStatus.OtherError] = "Ch2A short: Short circuit on channel 2 [If T-splitter is used short circuit on 2A]";
+                break;
+            case 74:
+                statusDictionary[TableStatus.OtherError] = "Ch2B short: Short circuit on channel 2 [If T-splitter is used short circuit on 2B]";
+                break;
+            case 75:
+                statusDictionary[TableStatus.OtherError] = "Ch3A short: Short circuit on channel 3 [If T-splitter is used short circuit on 3A]";
+                break;
+            case 76:
+                statusDictionary[TableStatus.OtherError] = "Ch3B short: Short circuit on channel 3 [If T-splitter is used short circuit on 3B]";
+                break;
+            case 77:
+                statusDictionary[TableStatus.OtherError] = "Ch4A short: Short circuit on channel 4 [If T-splitter is used short circuit on 4A]";
+                break;
+            case 78:
+                statusDictionary[TableStatus.OtherError] = "Ch4B short: Short circuit on channel 4 [If T-splitter is used short circuit on 4B]";
+                break;
+            case 86:
+                statusDictionary[TableStatus.OtherError] = "Master: Connection to master lost OR following messages are from master";
+                break;
+            case 87:
+                statusDictionary[TableStatus.OtherError] = "Slave 1: Connection to 1st slave lost OR following messages are from 1st slave";
+                break;
+            case 88:
+                statusDictionary[TableStatus.OtherError] = "Slave 2: Connection to 2nd slave lost OR following messages are from 2nd slave";
+                break;
+            case 89:
+                statusDictionary[TableStatus.OtherError] = "Slave 3: Connection to 3rd slave lost OR following messages are from 3rd slave";
+                break;
+            case 93:
+                statusDictionary[TableStatus.Collision] = "DeskSensor 1 - Activation: Detected trigger from LIN bus safety limit switch e.g. DS1";
+                break;
+            case 94:
+                statusDictionary[TableStatus.OtherError] = "DeskSensor 1 - No longer detected: LIN SLS unit (e.g. DS1) no longer detected";
+                break;
+            case 100:
+                statusDictionary[TableStatus.OtherError] = "Table Timeout: Table API timed out after 3000ms. Status unknown.";
+                break;
+            case 101:
+                statusDictionary[TableStatus.Success] = "Table Success: Height changed successfully, however, a height limit was reached.";
+                break;
+            default:
+                statusDictionary[TableStatus.OtherError] = "Unknown Error: An unknown error has occurred";
+                break;
+        }
+
+        return statusDictionary;
     }
 }
 
@@ -196,6 +390,9 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
     private readonly  HttpClient _client = null!;
     private readonly LinakSimulatorControllerOptions _options;
     private readonly string _baseUrl;
+
+    private readonly int maxHeight = 1320;
+    private readonly int minHeight = 680;
 
     internal LinakSimulatorTasks() {
         _options = new LinakSimulatorControllerOptions();
@@ -265,11 +462,14 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         return apiTables ?? [];
     }
 
-    public async Task<int> WatchTableAsItMoves(string guid, int newPosition) {
+    public async Task<int> WatchTableAsItMoves(string guid, int newPosition, IProgress<int> progress) {
 
         // Get last error
         var tempTable = await GetTableInfo(guid);
         var lastError = tempTable!.lastErrors.LastOrDefault();
+        var lastPosition = tempTable.state.position_mm;
+        var positionSameCounter = 0;
+        var returnValue = -1;
 
         bool check = true;
         while(check) {
@@ -283,30 +483,53 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             if(table.lastErrors.LastOrDefault()!.time_s < lastError!.time_s || 
                 (table.lastErrors.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
             {
-                return (int)table.lastErrors.LastOrDefault()!.errorCode!;
+                progress.Report((int)table.lastErrors.LastOrDefault()!.errorCode!);
             }
 
             // Other Table Properties relating to collisions, etc...
-            if(table.state.isPositionLost ?? false) {
-                return 1;
+            else if(table.state.isPositionLost ?? false) {
+                progress.Report(1);
             }
-            if(table.state.isOverloadProtectionUp ?? false) {
-                return 2;
+            else if(table.state.isOverloadProtectionUp ?? false) {
+                progress.Report(2);
             }
-            if(table.state.isOverloadProtectionDown ?? false) {
-                return 3;
+            else if(table.state.isOverloadProtectionDown ?? false) {
+                progress.Report(3);
             }
-            if(table.state.isAntiCollision ?? false) {
-                return 9;
+            else if(table.state.isAntiCollision ?? false) {
+                progress.Report(9);
             }
 
             // Success if table has reached new position
-            if(table.state.position_mm == newPosition) {
+            if(table.state.position_mm == newPosition)
+            {
+                returnValue = 0;
+                check = false;
+            }
+            else {
+                if(table.state.position_mm != lastPosition) {
+                    lastPosition = table.state.position_mm;
+                    positionSameCounter = 0;
+                }
+                else {
+                    if(positionSameCounter >= 5 && (table.state.position_mm == minHeight || table.state.position_mm == maxHeight)) {
+                        progress.Report(101);
+                        returnValue = 101;
+                        check = false;
+                    }
+                    positionSameCounter++;
+                }
+            }
+
+            if(positionSameCounter > 15) {
+                progress.Report(100);
+                returnValue = 100;
                 check = false;
             }
             await Task.Delay(200); 
         }
-        return 0;
+        if(returnValue == -1) throw new Exception("Illegal Return Value. Something went catastrophically wrong.");
+        else return returnValue;
     }
 }
 
@@ -314,7 +537,7 @@ internal interface ILinakSimulatorTasks {
     Task<LinakApiTable?> GetTableInfo(string guid);
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
     Task<string[]> GetAllTableIds();
-    Task<int> WatchTableAsItMoves(string guid, int newPosition);
+    Task<int> WatchTableAsItMoves(string guid, int newPosition, IProgress<int> progress);
 }
 
 internal class LinakSimulatorControllerOptions {

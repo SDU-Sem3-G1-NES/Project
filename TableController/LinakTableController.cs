@@ -53,5 +53,10 @@ namespace TableController
         {
             throw new NotImplementedException();
         }
+
+        public Task SetTableHeight(int height, string guid, IProgress<TableStatusReport> progress)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
