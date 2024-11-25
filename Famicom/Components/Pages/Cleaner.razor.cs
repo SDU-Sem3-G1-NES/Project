@@ -7,14 +7,11 @@ namespace Famicom.Components.Pages
     public partial class CleanerBase : ComponentBase
     {
         public bool IsCleaningMode { get; private set; }
-        public bool CanActivateCleaningMode => DateTime.Now.Hour >= 18;
 
         private TableModel tableModel = new TableModel();
 
         public void ToggleCleaningMode()
         {
-            if (CanActivateCleaningMode)
-            {
                 IsCleaningMode = !IsCleaningMode;
 
                 if (IsCleaningMode)
@@ -26,7 +23,6 @@ namespace Famicom.Components.Pages
                     ResetTablesToNormalHeight();
                 }
             }
-        }
 
         private void SetAllTablesToMaxHeight()
         {
