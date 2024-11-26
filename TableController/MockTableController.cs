@@ -5,45 +5,65 @@ namespace TableController
 {
     public class MockTableController : ITableController
     {
-        public MockTableController(ITable table)
+        public MockTableController()
         {
-            Table = table;
         }
-        public ITable Table { get; private set; }
-        public int GetTableHeight(string? guid = null)
+        public Task<int> GetTableHeight(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableHeight");
-            return 15;
+            return Task.FromResult(15);
         }
-        public void SetTableHeight(int height, string? guid = null)
+        public Task SetTableHeight(int height, string guid)
         {
             Debug.WriteLine("MockTableController.SetTableHeight");
+            return Task.CompletedTask;
 
         }
-        public int GetTableSpeed(string? guid = null)
+        public Task<int> GetTableSpeed(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableSpeed");
-            return 0;
+            return Task.FromResult(0);
         }
-        public string GetTableStatus(string? guid = null)
+        public Task<string> GetTableStatus(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableStatus");
-            return "MockTableController.GetTableStatus";
+            return Task.FromResult("MockTableController.GetTableStatus");
         }
-        public void GetTableError(string? guid = null)
+        public Task GetTableError(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableError");
+            return Task.CompletedTask;
         }
-        public List<ITableError>? ErrorList { get; private set; }
-        public int GetActivationCounter(string? guid = null)
+        public Task<int> GetActivationCounter(string guid)
         {
             Debug.WriteLine("MockTableController.GetActivationCounter");
-            return 0;
+            return Task.FromResult(0);
         }
-        public void GetSitStandCounter(string? guid = null)
+        public Task GetSitStandCounter(string guid)
         {
             Debug.WriteLine("MockTableController.GetSitStandCounter");
+            return Task.CompletedTask;
         }
-        
+
+        public Task<string[]> GetAllTableIds()
+        {
+            Debug.WriteLine("MockTableController.GetAllTableIds");
+            return Task.FromResult(new string[] { "MockTableController.GetAllTableIds" });
+        }
+
+        public Task<LinakTable> GetFullTableInfo(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ITableError[]> ITableController.GetTableError(string guid)
+        {
+            throw new NotImplementedException();
+        }
     }    
 }

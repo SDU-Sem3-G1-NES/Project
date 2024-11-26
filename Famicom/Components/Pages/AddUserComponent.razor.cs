@@ -16,7 +16,7 @@ namespace Famicom.Components.Pages
         public string? UserType { get; set; }
         public string? ErrorMessage { get; set; }
 
-        private string fixedSalt { get; set; }
+        public required string fixedSalt { get; set; }
 
         protected override void OnInitialized()
         {

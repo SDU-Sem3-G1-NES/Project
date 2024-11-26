@@ -31,7 +31,8 @@ CREATE TABLE PRESETS (
     P_NAME VARCHAR(50) NOT NULL,
     P_USER INT NOT NULL,
     P_HEIGHT INT NOT NULL,
-    P_OPTIONS JSONB NOT NULL
+    P_OPTIONS JSONB NOT NULL,
+    P_ICON VARCHAR(50)
 );
 
 -- Alter User Related Tables to add constraints
@@ -99,5 +100,14 @@ CREATE TABLE SCHEDULE_TABLES (
     FOREIGN KEY (S_ID) REFERENCES SCHEDULES(S_ID),
     FOREIGN KEY (T_GUID) REFERENCES TABLES(T_GUID)
 );
+
+INSERT INTO APIS (A_NAME, A_CONFIG) VALUES 
+('Linak Simulator API V2', '{"controller": "LinakSimulatorController"}'),
+('Mock API', '{"controller": "MockTableController"}'),
+('Linak API', '{"controller": "LinakTableController"}');
+
+INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES 
+('cd:fb:1a:53:fb:e6', 'DESK 4486', 'Linak A/S', 1);
+
 
 COMMIT;

@@ -9,18 +9,21 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="MudBlazor" Version="7.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../Models/Models.csproj" />
-    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
   </ItemGroup>
    
   <ItemGroup>
     <Content Include="../.env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../SharedModels/SharedModels.csproj" />
+    <ProjectReference Include="../Models/Models.csproj" />
+    <ProjectReference Include="../TableControllerAPI/TableControllerAPI.csproj" />
   </ItemGroup>
 </Project>
