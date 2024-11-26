@@ -1,4 +1,5 @@
 ﻿using SharedModels;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
@@ -10,10 +11,9 @@ namespace DataAccess
 
         public TableRepository()
         {
-
             dbAccess = new DbAccess();
         }
-        // Constructor for testing.
+
         public TableRepository(DbAccess dbAccess)
         {
             this.dbAccess = dbAccess;
@@ -64,12 +64,14 @@ namespace DataAccess
             var sql = "DELETE FROM tables WHERE t_guid = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
+
         #endregion
 
         #region Get Methods
+
         public List<ITable> GetTablesUser(int userId)
         {
-            var sql = $"SELECT t.t_guid,t.t_name FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_guid = t.t_guid WHERE ut.u_id = {userId}";
+            var sql = $"SELECT t.t_guid, t.t_name FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_guid = t.t_guid WHERE ut.u_id = {userId}";
             List<ITable> tables = new List<ITable>();
 
             try
@@ -80,10 +82,7 @@ namespace DataAccess
                     {
                         while (reader.Read())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
+                            ITable table = new LinakTable(reader.GetString(0), reader.GetString(1));
                             tables.Add(table);
                         }
                     }
@@ -91,46 +90,12 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-
-                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+                Debug.WriteLine($"Error retrieving tables for user {userId}: {ex.Message}");
             }
             return tables;
         }
 
-        public List<ITable> GetTablesRoom(int roomId)
-        {
-            var sql = $"SELECT t.t_guid,t.t_name FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";
-            List<ITable> roomTables = new List<ITable>();
-
-            try
-            {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
-                              
-                            
-                            roomTables.Add(table);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
-            }
-
-            return roomTables;
-        }
-
-public List<ITable> GetAllTables()
+        public List<ITable> GetAllTables()
         {
             var sql = "SELECT t_guid, t_name FROM tables";
             List<ITable> tables = new List<ITable>();
@@ -143,10 +108,7 @@ public List<ITable> GetAllTables()
                     {
                         while (reader.Read())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
+                            ITable table = new LinakTable(reader.GetString(0), reader.GetString(1));
                             tables.Add(table);
                         }
                     }
@@ -154,38 +116,31 @@ public List<ITable> GetAllTables()
             }
             catch (Exception ex)
             {
-
-                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+                Debug.WriteLine($"Error retrieving all tables: {ex.Message}");
             }
             return tables;
         }
 
-        public string? GetTableAPI(string tableId)
+        /// <summary>
+        /// Updates the height of a specific table.
+        /// </summary>
+        /// <param name="tableId">The ID of the table to update.</param>
+        /// <param name="height">The target height in millimeters.</param>
+        public void UpdateTableHeight(string tableId, int height)
         {
-            var sql = $"SELECT distinct a_config FROM apis INNER JOIN tables ON apis.a_id = tables.t_api WHERE tables.t_guid = '{tableId}'";
+            var sql = "UPDATE tables SET t_height = @height WHERE t_guid = @tableId";
+
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var node =  JsonNode.Parse(reader.GetString(0));
-                            if(node == null || !(node is JsonObject jsonObject) || !jsonObject.TryGetPropertyValue("controller", out JsonNode? controllerNode)) return null;
-                            else return controllerNode?.ToString();
-                        }
-                    }
-                }
+                dbAccess.ExecuteNonQuery(sql, ("@height", height), ("@tableId", tableId));
+                Console.WriteLine($"Table {tableId} height updated to {height}mm.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+                Debug.WriteLine($"Error updating table height for {tableId}: {ex.Message}");
             }
-            return null;
         }
 
         #endregion
-
     }
 }
