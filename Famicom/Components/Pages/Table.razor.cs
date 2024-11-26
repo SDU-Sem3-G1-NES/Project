@@ -12,6 +12,8 @@ namespace Famicom.Components.Pages
 {
     public partial class TableBase : ComponentBase
     {
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService(); 
@@ -35,6 +37,7 @@ namespace Famicom.Components.Pages
         public List<string> tableNames = new List<string>() { "None", "Table 1", "Table 2", "Table 3", "Table 4", "Table 5", "Julka", "Hulk", "SpiderMan", "America", "Razor" };
 
         #endregion
+
 
         protected override void OnInitialized()
         {
@@ -62,6 +65,11 @@ namespace Famicom.Components.Pages
             if (string.IsNullOrEmpty(value))
                 return tableNames;
             return tableNames.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public void RefreshPage()
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
 
@@ -102,6 +110,10 @@ namespace Famicom.Components.Pages
             {
                 AssignOverlay(true);
             }
+            RefreshPage();
+
+
+
         }
 
         public async Task HandleUserAssigned()

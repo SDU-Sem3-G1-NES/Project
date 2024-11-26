@@ -19,10 +19,13 @@ namespace Famicom.Components.Pages
         };
         private OverlayMode currentOverlayMode = OverlayMode.None;
         private PresetsModel? presetsModel { get; set; }
-        private UserModel? userModel { get; set; }
         public List<Presets>? userPresets { get; set; }
-        private int UserId { get; set; }
-        private string? UserEmail { get; set; }
+
+        [CascadingParameter]
+        public string? Email { get; set; }
+
+        [CascadingParameter]
+        public int? UserId { get; set; }
         private int PresetId { get; set; }
         private string? PresetName { get; set; }
         private int PresetHeight { get; set; }
@@ -31,34 +34,18 @@ namespace Famicom.Components.Pages
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
-        [Inject]
-        private ISessionStorageService? SessionStorage { get; set; }
 
-        private bool _isInitialized;
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override async void OnInitialized()
         {
-            if (firstRender && !_isInitialized)
+            try
             {
-                try
-                {
-                    presetsModel = new PresetsModel();
-                    userModel = new UserModel();
-                    if(SessionStorage == null) throw new Exception("Session Storage not found.");
-
-                    var email = await SessionStorage.GetItemAsync<string>("Email");
-                    var user = userModel.GetUser(email);
-                    if(user == null) throw new Exception("User not found.");
-                    
-                    userPresets = await Task.Run(() => presetsModel.GetAllPresets(user.UserID));
-                    _isInitialized = true;
-                    StateHasChanged();
-                }
-                catch (Exception ex)
-                {
-                    ErrorMessage = ex.Message;
-                    Snackbar.Add(ErrorMessage, Severity.Error);
-                }
+                presetsModel = new PresetsModel();
+                userPresets = await Task.Run(() => presetsModel.GetAllPresets((int)UserId!));
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
             }
         }
         public void OpenOverlay(OverlayMode mode, int presetId = 0)
@@ -112,10 +99,10 @@ namespace Famicom.Components.Pages
 
             try
             {
-                await Task.Run(() => presetsModel?.AddPreset(PresetName, UserId, PresetHeight, "{}", PresetIcon));
+                await Task.Run(() => presetsModel?.AddPreset(PresetName, (int)UserId!, PresetHeight, "{}", PresetIcon));
                 ErrorMessage = null;
                 Snackbar.Add("Preset added successfully", Severity.Success);
-                userPresets = await Task.Run(() => presetsModel?.GetAllPresets(UserId));
+                userPresets = await Task.Run(() => presetsModel?.GetAllPresets((int)UserId!));
             }
             catch (Exception e)
             {
@@ -148,10 +135,10 @@ namespace Famicom.Components.Pages
 
             try
             {
-                await Task.Run(() => presetsModel?.EditPreset(PresetId, PresetName, UserId, PresetHeight, "{}", PresetIcon));
+                await Task.Run(() => presetsModel?.EditPreset(PresetId, PresetName, (int)UserId!, PresetHeight, "{}", PresetIcon));
                 ErrorMessage = null;
                 Snackbar.Add("Preset edited successfully", Severity.Success);
-                userPresets = await Task.Run(() => presetsModel?.GetAllPresets(UserId));
+                userPresets = await Task.Run(() => presetsModel?.GetAllPresets((int)UserId!));
             }
             catch (Exception e)
             {
