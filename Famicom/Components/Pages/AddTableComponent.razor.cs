@@ -27,7 +27,7 @@ namespace Famicom.Components.Pages
         public ISnackbar Snackbar { get; set; } = default!;
 
         [Parameter]
-        public EventCallback OnTableAdded { get; set; }
+        public EventCallback<bool> OnTableAdded { get; set; }
 
         protected override void OnInitialized()
         {
@@ -36,7 +36,7 @@ namespace Famicom.Components.Pages
 
         private async Task Cancel()
         {
-            await OnTableAdded.InvokeAsync(null);
+            await OnTableAdded.InvokeAsync(true);
         }
 
         private void ShowAddUser()
@@ -67,7 +67,7 @@ namespace Famicom.Components.Pages
                 Snackbar.Add("An error occurred while adding the table", Severity.Error);
                 return;
             }
-            await OnTableAdded.InvokeAsync(null);
+            await OnTableAdded.InvokeAsync(false);
 
 
         }

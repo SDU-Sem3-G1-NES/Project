@@ -37,11 +37,11 @@
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
 
 <MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
-    <AddTableComponent OnTableAdded="HandleTableAdded" />
+    <AddTableComponent OnTableAdded="(isCancelled) => HandleTableAdded(isCancelled)" />
 </MudOverlay>
 
 <MudOverlay Visible="IsUserOverlayActivated" DarkBackground="true">
-    <AddUserComponent OnUserAdded="HandleUserAdded" />
+    <AddUserComponent OnUserAdded="(isCancelled) => HandleUserAdded(isCancelled)" />
 </MudOverlay>
 
 <MudOverlay Visible="IsAssignOverlayActivated" DarkBackground="true">

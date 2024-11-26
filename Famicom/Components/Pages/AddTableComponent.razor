@@ -7,7 +7,7 @@
             @foreach (var api in Apis)
             {
                 <MudSelectItem Value="@api.apiID">@api.apiName</MudSelectItem>
-            })
+            }
         </MudSelect>
         <MudStack Spacing="2" Class="mt-4">
             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>

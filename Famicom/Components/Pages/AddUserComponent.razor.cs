@@ -23,14 +23,14 @@ namespace Famicom.Components.Pages
         }
 
         [Parameter]
-        public EventCallback OnUserAdded { get; set; }
+        public EventCallback<bool> OnUserAdded { get; set; }
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
 
         public async Task Cancel()
         {
-            await OnUserAdded.InvokeAsync(null);
+            await OnUserAdded.InvokeAsync(true);
         }
 
         public async Task AddUser()
@@ -63,14 +63,14 @@ namespace Famicom.Components.Pages
             {
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while adding the user", Severity.Error);
-                await OnUserAdded.InvokeAsync(null);
+                await OnUserAdded.InvokeAsync(true);
                 return;
             }
 
 
 
             Snackbar.Add("User added successfully", Severity.Success);
-            await OnUserAdded.InvokeAsync(null);
+            await OnUserAdded.InvokeAsync(true);
             
         }
 

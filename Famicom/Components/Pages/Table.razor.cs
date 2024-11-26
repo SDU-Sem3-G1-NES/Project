@@ -85,18 +85,24 @@ namespace Famicom.Components.Pages
         }
 
         #region Methods for closing overlay from component
-        public async Task HandleUserAdded()
+        public async Task HandleUserAdded(bool isCancelled)
         {
             IsUserOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
-            AssignOverlay(true);
+            if (!isCancelled)
+            {
+                AssignOverlay(true);
+            }
         }
 
-        public async Task HandleTableAdded()
+        public async Task HandleTableAdded(bool isCancelled)
         {
             IsTableOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
-            AssignOverlay(true);
+            if (!isCancelled)
+            {
+                AssignOverlay(true);
+            }
         }
 
         public async Task HandleUserAssigned()
