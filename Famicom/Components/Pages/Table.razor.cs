@@ -13,7 +13,7 @@ namespace Famicom.Components.Pages
     public partial class TableBase : ComponentBase
     {
         [Inject]
-        private NavigationManager NavigationManager { get; set; }
+        private NavigationManager? NavigationManager { get; set; }
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService(); 
