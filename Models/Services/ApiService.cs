@@ -1,4 +1,5 @@
 using DataAccess;
+using SharedModels;
 
 namespace Models.Services
 {
@@ -29,6 +30,11 @@ namespace Models.Services
         public void RemoveApi(int id)
         {
             apiRepository.DeleteApi(id);
+        }
+
+        public List<Apis> GetAllApis()
+        {
+            return apiRepository.GetAllApis();
         }
     }
 }

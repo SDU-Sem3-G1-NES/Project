@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SharedModels;
+
 
 namespace DataAccess
 {
@@ -53,6 +50,36 @@ namespace DataAccess
         {
             var sql = "DELETE FROM apis WHERE a_id = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
+        }
+
+        #endregion
+
+        #region Get Methods
+
+        public List<Apis> GetAllApis()
+        {
+            var sql = "SELECT * FROM apis";
+
+            List<Apis> apis = new List<Apis>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Apis api = new Apis()
+                        {
+                            apiID = reader.GetInt32(reader.GetOrdinal("a_id")),
+                            apiName = reader.GetString(reader.GetOrdinal("a_name")),
+                            apiConfig = reader.GetString(reader.GetOrdinal("a_config"))
+                        };
+                        apis.Add(api);
+                    }
+                }
+            }
+
+            return apis;
         }
 
         #endregion

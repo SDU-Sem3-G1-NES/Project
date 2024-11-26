@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Models.Services;
 using MudBlazor;
+using SharedModels;
 using System.Diagnostics;
 
 namespace Famicom.Components.Pages
@@ -12,15 +13,20 @@ namespace Famicom.Components.Pages
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
         private string? TableManufacturer { get; set; }
-        private string? TableApi { get; set; }
-
+        private int? TableApi { get; set; }
         private string? ErrorMessage { get; set; }
+        public required List<Apis> Apis { get; set; }
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
 
         [Parameter]
         public EventCallback OnTableAdded { get; set; }
+
+        protected override void OnInitialized()
+        {
+            Apis = apiService.GetAllApis();
+        }
 
         private async Task Cancel()
         {
@@ -37,11 +43,7 @@ namespace Famicom.Components.Pages
 
             try
             {
-                if (TableApi == "LinakApi")
-                {
-                    apiService.AddApi("LinakApi", "{}");
-                }
-                tableService.AddTable(TableGuid, TableName, TableManufacturer, 1);
+                tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
                 ErrorMessage = null;
                 Snackbar.Add("Table added successfully", Severity.Success);
                 
