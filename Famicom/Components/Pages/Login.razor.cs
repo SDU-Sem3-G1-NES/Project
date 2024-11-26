@@ -15,6 +15,7 @@ namespace Famicom.Components.Pages
         private ISessionStorageService? SessionStorage { get; set; }
 
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
+        private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }
         protected readonly LoginModel loginModel = new LoginModel();
         private readonly string fixedSalt;
@@ -32,13 +33,16 @@ namespace Famicom.Components.Pages
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Password, fixedSalt);
             string hashedPasswordHex = userCredentialsService.ConvertToHex(passwordHash);
 
-            if (userCredentialsService.ValidateCredentials(hashedEmailHex, hashedPasswordHex))
+            if (userCredentialsService.ValidateCredentials(hashedEmailHex, hashedPasswordHex) && userService.GetUser(loginModel.Email) != null)
             {
+                var userId = userService.GetUser(loginModel.Email)!.UserID;
                 string sessionID = Guid.NewGuid().ToString();
                 // Store session ID in session storage
                 if (SessionStorage != null)
                 {
                     await SessionStorage.SetItemAsync("SessionId", sessionID);
+                    await SessionStorage.SetItemAsync("UserId", userId);
+                    await SessionStorage.SetItemAsync("Email", loginModel.Email);
                 }
                 else
                 {

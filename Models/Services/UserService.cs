@@ -9,7 +9,7 @@ namespace Models.Services
 
         public UserService()
         {
-            this.userRepository = new UserRepository();
+            userRepository = new UserRepository();
         }
 
         public void AddUser(string name, string email, int userType)
@@ -91,20 +91,9 @@ namespace Models.Services
         {
             userRepository.DeleteUserHabit(id);
         }
-
-        public List<Employee> GetEmployees()
+        public IUser? GetUser(string email)
         {
-            return userRepository.GetEmployee();
-        }
-
-        public List<Admin> GetAdmins(string email)
-        {
-            return userRepository.GetAdmin(email);
-        }
-
-        public List<Cleaner> GetCleaners(string email)
-        {
-            return userRepository.GetCleaner(email);
+            return userRepository.GetUser(email);
         }
 
         public List<Employee> GetAllUsers()
