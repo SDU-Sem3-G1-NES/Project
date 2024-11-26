@@ -1,5 +1,4 @@
-﻿using SharedModels;
-
+using SharedModels;
 
 namespace DataAccess
 {

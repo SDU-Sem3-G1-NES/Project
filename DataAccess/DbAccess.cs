@@ -13,7 +13,7 @@ namespace DataAccess
         private string dbName { get; set; }
         private string port { get; set; }
         private string connectionString { get; set; }
-        internal NpgsqlDataSource dbDataSource { get; set; }
+        public NpgsqlDataSource dbDataSource { get; set; }
 
         public DbAccess()
         {
