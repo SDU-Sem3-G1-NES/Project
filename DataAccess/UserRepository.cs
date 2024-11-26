@@ -1,4 +1,5 @@
 ﻿using SharedModels;
+
 namespace DataAccess
 {
     public class UserRepository
@@ -125,89 +126,53 @@ namespace DataAccess
 
         #region Get Methods
 
-        // Todo: Implement fetching user by email
-        public List<Employee> GetEmployee(string? email = null)
+        public IUser? GetUser(string email)
         {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'EMPLOYEE'";
+            var sql = $"SELECT u_id,u_name,u_mail,u_type FROM users WHERE u_mail = @email";
 
-            List<Employee> Employees = new List<Employee>();
-
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var cmd = dbAccess.dbDataSource.CreateCommand(sql))
             {
+                cmd.Parameters.AddWithValue("@email", email);
+
                 using (var reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if(reader.Read())
                     {
-                        
-                        Employee employee = new Employee
-                        {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2),
+                        int userId = reader.GetInt32(0);
+                        string name = reader.GetString(1);
+                        string userEmail = reader.GetString(2);
+                        int userType = reader.GetInt32(3);
 
-                        };
-                        Employees.Add(employee);
+                        switch (userType)
+                        {
+                            case 1:
+                                return new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail
+                                };
+                            case 2:
+                                return new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail
+                                };
+                            case 3:
+                                return new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail
+                                };
+                            default:
+                                throw new ArgumentException("Invalid user type");
+                        }
                     }
+                    return null;
                 }
             }
-
-            return Employees;
-
-        }
-        public List<Admin> GetAdmin(string email)
-        {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'ADMIN'";
-            List<Admin> Admins = new List<Admin>();
-
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
-            {
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        
-                        Admin admin = new Admin
-                        {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2)
-
-                        };
-                        Admins.Add(admin);
-                    }
-                }
-            }
-
-            return Admins;
-
-        }
-        public List<Cleaner> GetCleaner(string email)
-        {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'CLEANER'";
-
-            List<Cleaner> Cleaners = new List<Cleaner>();
-
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
-            {
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        
-                        Cleaner cleaner = new Cleaner
-                        {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2),
-
-                        };
-                        Cleaners.Add(cleaner);
-                    }
-                }
-            }
-
-            return Cleaners;
-
         }
 
         public string? GetHashedPassword(string hashedEmailHex)
