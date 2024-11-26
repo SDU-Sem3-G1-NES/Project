@@ -16,12 +16,14 @@ namespace TableControllerApi.Tests
         private readonly Mock<ITableControllerService> _mockTableControllerService;
         private readonly Mock<ITableController> _mockTableController;
         private readonly TableControllerApi.Controllers.TableController _controller;
+        private readonly Progress<ITableStatusReport> _progress;
 
         public TableControllerTest()
         {
             _mockTableControllerService = new Mock<ITableControllerService>();
             _mockTableController = new Mock<ITableController>();
             _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object);
+            _progress = new Progress<ITableStatusReport>();
         }
 
         [Fact]
@@ -64,7 +66,7 @@ namespace TableControllerApi.Tests
             var guid = "table1";
             var height = 100;
             _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
-            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).Returns(Task.CompletedTask);
+            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, _progress)).Returns(Task.CompletedTask);
 
             // Act
             var result = await _controller.SetTableHeight(guid, height);
@@ -81,7 +83,7 @@ namespace TableControllerApi.Tests
             var guid = "table1";
             var height = 100;
             _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
-            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).ThrowsAsync(new Exception("Failed to set table height!"));
+            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, It.IsAny<IProgress<ITableStatusReport>>())).ThrowsAsync(new Exception("Failed to set table height!"));
 
             // Act
             var result = await _controller.SetTableHeight(guid, height);
@@ -99,7 +101,7 @@ namespace TableControllerApi.Tests
             var guid = "table1";
             var height = 100;
             _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
-            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid)).ThrowsAsync(new Exception("Table not found."));
+            _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, It.IsAny<IProgress<ITableStatusReport>>())).ThrowsAsync(new Exception("Table not found."));
 
             // Act
             var result = await _controller.SetTableHeight(guid, height);
