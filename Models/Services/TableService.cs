@@ -12,12 +12,8 @@ namespace Models.Services
             tableRepository = new TableRepository();
         }
         
-        public void AddTable(string guid, string name, string manufacturer, int? api)
+        public void AddTable(string guid, string name, string manufacturer, int api)
         {
-            if (api == null)
-            {
-                tableRepository.InsertTable(guid, name, manufacturer,null);
-            }
             tableRepository.InsertTable(guid, name, manufacturer, api);
         }
 
