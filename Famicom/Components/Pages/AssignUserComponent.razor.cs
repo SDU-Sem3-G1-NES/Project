@@ -11,7 +11,7 @@ namespace Famicom.Components.Pages
         private bool AddUserVisible { get; set; }
 
         private bool ShouldAskQuestion { get; set; }
-        public required List<Employee> Users { get; set; }
+        public required List<IUser> Users { get; set; }
         public required string selectedTable { get; set; }
         public int selectedUser { get; set; }
         public required List<ITable> Tables { get; set; }
