@@ -24,7 +24,6 @@ namespace Famicom.Components.Pages
         public string TodayUsageGraphLabel => DashboardModel.TodayUsageGraphLabel;
         public string WeeklyUsageGraphLabel => DashboardModel.WeeklyUsageGraphLabel;
 
-        public List<ITable> Table => DashboardModel.Table;
         public List<int> WeeklyUsageData => DashboardModel.WeeklyUsageData;
         public List<int> TodayUsageData => DashboardModel.TodayUsageData;
         public List<DashboardModel.Notification> Notifications => DashboardModel.Notifications;

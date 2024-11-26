@@ -13,7 +13,8 @@ namespace Famicom.Components.Pages
     public partial class TableBase : ComponentBase
     {
         public string? PanelTitle { get; set; }
-        private TableModel? tableModel { get; set; }
+
+        private TableService tableService = new TableService(); 
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
         public bool IsTableOverlayActivated { get; set; } = false;
@@ -38,10 +39,8 @@ namespace Famicom.Components.Pages
         protected override void OnInitialized()
         {
 
-            tableModel = new TableModel();
-            //Table = tableModel.GetTable(1);
-            //For testing only
-            Table = tableModel.GetTableList();
+            tableService = new TableService();
+            Table = tableService.GetAllTables();
             PanelTitle = GetUserType();
         }
 

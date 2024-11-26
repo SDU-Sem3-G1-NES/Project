@@ -161,7 +161,7 @@ namespace DataAccess
             return roomTables;
         }
 
-public List<ITable> GetAllTables()
+        public List<ITable> GetAllTables()
         {
             var sql = "SELECT t_guid, t_name FROM tables";
             List<ITable> tables = new List<ITable>();
