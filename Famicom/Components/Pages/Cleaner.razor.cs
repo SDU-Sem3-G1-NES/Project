@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
+using System.Threading.Tasks;
 using Famicom.Models;
+using SharedModels;
+using TableController;
 
 namespace Famicom.Components.Pages
 {
@@ -8,47 +11,37 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private TableModel tableModel = new TableModel();
+        private readonly CleanerModel cleanerModel;
 
-        // Method to toggle cleaning mode
-        public void ToggleCleaningMode()
+        protected CleanerModel CleanerModel { get; set; }
+
+        public CleanerBase(ITableController tableController)
+        {
+            cleanerModel = new CleanerModel(tableController);
+            CleanerModel = cleanerModel;
+        }
+        public async Task ToggleCleaningMode()
         {
             IsCleaningMode = !IsCleaningMode;
 
             if (IsCleaningMode)
             {
-                SetAllTablesToMaxHeight(); // Set all tables to max height when cleaning mode is activated
+                await SetAllTablesToMaxHeight();
             }
             else
             {
-                ResetTablesToNormalHeight(); // Reset tables to normal height when cleaning mode is deactivated
+                await ResetTablesToNormalHeight();
             }
         }
 
-        // Method to set all tables to max height
-        private void SetAllTablesToMaxHeight()
+        private async Task SetAllTablesToMaxHeight()
         {
-            try
-            {
-                tableModel.UpdateAllTablesMaxHeight(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error setting tables to max height: {ex.Message}");
-            }
+            await cleanerModel.UpdateAllTablesMaxHeight(true);
         }
 
-        // Method to reset all tables to normal height
-        private void ResetTablesToNormalHeight()
+        private async Task ResetTablesToNormalHeight()
         {
-            try
-            {
-                tableModel.UpdateAllTablesMaxHeight(false);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error resetting tables: {ex.Message}");
-            }
+            await cleanerModel.UpdateAllTablesMaxHeight(false);
         }
     }
 }
