@@ -11,13 +11,20 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private readonly CleanerModel cleanerModel;
+        private CleanerModel? cleanerModel;
 
-        protected CleanerModel CleanerModel { get; set; }
+        protected CleanerModel? CleanerModel { get; set; }
 
-        public CleanerBase(ITableController tableController)
+        [Inject]
+        public ITableController? TableController { get; set; }
+
+        protected override void OnInitialized()
         {
-            cleanerModel = new CleanerModel(tableController);
+            if (TableController == null)
+            {
+                throw new InvalidOperationException("TableController is not initialized.");
+            }
+            cleanerModel = new CleanerModel(TableController);
             CleanerModel = cleanerModel;
         }
         public async Task ToggleCleaningMode()
@@ -36,12 +43,18 @@ namespace Famicom.Components.Pages
 
         private async Task SetAllTablesToMaxHeight()
         {
-            await cleanerModel.UpdateAllTablesMaxHeight(true);
+            if (cleanerModel != null)
+            {
+                await cleanerModel.UpdateAllTablesMaxHeight(true);
+            }
         }
 
         private async Task ResetTablesToNormalHeight()
         {
-            await cleanerModel.UpdateAllTablesMaxHeight(false);
+            if (cleanerModel != null)
+            {
+                await cleanerModel.UpdateAllTablesMaxHeight(false);
+            }
         }
     }
 }
