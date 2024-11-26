@@ -31,7 +31,7 @@ namespace Models.Services
 
         public Task<ITableController> GetTableController(string guid)
         {
-            // var api= _tableRepository.GetTableAPI(guid);
+            var api= _tableRepository.GetTableAPI(guid);
             if (api== null) return Task.FromException<ITableController>(new Exception("Table not found."));
 
             switch (api)
