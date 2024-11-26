@@ -6,6 +6,8 @@ from http.server import HTTPServer
 from users import UserType
 from desk_manager import DeskManager
 from simple_rest_server import SimpleRESTServer
+import signal
+import sys
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -58,6 +60,12 @@ def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000, disa
     finally:
         desk_manager.stop_updates()  # Stop the desk updates
         logging.info("Server stopped.")
+        
+def signal_handler(sig, frame):
+    logging.info("Received signal to stop the server.")
+    raise KeyboardInterrupt
+
+signal.signal(signal.SIGTERM, signal_handler)
 
 """
     To execute the script as HTTPS, use the following command:
