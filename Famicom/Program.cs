@@ -1,10 +1,8 @@
 using MudBlazor.Services;
 using Famicom.Components;
-using TableControllerApi;
+using Blazored.SessionStorage;
 using Models.Services;
-using DataAccess;
 using DotNetEnv;
-using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +10,13 @@ builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
+builder.Services.AddBlazoredSessionStorage(); 
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 var apiHost = Host.CreateDefaultBuilder()
@@ -44,6 +45,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
