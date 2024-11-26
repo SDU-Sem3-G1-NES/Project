@@ -69,7 +69,7 @@ namespace Famicom.Components.Pages
 
         public void RefreshPage()
         {
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            NavigationManager?.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
 
