@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Models.Services;
 using MudBlazor;
+using SharedModels;
 using System.Diagnostics;
 
 namespace Famicom.Components.Pages
@@ -27,6 +28,11 @@ namespace Famicom.Components.Pages
         [Parameter]
         public EventCallback OnTableAdded { get; set; }
 
+        protected override void OnInitialized()
+        {
+            Apis = apiService.GetAllApis();
+        }
+
         private async Task Cancel()
         {
             await OnTableAdded.InvokeAsync(null);
@@ -47,11 +53,7 @@ namespace Famicom.Components.Pages
 
             try
             {
-                if (TableApi == "LinakApi")
-                {
-                    apiService.AddApi("LinakApi", "{}");
-                }
-                tableService.AddTable(TableGuid, TableName, TableManufacturer, 1);
+                tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
                 ErrorMessage = null;
                 ShowAddUser(); // Show the add user question overlay
                 Snackbar.Add("Table added successfully", Severity.Success);
