@@ -13,18 +13,46 @@ namespace Famicom.Components.Pages
 
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
-
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }
         protected readonly LoginModel loginModel = new LoginModel();
         private readonly string fixedSalt;
+        private bool isInitialized;
 
         public LoginBase()
         {
             fixedSalt = userCredentialsService.GetFixedSalt();
         }
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender && !isInitialized)
+            {
+                await CheckSessionStorage();
+                isInitialized = true;
+            }
+        }
+        private async Task CheckSessionStorage()
+        {
+            if (SessionStorage == null || Navigation == null)
+            {
+                throw new Exception("SessionStorage or NavigationManager not found.");
+            }
 
+            try
+            {
+                string? sessionID = await SessionStorage.GetItemAsync<string>("SessionId");
+
+                if (!string.IsNullOrEmpty(sessionID))
+                {
+                    Navigation.NavigateTo("/");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking session storage: {ex.Message}");
+            }
+        }
         protected async Task OnSubmitButton()
         {
             // Hash the email and password
@@ -43,14 +71,14 @@ namespace Famicom.Components.Pages
                     await SessionStorage.SetItemAsync("SessionId", sessionID);
                     await SessionStorage.SetItemAsync("UserId", userId);
                     await SessionStorage.SetItemAsync("Email", loginModel.Email);
+
+                    Navigation?.NavigateTo("/");
                 }
                 else
                 {
                     ErrorMessage = "Session Storage not found.";
                     await InvokeAsync(StateHasChanged);
                 }
-                Navigation?.NavigateTo("/");
-                await InvokeAsync(StateHasChanged);
             }
             else
             {

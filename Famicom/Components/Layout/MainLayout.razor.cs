@@ -35,6 +35,7 @@ namespace Famicom.Components.Layout
 
         private async Task CheckLogin() 
         {
+            await Task.Delay(50);
             if (isLoggedIn)
             {
                 return;
@@ -86,6 +87,16 @@ namespace Famicom.Components.Layout
                     PaletteDark = _darkPalette,
                     LayoutProperties = new LayoutProperties()
                 };
+        }
+        private async Task Logout()
+        {
+            if (SessionStorage != null)
+            {
+                await SessionStorage.ClearAsync();
+                isLoggedIn = false;
+                Navigation?.NavigateTo("/Login");
+                StateHasChanged();
+            }
         }
 
         private void DrawerToggle()
