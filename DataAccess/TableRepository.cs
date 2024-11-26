@@ -21,21 +21,11 @@ namespace DataAccess
 
         #region Insert Methods
 
-        public void InsertTable(string guid, string name, string manufacturer, int? api)
+        public void InsertTable(string guid, string name, string manufacturer, int api)
         {
-            string sql;
-            if (api == null)
-            {
-                sql = "INSERT INTO tables (t_guid, t_name, t_manufacturer) VALUES (@guid ,@name, @manufacturer)";
-
-                dbAccess.ExecuteNonQuery(sql, ("@guid", guid), ("@name", name), ("@manufacturer", manufacturer));
-            }
-            else
-            {
-                sql = "INSERT INTO tables (t_guid, t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)";
-
-                dbAccess.ExecuteNonQuery(sql, ("@guid", guid), ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
-            }
+           string sql = "INSERT INTO tables (t_guid, t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)";
+            dbAccess.ExecuteNonQuery(sql, ("@guid", guid), ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
+            
         }
 
         public void InsertTableUser(int userId, string tableId)

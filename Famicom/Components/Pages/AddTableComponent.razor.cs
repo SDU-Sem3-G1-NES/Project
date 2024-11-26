@@ -15,7 +15,7 @@ namespace Famicom.Components.Pages
         private string? TableManufacturer { get; set; }
         private bool IsAddingTableVisible { get; set; }
         private string? ErrorMessage { get; set; }
-        private int? TableApi { get; set; }
+        public required int TableApi { get; set; }
         public required List<Apis> Apis { get; set; }
 
         public AddTableComponent()

@@ -34,7 +34,7 @@ namespace DataAccess.Tests
             var param4 = ("@api", (object)api);
 
             _dbAccessMock.Verify(db => db.ExecuteNonQuery(
-                "INSERT INTO tables (t_guid ,t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)",
+                "INSERT INTO tables (t_guid, t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)",
                 param1, param2, param3, param4
             ), Times.Once);
         }
