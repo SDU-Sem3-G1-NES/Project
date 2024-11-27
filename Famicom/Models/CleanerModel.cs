@@ -1,53 +1,47 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Models.Services;
+using SharedModels;
 using TableController;
 
 namespace Famicom.Models
 {
     public class CleanerModel
     {
-        private readonly ITableController tableController;
+        private readonly ITableControllerService tableControllerService;
+        private readonly TableService tableService;
+        private readonly int targetHeight;
 
-        public CleanerModel(ITableController tableController)
+        public CleanerModel(ITableControllerService tableControllerService, TableService tableService)
         {
-            this.tableController = tableController;
+            this.tableControllerService = tableControllerService;
+            this.tableService = tableService;
         }
 
         public async Task UpdateAllTablesMaxHeight(bool isMaxHeight)
         {
             try
             {
-                // Retrieve all table GUIDs
-                var tableGuids = await tableController.GetAllTableIds();
+                // Retrieve all tables from the database
+                var tables = tableService.GetAllTables();
 
-                if (tableGuids.Length == 0)
+                if (tables.Count == 0)
                 {
-                    Console.WriteLine("No tables found in the database.");
+                    await ReportErrorAsync("No tables found in the database.");
                     return;
                 }
-
-                int targetHeight = isMaxHeight ? 1320 : 1000;
-
-                foreach (var guid in tableGuids)
-                {
-                    Console.WriteLine($"Setting table {guid} to height {targetHeight}mm.");
-
-                    try
-                    {
-                        await tableController.SetTableHeight(targetHeight, guid, new Progress<ITableStatusReport>());
-                        Console.WriteLine($"Successfully updated table {guid}.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to update table {guid}: {ex.Message}");
-                    }
-                }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine($"Error updating tables: {ex.Message}");
+                await ReportErrorAsync(e.Message);
             }
+        }
+
+        private async Task ReportErrorAsync(string message)
+        {
+            //error reporting logic
+            await Task.CompletedTask;
         }
     }
 }
