@@ -21,10 +21,10 @@ namespace Models.Services
 
         private readonly TableRepository _tableRepository;
 
-        public TableControllerService()
+        public TableControllerService(HttpClient client)
         {
             linakTableController = new LinakTableController();
-            linakSimulatorController = new LinakSimulatorController();
+            linakSimulatorController = new LinakSimulatorController(client);
             mockTableController = new MockTableController();
             _tableRepository = new TableRepository();
         }
