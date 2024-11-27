@@ -3,7 +3,55 @@
 
 <PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h1">@PanelTitle </MudText>
-<MudContainer MaxWidth="MaxWidth.Small">
-   <TableComponent Table="@Table"/>
+<MudText Align="Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-4" />
+
+<MudToolBar Class="gap-6">
+    <MudSelect T="string" Label="Select order" @bind-Value="orderValue">
+        <MudSelectItem Value="@("Descending")"/>
+        <MudSelectItem Value="@("Ascending")" />
+    </MudSelect>
+
+    <MudSelect T="string" Label="By Room" @bind-Value="selectedRoom">
+        @foreach (var room in roomNames)
+        {
+            <MudSelectItem Value="@room"/>
+        }
+ 
+    </MudSelect>
+    <MudItem xs="12" sm="6" md="4">
+        <MudAutocomplete T="string" Label="Search Table" @bind-Value="selectedTable" SearchFunc="@Search1"
+                         ResetValueOnEmptyText="@resetValueOnEmptyText"
+                         CoerceText="@coerceText" CoerceValue="@coerceValue" />
+    </MudItem>
+
+    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
+    </MudMenu>
+
+</MudToolBar>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-10" />
+
+<MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
+    <AddTableComponent OnTableAdded="(isCancelled) => HandleTableAdded(isCancelled)" />
+</MudOverlay>
+
+<MudOverlay Visible="IsUserOverlayActivated" DarkBackground="true">
+    <AddUserComponent OnUserAdded="(isCancelled) => HandleUserAdded(isCancelled)" />
+</MudOverlay>
+
+<MudOverlay Visible="IsAssignOverlayActivated" DarkBackground="true">
+    <AssignUserComponent OnUserAssigned="HandleUserAssigned" />
+</MudOverlay>
+
+<MudContainer MaxWidth="MaxWidth.False" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll; justify-content: center;">
+    @foreach (var table in Table) 
+    {
+        <TableComponent Table="@table"/>    
+    }
 </MudContainer>
+

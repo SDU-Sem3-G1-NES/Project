@@ -95,5 +95,10 @@ namespace Models.Services
         {
             return userRepository.GetUser(email);
         }
+
+        public List<IUser> GetAllUsers()
+        {
+            return userRepository.GetAllUsers();
+        }
     }
 }

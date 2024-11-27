@@ -1,0 +1,25 @@
+﻿@inherits ComponentBase
+@using Famicom.Components.Pages;
+
+<MudPaper Class="pa-4">
+    <MudForm>
+        <MudTextField T="string" Label="User Name" Required="true" RequiredError="User Name is required!" @bind-Value="UserName" Class="mb-4" />
+        <MudTextField T="string" Label="User Email" Required="true" RequiredError="User Email is required!" @bind-Value="UserEmail" Class="mb-4" />
+        <MudTextField T="string" Label="UserPassword" Required="true" RequiredError="User Password is required!" @bind-Value="UserPassword" Class="mb-4" />
+        <MudSelect T="string" Label="User Type" @bind-Value="UserType" Class="mb-4">
+            <MudSelectItem Value="@("Admin")" />
+            <MudSelectItem Value="@("Worker")" />
+            <MudSelectItem Value="@("Cleaner")" />
+        </MudSelect>
+        <MudStack Spacing="2" Class="mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddUser">Add</MudButton>
+        </MudStack>
+        <br />
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="error-message">@ErrorMessage</p>
+        }
+    </MudForm>
+</MudPaper>
+
