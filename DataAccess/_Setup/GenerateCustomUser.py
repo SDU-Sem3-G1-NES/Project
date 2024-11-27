@@ -5,8 +5,8 @@ import base64
 
 def main():
     load_dotenv()
-    UMAIL = os.getenv("PGADMIN_DEFAULT_EMAIL")
-    UPASS = os.getenv("PGADMIN_DEFAULT_PASSWORD")
+    UMAIL = input("Email: ")
+    UPASS = input("Password: ")
     
     # Define a fixed salt. (random salt for now)
     base64salt = os.getenv("BCRYPT_SALT")
