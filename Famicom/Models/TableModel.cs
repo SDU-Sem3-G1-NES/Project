@@ -7,11 +7,14 @@ namespace Famicom.Models
     {
         private readonly TableService tableService;
         private ITable? table;
+        //For testing purposes only
+        private List<ITable> tableList = new();
 
         public TableModel()
         {
             this.tableService = new TableService();
         }
+
 
         public ITable? GetTable(int userId)
         {
@@ -24,3 +27,6 @@ namespace Famicom.Models
         }
     }
 }
+
+
+    
