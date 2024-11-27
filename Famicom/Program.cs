@@ -4,9 +4,18 @@ using Blazored.SessionStorage;
 using Models.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+var handler = new HttpClientHandler {
+    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+};
+
+builder.Services.AddHttpClient<TableControllerService>(client =>
+{
+}).ConfigurePrimaryHttpMessageHandler(() => handler);
 builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services
@@ -34,6 +43,7 @@ var apiHost = Host.CreateDefaultBuilder()
     {
         services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
     }).Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
