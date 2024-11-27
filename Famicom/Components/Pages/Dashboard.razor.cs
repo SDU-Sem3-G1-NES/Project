@@ -29,4 +29,4 @@ namespace Famicom.Components.Pages
             await base.OnInitializedAsync();
         }
     }
-}
+}s
