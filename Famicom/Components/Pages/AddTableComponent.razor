@@ -1,0 +1,24 @@
+﻿<MudPaper Class="pa-4">
+    <MudForm>
+        <MudTextField T="string" Label="Table GUID" Required="true" RequiredError="Table GUID is required!" @bind-Value="TableGuid" Class="mb-4" />
+        <MudTextField T="string" Label="Table Name" Required="true" RequiredError="Table Name is required!" @bind-Value="TableName" Class="mb-4" />
+        <MudTextField T="string" Label="Table Manufacturer" Required="true" RequiredError="Table Manufacturer is required!" @bind-Value="TableManufacturer" Class="mb-4" />
+        <MudSelect T="int" Label="Choose Table API" @bind-Value="TableApi" Class="mb-4">
+            @foreach (var api in Apis)
+            {
+                <MudSelectItem Value="@api.apiID">@api.apiName</MudSelectItem>
+            }
+        </MudSelect>
+        <MudStack Spacing="2" Class="mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTable">Add</MudButton>
+        </MudStack>
+        <br />
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="error-message">@ErrorMessage</p>
+        }
+    </MudForm>
+</MudPaper>
+
+

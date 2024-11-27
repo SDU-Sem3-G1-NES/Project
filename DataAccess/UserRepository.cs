@@ -175,6 +175,64 @@ namespace DataAccess
             }
         }
 
+        public List<IUser> GetAllUsers()
+        {
+            var sql = $"SELECT u_id,u_name,u_mail,u_type FROM users";
+
+            List<IUser> users = new List<IUser>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int userId = reader.GetInt32(0);
+                        string name = reader.GetString(1);
+                        string userEmail = reader.GetString(2);
+                        int userType = reader.GetInt32(3);
+
+                        if (userType == 1)
+                        {
+                            Admin admin = new Admin
+                            {
+                                UserID = userId,
+                                Name = name,
+                                Email = userEmail
+                            };
+                            users.Add(admin);
+                        }
+                        else if (userType == 2)
+                        {
+                            Employee employe = new Employee
+                            {
+                                UserID = userId,
+                                Name = name,
+                                Email = userEmail
+                            };
+                            users.Add(employe);
+                        }
+                        else if (userType == 3)
+                        {
+                            Cleaner cleaner = new Cleaner
+                            {
+                                UserID = userId,
+                                Name = name,
+                                Email = userEmail
+                            };
+                            users.Add(cleaner);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid user type");
+                        }
+                    }
+                }
+            }
+            return users;
+        }
+
         public string? GetHashedPassword(string hashedEmailHex)
         {
             string sql = "SELECT upass_hash FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";

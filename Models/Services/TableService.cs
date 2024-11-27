@@ -12,9 +12,9 @@ namespace Models.Services
             tableRepository = new TableRepository();
         }
         
-        public void AddTable(string name, string manufacturer, int api)
+        public void AddTable(string guid, string name, string manufacturer, int api)
         {
-            tableRepository.InsertTable(name, manufacturer, api);
+            tableRepository.InsertTable(guid, name, manufacturer, api);
         }
 
         public void AddTableUser(int userId, string tableId)
@@ -56,5 +56,12 @@ namespace Models.Services
         {
             return tableRepository.GetAllTables();
         }
+
+        public List<ITable> GetUserFreeTable()
+        {
+            return tableRepository.GetUserFreeTable();
+        }
+
+
     }
 }
