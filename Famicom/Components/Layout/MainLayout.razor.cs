@@ -34,13 +34,14 @@ namespace Famicom.Components.Layout
                 PaletteDark = _darkPalette,
                 LayoutProperties = new LayoutProperties()
             };
-
+            _navMenu = new NavMenu();
             await base.OnInitializedAsync();
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
+                isPrerendering = true;
                 await CheckLogin();
                 isPrerendering = false;
             }
@@ -49,11 +50,26 @@ namespace Famicom.Components.Layout
             }
         }
 
+        protected override async Task OnParametersSetAsync()
+        {
+            if(!isPrerendering) await CheckLogin();
+        }
+
         private async Task CheckLogin()
         {
             if (SessionStorage == null || Navigation == null)
             {
                 throw new Exception("Required services are missing.");
+            }
+
+            if (isLoggedIn)
+            {
+                return;
+            }
+
+            if(Navigation == null)
+            {
+                throw new Exception("NavigationManager not found.");
             }
 
             try
@@ -82,18 +98,6 @@ namespace Famicom.Components.Layout
         private bool _isDarkMode = true;
         private MudTheme? _theme = null;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            _theme = new()
-                {
-                    PaletteLight = _lightPalette,
-                    PaletteDark = _darkPalette,
-                    LayoutProperties = new LayoutProperties()
-                };
-        }
-        
         private async Task Logout()
         {
             if (SessionStorage != null)
