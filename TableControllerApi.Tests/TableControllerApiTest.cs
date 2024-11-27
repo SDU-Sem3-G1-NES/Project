@@ -8,6 +8,8 @@ using TableControllerApi.Controllers;
 using Models.Services;
 using Xunit;
 using TableController;
+using System.Net.Http;
+using System.Reflection;
 
 namespace TableControllerApi.Tests
 {
@@ -17,12 +19,22 @@ namespace TableControllerApi.Tests
         private readonly Mock<ITableController> _mockTableController;
         private readonly TableControllerApi.Controllers.TableController _controller;
         private readonly Progress<ITableStatusReport> _progress;
+        private readonly HttpClient _client = new HttpClient();
+        private readonly Mock<IHttpClientFactory> _mockFactory;
 
         public TableControllerTest()
         {
+            _mockFactory = new Mock<IHttpClientFactory>();
+            _mockFactory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(_client);
             _mockTableControllerService = new Mock<ITableControllerService>();
             _mockTableController = new Mock<ITableController>();
             _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object);
+            var clientFactoryProperty = typeof(Controllers.TableController).GetProperty("_clientFactory", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (clientFactoryProperty != null)
+            {
+                clientFactoryProperty.SetValue(_controller, _mockFactory.Object);
+            }
+
             _progress = new Progress<ITableStatusReport>();
         }
 
@@ -32,7 +44,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var table = new LinakTable(guid, "name");
-            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ReturnsAsync(table);
 
             // Act
@@ -49,7 +61,7 @@ namespace TableControllerApi.Tests
         {
             // Arrange
             var guid = "table1";
-            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ThrowsAsync(new Exception("Table not found."));
 
             // Act
@@ -65,7 +77,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
-            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, _progress)).Returns(Task.CompletedTask);
 
             // Act
@@ -82,7 +94,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
-            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, It.IsAny<IProgress<ITableStatusReport>>())).ThrowsAsync(new Exception("Failed to set table height!"));
 
             // Act
@@ -100,7 +112,7 @@ namespace TableControllerApi.Tests
             // Arrange
             var guid = "table1";
             var height = 100;
-            _mockTableControllerService.Setup(s => s.GetTableController(guid)).ReturnsAsync(_mockTableController.Object);
+            _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.SetTableHeight(height, guid, It.IsAny<IProgress<ITableStatusReport>>())).ThrowsAsync(new Exception("Table not found."));
 
             // Act
