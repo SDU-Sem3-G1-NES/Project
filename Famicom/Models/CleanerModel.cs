@@ -11,7 +11,6 @@ namespace Famicom.Models
     {
         private readonly ITableControllerService tableControllerService;
         private readonly TableService tableService;
-        private readonly int targetHeight;
 
         public CleanerModel(ITableControllerService tableControllerService, TableService tableService)
         {
