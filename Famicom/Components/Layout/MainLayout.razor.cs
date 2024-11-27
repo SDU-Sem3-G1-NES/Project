@@ -18,6 +18,8 @@ namespace Famicom.Components.Layout
         [Inject]
         private NavigationManager? Navigation { get; set; }
 
+        public NavMenu _navMenu { get; set; } = null!;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if(firstRender)
@@ -25,6 +27,9 @@ namespace Famicom.Components.Layout
                 isPrerendering = true;
                 await CheckLogin();
                 isPrerendering = false;
+            }
+            else {
+                await _navMenu.GetNavItems(email!);
             }
         }
 
@@ -62,6 +67,7 @@ namespace Famicom.Components.Layout
                 }
 
                 isLoggedIn = true;
+                await _navMenu.GetNavItems(email);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -76,9 +82,8 @@ namespace Famicom.Components.Layout
         private bool _isDarkMode = true;
         private MudTheme? _theme = null;
 
-        protected override void OnInitialized()
+        protected override Task OnInitializedAsync()
         {
-            base.OnInitialized();
 
             _theme = new()
                 {
@@ -86,6 +91,9 @@ namespace Famicom.Components.Layout
                     PaletteDark = _darkPalette,
                     LayoutProperties = new LayoutProperties()
                 };
+
+            _navMenu = new NavMenu();
+            return base.OnInitializedAsync();
         }
 
         private void DrawerToggle()
