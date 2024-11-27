@@ -3,6 +3,9 @@ using Models.Services;
 using MudBlazor;
 using SharedModels;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using TableController;
+using TableControllerApi.Controllers;
 
 namespace Famicom.Components.Pages
 {
@@ -10,17 +13,25 @@ namespace Famicom.Components.Pages
     {
         TableService tableService = new TableService();
         ApiService apiService = new ApiService();
+        AddTableComponentService addTableComponentService = new AddTableComponentService();
+
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
         private string? TableManufacturer { get; set; }
         private bool IsAddingTableVisible { get; set; }
         private string? ErrorMessage { get; set; }
         public required int TableApi { get; set; }
+        public required string ApiName { get; set; }
         public required List<Apis> Apis { get; set; }
+
+        private List<ITable>? tableinfo;
+        public bool ManualAddition { get; set; } = false;
 
         public AddTableComponent()
         {
             IsAddingTableVisible = false;
+            
+
         }
 
         [Inject]
@@ -32,6 +43,25 @@ namespace Famicom.Components.Pages
         protected override void OnInitialized()
         {
             Apis = apiService.GetAllApis();
+        }
+
+        public async Task OnTableChanged(LinakTable table)
+        {
+            TableGuid = table.GUID;
+            TableName = table.Name;
+            TableManufacturer = table.Manufacturer;
+
+            await Task.CompletedTask;
+        }
+
+        private async Task OnTableApiChanged(string newValue)
+        {
+            ApiName = newValue;
+
+            tableinfo = await addTableComponentService.HandleApiRequest(ApiName);
+
+
+            await Task.CompletedTask;
         }
 
         private async Task Cancel()

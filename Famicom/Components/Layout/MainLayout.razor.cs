@@ -18,6 +18,7 @@ namespace Famicom.Components.Layout
         [Inject]
         private NavigationManager? Navigation { get; set; }
 
+        /*
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if(firstRender)
@@ -28,6 +29,7 @@ namespace Famicom.Components.Layout
             }
         }
 
+        */
         protected override async Task OnParametersSetAsync()
         {
             if(!isPrerendering) await CheckLogin();

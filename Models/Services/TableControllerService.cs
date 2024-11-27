@@ -12,6 +12,8 @@ namespace Models.Services
     public interface ITableControllerService
     {
         Task<ITableController> GetTableController(string guid);
+
+        Task<ITableController> GetTableControllerByApiName(string api);
     }
     public class TableControllerService : ITableControllerService
     {
@@ -46,6 +48,20 @@ namespace Models.Services
                     return Task.FromException<ITableController>(new Exception("Invalid API."));
             }
 
+        }
+        public Task<ITableController> GetTableControllerByApiName(string api)
+        {
+            switch (api)
+            {
+                case "Linak Simulator API V2":
+                    return Task.FromResult<ITableController>(linakSimulatorController);
+                case "Linak API":
+                    return Task.FromResult<ITableController>(linakTableController);
+                case "Mock API":
+                    return Task.FromResult<ITableController>(mockTableController);
+                default:
+                    return Task.FromException<ITableController>(new Exception("Invalid API."));
+            }
         }
     }
 }
