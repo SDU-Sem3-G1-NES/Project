@@ -21,10 +21,11 @@ namespace DataAccess
 
         #region Insert Methods
 
-        public void InsertTable(string name, string manufacturer, int api)
+        public void InsertTable(string guid, string name, string manufacturer, int api)
         {
-            var sql = "INSERT INTO tables (t_name, t_manufacturer, t_api) VALUES (@name, @manufacturer, @api)";
-            dbAccess.ExecuteNonQuery(sql, ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
+           string sql = "INSERT INTO tables (t_guid, t_name, t_manufacturer, t_api) VALUES (@guid ,@name, @manufacturer, @api)";
+            dbAccess.ExecuteNonQuery(sql, ("@guid", guid), ("@name", name), ("@manufacturer", manufacturer), ("@api", api));
+            
         }
 
         public void InsertTableUser(int userId, string tableId)
@@ -97,6 +98,36 @@ namespace DataAccess
             return tables;
         }
 
+        public List<ITable> GetUserFreeTable()
+        {
+            var sql = $"SELECT t.t_guid, t.t_name FROM tables AS t LEFT JOIN user_tables AS ut ON t.t_guid = ut.t_guid WHERE ut.t_guid IS NULL; ";
+            List<ITable> tables = new List<ITable>();
+
+            try
+            {
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ITable table = new LinakTable(
+                                reader.GetString(0),
+                                reader.GetString(1)
+                                );
+                            tables.Add(table);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
+            return tables;
+        }
+
         public List<ITable> GetTablesRoom(int roomId)
         {
             var sql = $"SELECT t.t_guid,t.t_name FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";
@@ -130,7 +161,7 @@ namespace DataAccess
             return roomTables;
         }
 
-public List<ITable> GetAllTables()
+        public List<ITable> GetAllTables()
         {
             var sql = "SELECT t_guid, t_name FROM tables";
             List<ITable> tables = new List<ITable>();

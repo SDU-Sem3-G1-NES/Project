@@ -33,4 +33,21 @@ public class UserCredentialsService
     {
         return fixedSalt;
     }
+
+    // For converting the hashed password to hex for database querying.
+    public string ConvertToHex(string input)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(input);
+        StringBuilder hex = new StringBuilder(bytes.Length * 2);
+        foreach (byte b in bytes)
+        {
+            hex.AppendFormat("{0:x2}", b);
+        }
+        return hex.ToString();
+    }
+
+    public void AddUserCredentials(byte[] emailHash, byte[] passwordHash)
+    {
+        userRepository.InsertUserCredentials(emailHash, passwordHash);
+    }
 }

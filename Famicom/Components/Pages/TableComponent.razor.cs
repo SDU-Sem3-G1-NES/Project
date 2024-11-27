@@ -13,7 +13,7 @@ namespace Famicom.Components.Pages
         private TableModel? tableModel { get; set; }
 
         [Parameter]
-        public ITable? Table { get; set; }
+        public required ITable Table { get; set; }
 
 
         public void MoveTableUp()
