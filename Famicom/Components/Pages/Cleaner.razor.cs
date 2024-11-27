@@ -17,7 +17,7 @@ namespace Famicom.Components.Pages
             IsCleaningMode = !IsCleaningMode;
             if (IsCleaningMode)
             {
-                await cleanerModel.UpdateAllTablesMaxHeight(true);
+                await cleanerModel.UpdateAllTablesMaxHeight();
             }
         }
     }

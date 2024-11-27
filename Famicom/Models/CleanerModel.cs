@@ -16,9 +16,9 @@ namespace Famicom.Models
             this.cleanerService = cleanerService;
         }
 
-        public async Task UpdateAllTablesMaxHeight(bool isMaxHeight)
+        public async Task UpdateAllTablesMaxHeight()
         {
-            await cleanerService.UpdateAllTablesMaxHeight(isMaxHeight);
+            await cleanerService.UpdateAllTablesMaxHeight();
         }
     }
 }
