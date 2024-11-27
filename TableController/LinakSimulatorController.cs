@@ -17,13 +17,15 @@ namespace TableController;
 public class LinakSimulatorController : ITableController
 {
     private ILinakSimulatorTasks _tasks;
+    private readonly HttpClient _client;
 
     /// <summary>
     /// Constructor for LinakSimulatorController
     /// </summary>
-    public LinakSimulatorController()
+    public LinakSimulatorController(HttpClient client)
     {
-        _tasks = new LinakSimulatorTasks();
+        _client = client;
+        _tasks = new LinakSimulatorTasks(_client);
     }
 
     /// <summary>
@@ -403,21 +405,17 @@ public class LinakSimulatorController : ITableController
 }
 
 internal class LinakSimulatorTasks : ILinakSimulatorTasks {
-    private readonly  HttpClient _client = null!;
+    private readonly  HttpClient _client;
     private readonly LinakSimulatorControllerOptions _options;
     private readonly string _baseUrl;
 
     private readonly int maxHeight = 1320;
     private readonly int minHeight = 680;
 
-    internal LinakSimulatorTasks() {
+    internal LinakSimulatorTasks(HttpClient client) {
+        _client = client;
         _options = new LinakSimulatorControllerOptions();
         _baseUrl = $"https://{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
-
-        var handler = new HttpClientHandler {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-        };
-        _client = new HttpClient(handler);
     }
 
     public async Task<LinakApiTable?> GetTableInfo(string guid) {

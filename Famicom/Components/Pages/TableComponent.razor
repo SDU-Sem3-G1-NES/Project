@@ -1,19 +1,18 @@
 ﻿@inherits ComponentBase
 
-<MudCard>
+<MudCard class="flex" Style="padding 20px">
     <MudCardHeader>
-        <MudText Typo="Typo.body1">Table Name: @(Table?.Name ?? "Unknown Table Name")</MudText>
+        <MudText Typo="Typo.body1" Style="margin:auto "><b> Table Name:</b> @(Table?.Name ?? "Unknown Table Name")</MudText>
     </MudCardHeader>
 
-    <MudCardContent>
-        <MudText Typo="Typo.body2">GUID: @(Table?.GUID ?? "Unknown GUID")</MudText>
-        <MudText Typo="Typo.caption">Manufacturer: @(Table?.Manufacturer ?? "Unknown Manufacturer")</MudText>
-        <img src="@TableImageUrl" alt="Table image" />
+    <MudCardContent Style="margin:auto" Class="gap-8">
+        <MudText Typo="Typo.body2"><b>GUID:</b> @(Table?.GUID ?? "Unknown GUID")</MudText>
+        <MudText Typo="Typo.body2"><b>Manufacturer:</b> @(Table?.Manufacturer ?? "Unknown Manufacturer")</MudText>
     </MudCardContent>
 
-    <MudCardActions>
-        <MudButton Color="Color.Primary" OnClick="MoveTableDown">Move Table Down</MudButton>
-        <MudButton Color="Color.Secondary" OnClick="MoveTableUp">Move Table Up</MudButton>
+    <MudCardActions Class="gap-5" Style="margin:auto ">
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ArrowUpward" OnClick="MoveTableUp" Color="Color.Success"> Raise Table</MudButton>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ArrowDownward" Color="Color.Secondary" OnClick="MoveTableDown">Lower Table</MudButton>
     </MudCardActions>
 </MudCard>
     

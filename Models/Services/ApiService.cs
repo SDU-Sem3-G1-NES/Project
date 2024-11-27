@@ -1,4 +1,5 @@
 using DataAccess;
+using SharedModels;
 
 namespace Models.Services
 {
@@ -6,9 +7,9 @@ namespace Models.Services
     {
         private readonly ApiRepository apiRepository;
 
-        public ApiService(ApiRepository apiRepository)
+        public ApiService()
         {
-            this.apiRepository = apiRepository;
+            this.apiRepository = new ApiRepository();
         }
 
         public void AddApi(string name, string config)
@@ -29,6 +30,11 @@ namespace Models.Services
         public void RemoveApi(int id)
         {
             apiRepository.DeleteApi(id);
+        }
+
+        public List<Apis> GetAllApis()
+        {
+            return apiRepository.GetAllApis();
         }
     }
 }
