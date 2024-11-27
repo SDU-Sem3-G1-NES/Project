@@ -10,9 +10,6 @@ namespace Famicom.Components.Pages
 {
     public partial class TableBase : ComponentBase
     {
-        [CascadingParameter]
-        public bool? isLoggedIn { get; set; }
-        
         public string? PanelTitle { get; set; }
         private TableModel? tableModel { get; set; }
         private UserModel userModel { get; set; } = new UserModel();

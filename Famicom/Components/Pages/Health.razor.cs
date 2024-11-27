@@ -9,8 +9,6 @@ namespace Famicom.Components.Pages
 {
     public partial class HealthBase : ComponentBase
     {
-        [CascadingParameter]
-        public bool? @isLoggedIn { get; set; }
         private HealthModel HealthModel { get; set; } = new HealthModel();
 
         public string HealthData => HealthModel.HealthData;
