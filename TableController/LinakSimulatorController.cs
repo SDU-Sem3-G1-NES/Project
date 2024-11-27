@@ -127,7 +127,7 @@ public class LinakSimulatorController : ITableController
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
-            var response = _tasks.SetTableInfo(tempTable).Result;
+            var response = await _tasks.SetTableInfo(tempTable);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
@@ -423,8 +423,8 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
-        var jsonString = response.Content.ReadAsStringAsync();
-        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString);
 
         apiTable!.id = guid;
         return apiTable ?? new LinakApiTable();
@@ -452,7 +452,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _client.PutAsync(requestUrl, content);
             response.EnsureSuccessStatusCode();
-            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var responseBody = await response.Content.ReadAsStringAsync();
             var serialisedResponseBody = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
