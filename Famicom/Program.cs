@@ -13,9 +13,11 @@ var handler = new HttpClientHandler {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 };
 
-builder.Services.AddHttpClient<TableControllerService>(client =>
+builder.Services.AddHttpClient("default", client =>
 {
+
 }).ConfigurePrimaryHttpMessageHandler(() => handler);
+
 builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services
@@ -41,6 +43,7 @@ var apiHost = Host.CreateDefaultBuilder()
         webBuilder.UseUrls("https://localhost:" + tcapiPort);
     }).ConfigureServices(services =>
     {
+        services.AddHttpClient();
         services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
     }).Build();
 
