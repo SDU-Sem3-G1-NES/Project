@@ -1,15 +1,16 @@
 
+using System.Diagnostics;
 using TableControllerApi.Models;
 
 namespace TableControllerApi.Services
 {
     public class WebhookTestService : BackgroundService
     {
-        private readonly WebhookUserService _webhookUserService;
+        private readonly SubscriberUriService _subscriberUriService;
         private readonly HttpClient _httpClient;
-        public WebhookTestService(WebhookUserService webhookUserService, IHttpClientFactory httpClientFactory)
+        public WebhookTestService(SubscriberUriService subscriberUriService, IHttpClientFactory httpClientFactory)
         {
-            _webhookUserService = webhookUserService;
+            _subscriberUriService = subscriberUriService;
             _httpClient = httpClientFactory.CreateClient();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -21,19 +22,26 @@ namespace TableControllerApi.Services
                 {
                     Status = "Test Status at: " + Time,
                 };
-                foreach (var uri in _webhookUserService.Webhooks)
+                foreach (var uri in _subscriberUriService.Webhooks)
                 {
-                    var response = await _httpClient.PostAsJsonAsync(uri, newStatus, stoppingToken);
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
-                        Console.WriteLine($"Successfully sent status to {uri}");
+                        var response = await _httpClient.PostAsJsonAsync(uri, newStatus, stoppingToken);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine($"Successfully sent status to {uri}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to send status to {uri}");
+                        } 
+                        }
+                        catch (Exception e)
+                    {
+                        Console.WriteLine($"Failed to send status to {uri} with error: {e.Message}");
                     }
-                    else
-                    {
-                        Console.WriteLine($"Failed to send status to {uri}");
-                    } 
                 }
-                await Task.Delay(5000, stoppingToken); // Wait for 5 seconds before sending the next status
+                await Task.Delay(10000, stoppingToken); // Wait for 5 seconds before sending the next status
             }
         }
     }

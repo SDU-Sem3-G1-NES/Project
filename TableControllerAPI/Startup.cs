@@ -23,7 +23,7 @@ public class Startup
     {
         services.AddHostedService<WebhookTestService>();
         services.AddHttpClient();
-        services.AddSingleton<WebhookUserService>();
+        services.AddSingleton<SubscriberUriService>();
         
         services.AddControllers();
 
