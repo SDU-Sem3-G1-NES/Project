@@ -1,9 +1,12 @@
 ﻿@page "/table"
 @inherits TableBase
 
-<PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h1">@PanelTitle </MudText>
-<MudContainer MaxWidth="MaxWidth.Small">
-   <TableComponent Table="@Table"/>
-</MudContainer>
+@if(isLoggedIn ?? false) {
+   <PageTitle>Table Management</PageTitle>
+
+   <MudText Align="Align.Center" Typo="Typo.h1">@PanelTitle </MudText>
+   <MudContainer MaxWidth="MaxWidth.Small">
+      <TableComponent Table="@Table"/>
+   </MudContainer>
+}

@@ -17,11 +17,13 @@
         <NavMenu />
     </MudDrawer>
     }
-    <CascadingValue Value="email">
-        <CascadingValue Value="userId">
-            <MudMainContent Class="mt-16 pa-4">
-                @Body
-            </MudMainContent>
+    <CascadingValue Value="isLoggedIn">
+        <CascadingValue Value="email">
+            <CascadingValue Value="userId">
+                <MudMainContent Class="mt-16 pa-4">
+                    @Body
+                </MudMainContent>
+            </CascadingValue>
         </CascadingValue>
     </CascadingValue>
 </MudLayout>

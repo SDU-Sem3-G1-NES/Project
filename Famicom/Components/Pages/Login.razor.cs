@@ -13,6 +13,7 @@ namespace Famicom.Components.Pages
 
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
+
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }

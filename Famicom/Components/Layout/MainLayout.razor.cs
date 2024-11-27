@@ -6,7 +6,7 @@ namespace Famicom.Components.Layout
 {
     public partial class MainLayout : LayoutComponentBase
     {
-        protected bool isLoggedIn;
+        public bool isLoggedIn;
         private bool isPrerendering = true;
 
         public string? email;

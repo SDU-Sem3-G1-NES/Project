@@ -1,5 +1,8 @@
 ﻿@page "/"
 @inherits DashboardBase
 
-<PageTitle>Dashboard</PageTitle>
+@if(isLoggedIn ?? false) {
+    <PageTitle>Dashboard</PageTitle>
+} 
+
 

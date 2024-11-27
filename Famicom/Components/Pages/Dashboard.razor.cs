@@ -16,5 +16,8 @@ namespace Famicom.Components.Pages
 
         [CascadingParameter]
         public int? UserId { get; set; }
+
+        [CascadingParameter]
+        public bool? isLoggedIn { get; set; }
     }
 }
