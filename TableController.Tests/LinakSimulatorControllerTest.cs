@@ -23,7 +23,7 @@ namespace TableController.Tests
 
         private async Task GetFreshObjects()
         {
-            _controller = new LinakSimulatorController();
+            _controller = new LinakSimulatorController(new HttpClient());
             _linakSimulatorTasksMock = new Mock<ILinakSimulatorTasks>();
 
             var field = typeof(LinakSimulatorController)
@@ -246,12 +246,8 @@ namespace TableController.Tests
         {
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
             _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
-            _tasks = new LinakSimulatorTasks();
+            _tasks = new LinakSimulatorTasks(_httpClient);
             _table = GenerateTable().Result;
-
-            var clientField = typeof(LinakSimulatorTasks)
-                .GetField("_client", BindingFlags.NonPublic | BindingFlags.Instance);
-            clientField!.SetValue(_tasks, _httpClient);
 
             var optionsField = typeof(LinakSimulatorTasks)
                 .GetField("_baseUrl", BindingFlags.NonPublic | BindingFlags.Instance);
