@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableController.Tests", "Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableControllerApi.Tests", "TableControllerApi.Tests\TableControllerApi.Tests.csproj", "{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{D9DB8E47-D4E1-4E8D-BD8D-2FC645144938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEDAC449-4E83-4BC4-97A3-96EA5FCC0A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9DB8E47-D4E1-4E8D-BD8D-2FC645144938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9DB8E47-D4E1-4E8D-BD8D-2FC645144938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9DB8E47-D4E1-4E8D-BD8D-2FC645144938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9DB8E47-D4E1-4E8D-BD8D-2FC645144938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TableController;
 using Microsoft.OpenApi.Models;
 using TableControllerApi.Authentication;
+using TableControllerApi.Services;
 
 
 namespace TableControllerApi;
@@ -20,6 +21,10 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddHostedService<WebhookTestService>();
+        services.AddHttpClient();
+        services.AddSingleton<WebhookUserService>();
+        
         services.AddControllers();
 
         services.AddEndpointsApiExplorer();

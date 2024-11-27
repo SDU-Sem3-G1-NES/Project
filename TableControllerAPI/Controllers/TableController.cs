@@ -30,6 +30,11 @@ public class TableController : ControllerBase
             ITable? table = await _tableController.GetFullTableInfo(guid);
             return Ok(await Task.FromResult(table));
         }
+        catch (HttpRequestException httpRequestException)
+        {
+            Debug.WriteLine(httpRequestException.Message);
+            return StatusCode(503, await Task.FromResult("Failed to establish SSL connection."));
+        }
         catch (Exception e)
         {
             Debug.WriteLine(e.Message);
@@ -41,13 +46,18 @@ public class TableController : ControllerBase
     {
         try
         {
-        var _tableController = await _tableControllerService.GetTableController(guid);
-        await _tableController.SetTableHeight(height, guid, _progress);
-        return Ok(await Task.FromResult("Table height set successfully."));
+            var _tableController = await _tableControllerService.GetTableController(guid);
+            await _tableController.SetTableHeight(height, guid, _progress);
+            return Ok(await Task.FromResult("Table height set successfully."));
+        }
+        catch (HttpRequestException httpRequestException)
+        {
+            Debug.WriteLine(httpRequestException.Message);
+            return StatusCode(503, await Task.FromResult("Failed to establish SSL connection."));
         }
         catch (Exception e)
         {
-            if(e.Message.Contains("Failed to set table height!"))
+            if (e.Message.Contains("Failed to set table height!"))
             {
                 Debug.WriteLine(e.Message);
                 return StatusCode(503, await Task.FromResult("Failed to set table height!"));
