@@ -10,7 +10,7 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private CleanerModel cleanerModel { get; set; } = new CleanerModel(new TableControllerService(), new TableService());
+        private CleanerModel cleanerModel { get; set; } = null!;
 
         public async Task ToggleCleaningMode()
         {
