@@ -17,30 +17,32 @@ namespace TableController;
 public class LinakSimulatorController : ITableController
 {
     private ILinakSimulatorTasks _tasks;
+    private readonly HttpClient _client;
 
     /// <summary>
     /// Constructor for LinakSimulatorController
     /// </summary>
-    public LinakSimulatorController()
+    public LinakSimulatorController(HttpClient client)
     {
-        _tasks = new LinakSimulatorTasks();
+        _client = client;
+        _tasks = new LinakSimulatorTasks(_client);
     }
 
     /// <summary>
     /// Method to get all table GUIDs stored in the API.
     /// </summary>
     /// <returns>Array of all found GUIDs as string.</returns>
-    public Task<string[]> GetAllTableIds()
+    public async Task<string[]> GetAllTableIds()
     {
         try 
         {
-            var response = _tasks.GetAllTableIds().Result;
-            return Task.FromResult(response);
+            var response = await _tasks.GetAllTableIds();
+            return response;
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException<string[]>(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
     }
 
@@ -49,17 +51,17 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>LinakTable; Null if not found in API or on other error.</returns>
     /// <param name="guid">GUID of the table to get information from. Optional.</param>
-    public Task<LinakTable> GetFullTableInfo(string guid)
+    public async Task<LinakTable> GetFullTableInfo(string guid)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(guid).Result;
+            var response = await _tasks.GetTableInfo(guid);
             if (response == null
                 || response.id == null
                 || response.config.name == null
                 || response.state.position_mm == null) 
             {
-                return Task.FromException<LinakTable>(new Exception("Table not found on API!"));
+                throw new Exception("Table not found on API!");
             } 
 
             var returnTable = new LinakTable(
@@ -69,12 +71,12 @@ public class LinakSimulatorController : ITableController
             returnTable.Height = response.state.position_mm;
             returnTable.Speed = response.state.speed_mms; 
 
-            return Task.FromResult(returnTable);
+            return returnTable;
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException<LinakTable>(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
     }
 
@@ -83,25 +85,25 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>Height as int; -1 if table not found or other error.</returns>
     /// <param name="guid">GUID of the table to get height from.</param>
-    public Task<int> GetTableHeight(string guid)
+    public async Task<int> GetTableHeight(string guid)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(guid).Result;
+            var response = await _tasks.GetTableInfo(guid);
             if (response == null
                 || response.id == null
                 || response.config.name == null
                 || response.state.position_mm == null) 
             {
-                return Task.FromException<int>(new Exception("Table not found on API!"));
+                throw new Exception("Table not found on API!");
             } 
 
-            return Task.FromResult(response.state.position_mm.Value);
+            return response.state.position_mm.Value;
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException<int>(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
         
     }
@@ -125,7 +127,7 @@ public class LinakSimulatorController : ITableController
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
-            var response = _tasks.SetTableInfo(tempTable).Result;
+            var response = await _tasks.SetTableInfo(tempTable);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
@@ -146,19 +148,19 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>TableSpeed as int; -1 if table not found or other error.</returns>
     /// <param name="guid">GUID of the table to get speed from.</param>
-    public Task<int> GetTableSpeed(string guid)
+    public async Task<int> GetTableSpeed(string guid)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(guid).Result;
+            var response = await _tasks.GetTableInfo(guid);
             if (response == null) throw new Exception("Table not found on API!");
-            if(response.state.speed_mms == null) return Task.FromException<int>(new Exception("Could not get speed."));
-            return Task.FromResult(response.state.speed_mms!.Value);
+            if(response.state.speed_mms == null) throw new Exception("Could not get speed.");
+            return response.state.speed_mms!.Value;
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException<int>(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
     }
 
@@ -168,29 +170,29 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>Status as string. Empty string if no status or some error.</returns>
     /// <param name="guid">GUID of the table to get status from.</param>
-    public Task<string> GetTableStatus(string guid)
+    public async Task<string> GetTableStatus(string guid)
     {
         try 
         {
-            var response = _tasks.GetTableInfo(guid).Result;
+            var response = await _tasks.GetTableInfo(guid);
             if (response == null) throw new Exception("Table not found on API!");
-            return Task.FromResult(response.state.status ?? "");
+            return response.state.status ?? "";
         } 
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return Task.FromException<string>(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
     }
 
-    public Task<ITableError[]> GetTableError(string guid)
+    public async Task<ITableError[]> GetTableError(string guid)
     {
         var returnArray = new List<LinakTableError>();
         try 
         {
-            var response = _tasks.GetTableInfo(guid).Result;
+            var response = await _tasks.GetTableInfo(guid);
             if (response == null) throw new Exception("Table not found on API!");
-            if(response.lastErrors!.Length == 0) return (Task<ITableError[]>)Task.FromException(new Exception("No errors found."));
+            if(response.lastErrors!.Length == 0) throw new Exception("No errors found.");
             foreach(var error in response.lastErrors) {
                 var parsedError = ParseTableStatus(error.errorCode!.Value);
                 returnArray.Add(new LinakTableError(guid, error.time_s!.Value, error.errorCode!.Value, parsedError.Values.First()));
@@ -199,9 +201,9 @@ public class LinakSimulatorController : ITableController
         catch (Exception e) 
         {
             Debug.WriteLine(e.Message);
-            return (Task<ITableError[]>)Task.FromException(new Exception(e.Message));
+            throw new Exception(e.Message);
         }
-        return Task.FromResult(returnArray.Cast<ITableError>().ToArray());
+        return returnArray.Cast<ITableError>().ToArray();
     }
 
     private Dictionary<TableStatus, string> ParseTableStatus(int errorCode)
@@ -403,21 +405,17 @@ public class LinakSimulatorController : ITableController
 }
 
 internal class LinakSimulatorTasks : ILinakSimulatorTasks {
-    private readonly  HttpClient _client = null!;
+    private readonly  HttpClient _client;
     private readonly LinakSimulatorControllerOptions _options;
     private readonly string _baseUrl;
 
     private readonly int maxHeight = 1320;
     private readonly int minHeight = 680;
 
-    internal LinakSimulatorTasks() {
+    internal LinakSimulatorTasks(HttpClient client) {
+        _client = client;
         _options = new LinakSimulatorControllerOptions();
         _baseUrl = $"https://{_options.Url}:{_options.Port}/api/{_options.Version}/{_options.Key}";
-
-        var handler = new HttpClientHandler {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-        };
-        _client = new HttpClient(handler);
     }
 
     public async Task<LinakApiTable?> GetTableInfo(string guid) {
@@ -425,8 +423,8 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
-        var jsonString = response.Content.ReadAsStringAsync();
-        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString.Result);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var apiTable = JsonSerializer.Deserialize<LinakApiTable>(jsonString);
 
         apiTable!.id = guid;
         return apiTable ?? new LinakApiTable();
@@ -454,7 +452,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _client.PutAsync(requestUrl, content);
             response.EnsureSuccessStatusCode();
-            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var responseBody = await response.Content.ReadAsStringAsync();
             var serialisedResponseBody = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
             
             // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
@@ -472,8 +470,8 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
-        var jsonString = response.Content.ReadAsStringAsync();
-        var apiTables = JsonSerializer.Deserialize<string[]>(jsonString.Result);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var apiTables = JsonSerializer.Deserialize<string[]>(jsonString);
 
         return apiTables ?? [];
     }
