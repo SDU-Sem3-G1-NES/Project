@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using SharedModels;
 
 namespace DataAccess
@@ -152,7 +153,14 @@ namespace DataAccess
 
                         if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
                         {
-                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(permissionsJson)!;
+                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                permissionsJson,
+                                new JsonSerializerOptions { 
+                                    Converters = {
+                                        new JsonStringEnumConverter()
+                                    }
+                                }
+                            )!;
                         }
 
                         switch (userType)
@@ -212,7 +220,14 @@ namespace DataAccess
 
                         if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
                         {
-                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(permissionsJson)!;
+                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                permissionsJson,
+                                new JsonSerializerOptions { 
+                                    Converters = {
+                                        new JsonStringEnumConverter()
+                                    }
+                                }
+                            )!;
                         }
 
                         if (userType == 1)
