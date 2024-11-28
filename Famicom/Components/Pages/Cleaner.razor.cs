@@ -10,15 +10,26 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private CleanerModel cleanerModel { get; set; } = null!;
+        private CleanerService CleanerService { get; set; }
+        private CleanerModel CleanerModel { get; set; }
+
+        public CleanerBase()
+        {
+            var httpClient = new HttpClient();
+            var tableControllerService = new TableControllerService(httpClient);
+            var tableService = new TableService();
+            CleanerService = new CleanerService(tableControllerService, tableService);
+            CleanerModel = new CleanerModel(CleanerService);
+        }
 
         public async Task ToggleCleaningMode()
         {
             IsCleaningMode = !IsCleaningMode;
             if (IsCleaningMode)
             {
-                await cleanerModel.UpdateAllTablesMaxHeight();
+                await CleanerModel.UpdateAllTablesMaxHeight();
             }
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
