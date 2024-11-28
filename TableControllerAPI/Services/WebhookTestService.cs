@@ -22,8 +22,9 @@ namespace TableControllerApi.Services
                 {
                     Status = "Test Status at: " + Time,
                 };
-                foreach (var uri in _subscriberUriService.Webhooks)
+                foreach (var webhook in _subscriberUriService.Webhooks)
                 {
+                    var uri = webhook.WebhookUri;
                     try
                     {
                         var response = await _httpClient.PostAsJsonAsync(uri, newStatus, stoppingToken);

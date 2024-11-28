@@ -12,23 +12,30 @@ namespace TableControllerApi.Controllers;
 [Produces("application/json")]
 public class TableController : ControllerBase
 {
-    [Inject] private IHttpClientFactory? _clientFactory { get; set; }
+    private IHttpClientFactory _clientFactory { get; set; }
     private readonly ITableControllerService _tableControllerService;
 
     private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
     {
         Debug.WriteLine(message);
     });
-    public TableController(ITableControllerService tableControllerService)
+    public TableController(ITableControllerService tableControllerService, IHttpClientFactory clientFactory)
     {
         _tableControllerService = tableControllerService;
+        _clientFactory = clientFactory;
     }
     [HttpGet("{guid}")]
     public async Task<ActionResult<ITable>> GetFullTableInfo(string guid)
     {
         try
         {
-            var client = _clientFactory!.CreateClient("default");
+            //ignore SSL errors instad of fixing them :)
+            var handler = new HttpClientHandler
+            {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            var client = new HttpClient(handler);
+            //var client = _clientFactory!.CreateClient("default");
             var _tableController = await _tableControllerService.GetTableController(guid, client);
             ITable? table = await _tableController.GetFullTableInfo(guid);
             return Ok(await Task.FromResult(table));
@@ -49,10 +56,16 @@ public class TableController : ControllerBase
     {
         try
         {
-        var client = _clientFactory!.CreateClient("default");
-        var _tableController = await _tableControllerService.GetTableController(guid, client);
-        await _tableController.SetTableHeight(height, guid, _progress);
-        return Ok(await Task.FromResult("Table height set successfully."));
+            //ignore SSL errors instad of fixing them :)
+            var handler = new HttpClientHandler
+            {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            var client = new HttpClient(handler);
+            //var client = _clientFactory!.CreateClient("default");
+            var _tableController = await _tableControllerService.GetTableController(guid, client);
+            await _tableController.SetTableHeight(height, guid, _progress);
+            return Ok(await Task.FromResult("Table height set successfully."));
         }
         catch (Exception e)
         {

@@ -16,15 +16,15 @@ namespace YourNamespace.Controllers
             _subscriberUriService = subscriberUriService;
         }
 
-        [HttpPost("subscribe")]
-        public async Task<ActionResult> ReceiveWebhook([FromBody] String uri)
+        [HttpPost("{guid}/subscribe")]
+        public async Task<ActionResult> ReceiveWebhook(string guid, [FromBody] String uri)
         {
-            Debug.WriteLine("Received webhook with URI: " + uri);
+            Debug.WriteLine($"Received webhook subscription for table {guid} with URI: {uri}");
             try
             {
-                if(_subscriberUriService.AddUri(uri))
+                if(_subscriberUriService.Add(guid, uri))
                 {
-                    return Ok(await Task.FromResult("Webhook added successfully with URI: " + uri));
+                    return Ok(await Task.FromResult("Webhook added successfully."));
                 }
                 else 
                 {
@@ -37,15 +37,15 @@ namespace YourNamespace.Controllers
                 return BadRequest(await Task.FromResult("Failed to add webhook. " + e.Message));
             }
         }
-        [HttpPost("unsubscribe")]
-        public async Task<ActionResult> RemoveWebhook([FromBody] String uri)
+        [HttpPost("{guid}/unsubscribe")]
+        public async Task<ActionResult> RemoveWebhook(string guid, [FromBody] String uri)
         {
-            Debug.WriteLine("Received webhook with URI: " + uri);
+            Debug.WriteLine($"Received webhook unsubscribe for table {guid} with URI: {uri}");
             try
             {
-                if(_subscriberUriService.RemoveUri(uri))
+                if(_subscriberUriService.Remove(guid, uri))
                 {
-                    return Ok(await Task.FromResult("Webhook removed successfully with URI: " + uri));
+                    return Ok(await Task.FromResult("Webhook removed successfully."));
                 }
                 else 
                 {
