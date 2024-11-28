@@ -26,7 +26,7 @@ namespace Famicom.Components.Pages
         public required string ApiName { get; set; }
         public required List<Apis> Apis { get; set; }
 
-        private List<ITable>? tableinfo;
+        private List<ITable>? tableinfo {get; set;}
         public bool ManualAddition { get; set; } = false;
 
         public AddTableComponent()
@@ -47,7 +47,7 @@ namespace Famicom.Components.Pages
             Apis = apiService.GetAllApis();
         }
 
-        public async Task OnTableChanged(LinakTable table)
+        public async Task OnTableChanged(ITable table)
         {
             TableGuid = table.GUID;
             TableName = table.Name;
@@ -59,34 +59,49 @@ namespace Famicom.Components.Pages
         private async Task OnTableApiChanged(string newValue)
         {
             ApiName = newValue;
-
-            List<ITable>? tableinfo = new List<ITable>();
-            try
+            ITableController? tableController;
+            switch (newValue)
             {
-                var tableController = await TableControllerService!.GetTableControllerByApiName(ApiName, ClientFactory!.CreateClient("default"));
-                if (tableController != null)
-                {
-                    var tableIds = await tableController.GetAllTableIds();
-                    tableinfo = new List<ITable>();
-
-                    int count = 0;
-                    foreach (var tableId in tableIds)
-                    {
-                        tableinfo.Add(await tableController.GetFullTableInfo(tableId));
-                        Debug.WriteLine("Table " + count + " added");
-
-                    }
-                    this.tableinfo = tableinfo;
-                }
-                else
-                {
-                    Debug.WriteLine("Table controller not found");
-                    Snackbar.Add("Table controller not found", Severity.Error);
-                }
+                case "Linak Simulator API V2":
+                    TableApi = 1;
+                    break;
+                case "Mock API":
+                    TableApi = 2;
+                    break;
+                case "Linak API":
+                    TableApi = 3;
+                    break;
             }
-            catch (Exception e)
+            if (tableinfo == null)
             {
-                Debug.WriteLine(e.Message);
+                try
+                {
+                    List<ITable> getTables = new List<ITable>();
+                    tableController = await TableControllerService!.GetTableControllerByApiName(ApiName, ClientFactory!.CreateClient("default"));
+                    if (tableController != null)
+                    {
+                        var tableIds = await tableController.GetAllTableIds();
+
+                        int count = 0;
+                        foreach (var tableId in tableIds)
+                        {
+                            count++;
+                            getTables.Add(await tableController.GetFullTableInfo(tableId));
+                            Debug.WriteLine("Table " + count + " added");
+
+                        }
+                        tableinfo = getTables;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Table controller not found");
+                        Snackbar.Add("Table controller not found", Severity.Error);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
             }
 
             await Task.CompletedTask;
@@ -106,6 +121,11 @@ namespace Famicom.Components.Pages
             IsAddingTableVisible = !IsAddingTableVisible;
         }
 
+        private void AddManualy()
+        {
+            ManualAddition = !ManualAddition;
+        }
+
         private async Task AddTable()
         {
             if (string.IsNullOrEmpty(TableGuid) || string.IsNullOrEmpty(TableName) || string.IsNullOrEmpty(TableManufacturer))
@@ -119,6 +139,7 @@ namespace Famicom.Components.Pages
                 tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
                 ErrorMessage = null;
                 ShowAddUser(); // Show the add user question overlay
+                AddManualy(); 
                 Snackbar.Add("Table added successfully", Severity.Success);
                 
             }

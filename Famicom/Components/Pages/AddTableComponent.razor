@@ -10,7 +10,7 @@
                 }
             </MudSelect>
 
-            <MudSelect T="LinakTable" Label="Choose Table"  ValueChanged="OnTableChanged" Class="mb-4">
+            <MudSelect T="ITable" Label="Choose Table"  ValueChanged="OnTableChanged" Class="mb-4">
                 @if( tableinfo != null)
                 {
                     @foreach (var table in tableinfo)
@@ -27,6 +27,7 @@
 
             <MudStack Spacing="2" Class="mt-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddManualy">Add Manualy</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTable">Add</MudButton>
             </MudStack>
             <br />
@@ -52,6 +53,7 @@ else
             </MudSelect>
             <MudStack Spacing="2" Class="mt-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddManualy">Add From Api</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTable">Add</MudButton>
             </MudStack>
             <br />
