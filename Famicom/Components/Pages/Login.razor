@@ -12,12 +12,12 @@
             <form @onsubmit="OnSubmitButton" style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
                     <label for="email" class="form-label">E-Mail</label>
-                    <MudTextField T="string" Id="email" @bind-Value="loginModel.Email" Required="true" />
+                    <MudTextField T="string" @bind-Value="loginModel.Email" Required="true" />
                 </div>
 
                 <div>
                     <label for="password" class="form-label">Password</label>
-                    <MudTextField T="string" Id="password" @bind-Value="loginModel.Password" Required="true" InputType="InputType.Password" />
+                    <MudTextField T="string" @bind-Value="loginModel.Password" Required="true" InputType="InputType.Password" />
                 </div>
                 <div class="d-flex justify-center">
                     <MudButton Disabled="@isSubmitting" @onclick="OnSubmitButton" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">
