@@ -13,14 +13,17 @@ namespace Famicom.Models
         private readonly ITableControllerService tableControllerService;
         private readonly TableService tableService;
 
+        private readonly HttpClient _httpClient;
+
         private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
         {
             Debug.WriteLine(message);
         });
-        public CleanerService(ITableControllerService tableControllerService, TableService tableService)
+        public CleanerService(ITableControllerService tableControllerService, HttpClient httpClient)
         {
             this.tableControllerService = tableControllerService;
-            this.tableService = tableService;
+            this.tableService = new TableService();
+            this._httpClient = httpClient;
         }
 
         public async Task UpdateAllTablesMaxHeight()
@@ -31,7 +34,7 @@ namespace Famicom.Models
                 var tables = tableService.GetAllTables();
                 foreach (var table in tables)
                 {
-                    var _tableController = await tableControllerService.GetTableController(table.GUID);
+                    var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
                     await _tableController.SetTableHeight(table.Height ?? default(int), table.GUID, _progress);
                 }
 

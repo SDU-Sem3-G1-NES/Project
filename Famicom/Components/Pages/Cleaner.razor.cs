@@ -10,16 +10,18 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private CleanerService CleanerService { get; set; }
-        private CleanerModel CleanerModel { get; set; }
+        private CleanerService cleanerService { get; set; }
+        private CleanerModel cleanerModel { get; set; }
+
+        [Inject] IHttpClientFactory? httpClientFactory { get; set; } 
 
         public CleanerBase()
         {
-            var httpClient = new HttpClient();
-            var tableControllerService = new TableControllerService(httpClient);
+            var tableControllerService = new TableControllerService();
             var tableService = new TableService();
-            CleanerService = new CleanerService(tableControllerService, tableService);
-            CleanerModel = new CleanerModel(CleanerService);
+            var client = httpClientFactory!.CreateClient();
+            cleanerService = new CleanerService(tableControllerService, client);
+            cleanerModel = new CleanerModel(cleanerService);
         }
 
         public async Task ToggleCleaningMode()
@@ -27,7 +29,7 @@ namespace Famicom.Components.Pages
             IsCleaningMode = !IsCleaningMode;
             if (IsCleaningMode)
             {
-                await CleanerModel.UpdateAllTablesMaxHeight();
+                await cleanerModel.UpdateAllTablesMaxHeight();
             }
             await InvokeAsync(StateHasChanged);
         }
