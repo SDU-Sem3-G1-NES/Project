@@ -12,15 +12,26 @@
             <form @onsubmit="OnSubmitButton" style="display: flex; flex-direction: column; gap: 12px;">
                 <div>
                     <label for="email" class="form-label">E-Mail</label>
-                    <input type="text" id="email" @bind="loginModel.Email" required class="form-input" />
+                    <MudTextField T="string" Id="email" @bind-Value="loginModel.Email" Required="true" />
                 </div>
 
                 <div>
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" @bind="loginModel.Password" required class="form-input" />
+                    <MudTextField T="string" Id="password" @bind-Value="loginModel.Password" Required="true" InputType="InputType.Password" />
                 </div>
-
-                <button type="submit" class="form-button">Login</button>
+                <div class="d-flex justify-center">
+                    <MudButton Disabled="@isSubmitting" @onclick="OnSubmitButton" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">
+                    @if (isSubmitting)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                        <MudText Class="ms-2">Logging in..</MudText>
+                    }
+                    else
+                    {
+                        <MudText>Login</MudText>
+                    }
+                    </MudButton>
+                </div>
             </form>
 
             @if (!string.IsNullOrEmpty(ErrorMessage))
