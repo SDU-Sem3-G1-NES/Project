@@ -6,6 +6,7 @@ using Famicom.Models;
 using System.Diagnostics;
 using Models.Services;
 using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Famicom.Components.Pages
 {
@@ -16,5 +17,6 @@ namespace Famicom.Components.Pages
 
         [CascadingParameter]
         public int? UserId { get; set; }
+
     }
 }

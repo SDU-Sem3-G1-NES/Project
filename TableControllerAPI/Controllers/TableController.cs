@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using SharedModels;
 using TableController;
 using Models.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace TableControllerApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
 [Produces("application/json")]
 public class TableController : ControllerBase
 {
+    [Inject] private IHttpClientFactory? _clientFactory { get; set; }
     private readonly ITableControllerService _tableControllerService;
 
     private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
@@ -26,7 +28,8 @@ public class TableController : ControllerBase
     {
         try
         {
-            var _tableController = await _tableControllerService.GetTableController(guid);
+            var client = _clientFactory!.CreateClient("default");
+            var _tableController = await _tableControllerService.GetTableController(guid, client);
             ITable? table = await _tableController.GetFullTableInfo(guid);
             return Ok(await Task.FromResult(table));
         }
@@ -46,14 +49,10 @@ public class TableController : ControllerBase
     {
         try
         {
-            var _tableController = await _tableControllerService.GetTableController(guid);
-            await _tableController.SetTableHeight(height, guid, _progress);
-            return Ok(await Task.FromResult("Table height set successfully."));
-        }
-        catch (HttpRequestException httpRequestException)
-        {
-            Debug.WriteLine(httpRequestException.Message);
-            return StatusCode(503, await Task.FromResult("Failed to establish SSL connection."));
+        var client = _clientFactory!.CreateClient("default");
+        var _tableController = await _tableControllerService.GetTableController(guid, client);
+        await _tableController.SetTableHeight(height, guid, _progress);
+        return Ok(await Task.FromResult("Table height set successfully."));
         }
         catch (Exception e)
         {
