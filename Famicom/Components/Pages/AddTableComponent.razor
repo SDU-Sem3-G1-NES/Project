@@ -1,4 +1,4 @@
-﻿@if (!ManualAddition)
+﻿﻿@if (!ManualAddition)
 {
     //Automatic addition from api
     <MudPaper Class="pa-4">
@@ -10,20 +10,22 @@
                 }
             </MudSelect>
 
-            <MudSelect T="ITable" Label="Choose Table"  ValueChanged="OnTableChanged" Class="mb-4">
-                @if( tableinfo != null)
-                {
-                    @foreach (var table in tableinfo)
+            @if(loading){
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            }
+            @if(selected)
+            {
+                <MudSelect T="ITable" MultiSelection="true" Label="Choose Table" Class="mb-4" @bind-SelectedValues="SelectedTables">
+                    @if (tableinfo != null)
                     {
-                        <MudSelectItem Value="@table">@table.Name</MudSelectItem>
+                        @foreach (var table in tableinfo)
+                        {
+                            <MudSelectItem Value="@table">@table.Name | @table.Manufacturer</MudSelectItem>
+                        }
                     }
-                }
-                
-            </MudSelect>
-
-            <MudTextField T="string" Label="Table GUID" Required="true" Disabled="true" @bind-Value="TableGuid" Class="mb-4" />
-            <MudTextField T="string" Label="Table Name" Required="true" Disabled="true" @bind-Value="TableName" Class="mb-4" />
-            <MudTextField T="string" Label="Table Manufacturer" Required="true" Disabled="true" @bind-Value="TableManufacturer" Class="mb-4" />
+                </MudSelect>
+            }
+            
 
             <MudStack Spacing="2" Class="mt-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
@@ -64,10 +66,3 @@ else
         </MudForm>
     </MudPaper>
 }
-
-
-
-
-
-
-

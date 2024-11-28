@@ -26,13 +26,17 @@ namespace Famicom.Components.Pages
         public required string ApiName { get; set; }
         public required List<Apis> Apis { get; set; }
 
-        private List<ITable>? tableinfo {get; set;}
+        private List<ITable>? tableinfo { get; set; }
+
+        private IEnumerable<ITable> SelectedTables { get; set; } = new List<ITable>();
+        private bool loading { get; set; } = false;
+        private bool selected { get; set; } = false;
         public bool ManualAddition { get; set; } = false;
 
         public AddTableComponent()
         {
             IsAddingTableVisible = false;
-            
+
 
         }
 
@@ -76,6 +80,7 @@ namespace Famicom.Components.Pages
             {
                 try
                 {
+                    loading = true;
                     List<ITable> getTables = new List<ITable>();
                     tableController = await TableControllerService!.GetTableControllerByApiName(ApiName, ClientFactory!.CreateClient("default"));
                     if (tableController != null)
@@ -104,12 +109,14 @@ namespace Famicom.Components.Pages
                 }
             }
 
+            selected = true;
+            loading = false;
             await Task.CompletedTask;
         }
 
 
-        
-        
+
+
 
         private async Task Cancel()
         {
@@ -128,28 +135,58 @@ namespace Famicom.Components.Pages
 
         private async Task AddTable()
         {
-            if (string.IsNullOrEmpty(TableGuid) || string.IsNullOrEmpty(TableName) || string.IsNullOrEmpty(TableManufacturer))
+            if (!ManualAddition)
             {
-                ErrorMessage = "Please fill in all fields.";
-                return;
-            }
+                if (SelectedTables == null || !SelectedTables.Any())
+                {
+                    ErrorMessage = "Please select at least one table.";
+                    return;
+                }
 
-            try
-            {
-                tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
-                ErrorMessage = null;
-                ShowAddUser(); // Show the add user question overlay
-                AddManualy(); 
-                Snackbar.Add("Table added successfully", Severity.Success);
-                
+                try
+                {
+                    foreach (var table in SelectedTables)
+                    {
+                        tableService.AddTable(table.GUID, table.Name, table.Manufacturer, TableApi);
+                    }
+                    ShowAddUser(); // Show the add user question overlay
+                    AddManualy();
+                    Snackbar.Add("Tables added successfully", Severity.Success);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    ErrorMessage = "An error occurred while adding the tables.";
+                    Snackbar.Add("An error occurred while adding the tables", Severity.Error);
+                    return;
+                }
             }
-            catch (Exception e)
+            else
             {
-                Debug.WriteLine(e.Message);
-                ErrorMessage = "An error occurred while adding the table.";
-                Snackbar.Add("An error occurred while adding the table", Severity.Error);
-                return;
+                if (string.IsNullOrEmpty(TableGuid) || string.IsNullOrEmpty(TableName) || string.IsNullOrEmpty(TableManufacturer))
+                {
+                    ErrorMessage = "Please fill in all fields.";
+                    return;
+                }
+
+                try
+                {
+                    tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
+                    ErrorMessage = null;
+                    ShowAddUser(); // Show the add user question overlay
+                    AddManualy();
+                    Snackbar.Add("Table added successfully", Severity.Success);
+
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    ErrorMessage = "An error occurred while adding the table.";
+                    Snackbar.Add("An error occurred while adding the table", Severity.Error);
+                    return;
+                }
             }
+            
             await OnTableAdded.InvokeAsync(false);
 
 
