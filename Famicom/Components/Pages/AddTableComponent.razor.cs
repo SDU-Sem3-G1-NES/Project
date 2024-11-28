@@ -13,7 +13,9 @@ namespace Famicom.Components.Pages
     {
         TableService tableService = new TableService();
         ApiService apiService = new ApiService();
-        AddTableComponentService addTableComponentService = new AddTableComponentService();
+        [Inject] IHttpClientFactory? ClientFactory { get; set; }
+
+        [Inject] TableControllerService? TableControllerService { get; set; }
 
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
@@ -58,11 +60,41 @@ namespace Famicom.Components.Pages
         {
             ApiName = newValue;
 
-            tableinfo = await addTableComponentService.HandleApiRequest(ApiName);
+            List<ITable>? tableinfo = new List<ITable>();
+            try
+            {
+                var tableController = await TableControllerService!.GetTableControllerByApiName(ApiName, ClientFactory!.CreateClient("default"));
+                if (tableController != null)
+                {
+                    var tableIds = await tableController.GetAllTableIds();
+                    tableinfo = new List<ITable>();
 
+                    int count = 0;
+                    foreach (var tableId in tableIds)
+                    {
+                        tableinfo.Add(await tableController.GetFullTableInfo(tableId));
+                        Debug.WriteLine("Table " + count + " added");
+
+                    }
+                    this.tableinfo = tableinfo;
+                }
+                else
+                {
+                    Debug.WriteLine("Table controller not found");
+                    Snackbar.Add("Table controller not found", Severity.Error);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
 
             await Task.CompletedTask;
         }
+
+
+        
+        
 
         private async Task Cancel()
         {

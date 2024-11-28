@@ -9,7 +9,8 @@ using System.Net.Http;
 var builder = WebApplication.CreateBuilder(args);
 
 
-var handler = new HttpClientHandler {
+var handler = new HttpClientHandler
+{
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 };
 
@@ -22,7 +23,7 @@ builder.Services.AddSingleton<TableControllerService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
-builder.Services.AddBlazoredSessionStorage(); 
+builder.Services.AddBlazoredSessionStorage();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -39,7 +40,7 @@ var apiHost = Host.CreateDefaultBuilder()
         string envPath = Path.Combine(AppContext.BaseDirectory, ".env");
         Env.Load(envPath);
         string tcapiPort = Env.GetString("TCAPI_PORT");
-        
+
         webBuilder.UseUrls("https://localhost:" + tcapiPort);
     }).ConfigureServices(services =>
     {
