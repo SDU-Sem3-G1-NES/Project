@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Components;
 using Blazored.SessionStorage;
 using Famicom.Models;
@@ -13,6 +12,9 @@ namespace Famicom.Components.Pages
 
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
+
+        [Inject] 
+        private LoginStateService LoginStateService { get; set; } = default!;
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }
@@ -24,6 +26,7 @@ namespace Famicom.Components.Pages
         {
             fixedSalt = userCredentialsService.GetFixedSalt();
         }
+        
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender && !isInitialized)
@@ -53,6 +56,7 @@ namespace Famicom.Components.Pages
                 Console.WriteLine($"Error checking session storage: {ex.Message}");
             }
         }
+        
         protected async Task OnSubmitButton()
         {
             // Hash the email and password
@@ -72,6 +76,8 @@ namespace Famicom.Components.Pages
                     await SessionStorage.SetItemAsync("UserId", userId);
                     await SessionStorage.SetItemAsync("Email", loginModel.Email);
 
+                    LoginStateService.IsLoggedIn = true;
+
                     Navigation?.NavigateTo("/");
                 }
                 else
@@ -87,7 +93,6 @@ namespace Famicom.Components.Pages
             }
             
         }
-
         
         
     }
