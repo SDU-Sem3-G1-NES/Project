@@ -7,33 +7,6 @@
 
 <MudDivider DividerType="DividerType.Middle" Class="my-4" />
 
-<MudToolBar Class="gap-6">
-    <MudSelect T="string" Label="Select order" @bind-Value="orderValue">
-        <MudSelectItem Value="@("Descending")" />
-        <MudSelectItem Value="@("Ascending")" />
-    </MudSelect>
-
-    <MudSelect T="string" Label="By Room" @bind-Value="selectedRoom">
-        @foreach (var room in roomNames)
-        {
-            <MudSelectItem Value="@room" />
-        }
-
-    </MudSelect>
-    <MudItem xs="12" sm="6" md="4">
-        <MudAutocomplete T="string" Label="Search Table" @bind-Value="selectedTable" SearchFunc="@Search1"
-                         ResetValueOnEmptyText="@resetValueOnEmptyText"
-                         CoerceText="@coerceText" CoerceValue="@coerceValue" />
-    </MudItem>
-
-    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
-        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
-        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
-        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
-    </MudMenu>
-
-</MudToolBar>
-
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
 
 <MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
@@ -48,24 +21,65 @@
     <AssignUserComponent OnUserAssigned="HandleUserAssigned" />
 </MudOverlay>
 
-@if (Table != null)
-{
-    <MudTable T="ITable" Items="Table" Class="mb-4" Height="auto" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<ITable,bool>(FilterFunc)">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Select Tables</MudText>
-            <MudSpacer />
-            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Table Name">@context.Name</MudTd>
-            <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
-            <MudTd DataLabel="GUID">@context.GUID</MudTd>
-        </RowTemplate>
-    </MudTable>
-}
+<MudTabs Outlined="true">
+    <MudTabPanel Text="Tables" Icon="@Icons.Material.Filled.TableRestaurant">
+        @if (Table != null)
+        {
+            <MudTable T="ITable" Items="Table" Class="mb-4" Height="400px" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<ITable,bool>(FilterFunc)">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Select Tables</MudText>
+                    <!-- Add button to add tables and users -->
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+                        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+                        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+                        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
+                    </MudMenu>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Table Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+                    <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudTabPanel>
+    <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.SupervisedUserCircle">
+        @if (Users != null)
+        {
+            <MudTable T="IUser" Items="Users" Class="mb-4" Height="400px" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Select Tables</MudText>
+                    <!-- Add button to add tables and users -->
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+                        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+                        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+                        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
+                    </MudMenu>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.UserID)">UserId</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Name)">User Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Email)">User Email</MudTableSortLabel></MudTh>
+                    <MudTh>Assigned Table</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="UserId">@context.UserID</MudTd>
+                    <MudTd DataLabel="User Name">@context.Name</MudTd>
+                    <MudTd DataLabel="User Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Assigned Table">@CheckAssignedTable(context.UserID)</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudTabPanel>
+</MudTabs>
+
 
