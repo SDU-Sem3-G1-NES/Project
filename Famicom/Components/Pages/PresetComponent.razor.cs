@@ -85,7 +85,7 @@ namespace Famicom.Components.Pages
             PresetIcon = string.Empty;
             ErrorMessage = null;
         }
-        private async Task SelectPreset(string presetName, int presetHeight)
+        private async Task SelectPreset(string? presetName, int presetHeight)
         {
             try
             {
