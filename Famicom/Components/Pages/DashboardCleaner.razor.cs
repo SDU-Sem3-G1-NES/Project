@@ -47,11 +47,11 @@ namespace Famicom.Components.Pages
         public async Task ToggleCleaningMode()
         {
             IsCleaningMode = !IsCleaningMode;
-            if (IsCleaningMode && cleanerModel != null)
+            if (cleanerModel != null)
             {
                 await cleanerModel.UpdateAllTablesMaxHeight();
             }
-            if (!IsCleaningMode && cleanerModel != null)
+            if (cleanerModel != null)
             {
                 await cleanerModel.RevertAllTables();
             }
