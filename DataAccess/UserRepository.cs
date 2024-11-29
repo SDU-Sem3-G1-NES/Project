@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Data;
+using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SharedModels;
 
@@ -271,6 +273,34 @@ namespace DataAccess
                 }
             }
             return users;
+        }
+
+        public string GetUserAssignedTable(int userId)
+        {
+            var sql = $"SELECT t.t_name FROM tables as t INNER JOIN user_tables as ut ON t.t_guid = ut.t_guid WHERE ut.u_id = @userId";
+            string assignedTable = "Table not assigned";
+
+            try
+            {
+                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                {
+                    cmd.Parameters.AddWithValue("@userId", userId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            assignedTable = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
+            }
+
+            return assignedTable;
         }
 
         public string? GetHashedPassword(string hashedEmailHex)

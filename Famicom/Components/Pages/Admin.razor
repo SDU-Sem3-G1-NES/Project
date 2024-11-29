@@ -69,11 +69,13 @@
                     <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.UserID)">UserId</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Name)">User Name</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Email)">User Email</MudTableSortLabel></MudTh>
+                    <MudTh>Assigned Table</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="UserId">@context.UserID</MudTd>
                     <MudTd DataLabel="User Name">@context.Name</MudTd>
                     <MudTd DataLabel="User Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Assigned Table">@CheckAssignedTable(context.UserID)</MudTd>
                 </RowTemplate>
             </MudTable>
         }

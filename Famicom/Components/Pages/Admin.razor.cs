@@ -130,6 +130,11 @@ namespace Famicom.Components.Pages
         }
         #endregion
 
+        public string CheckAssignedTable(int id)
+        {
+            return userService.GetUserAssignedTable(id);
+        }
+
         private async Task Protect()
         {
             var userid = await SessionStorage.GetItemAsync<int>("UserId");
