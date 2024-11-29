@@ -28,7 +28,7 @@ namespace Famicom.Components.Pages
 
         private List<ITable>? tableinfo { get; set; }
 
-        private IEnumerable<ITable> SelectedTables { get; set; } = new List<ITable>();
+        private HashSet<ITable> SelectedTables { get; set; } = new HashSet<ITable>();
         private bool loading { get; set; } = false;
         private bool selected { get; set; } = false;
         public bool ManualAddition { get; set; } = false;

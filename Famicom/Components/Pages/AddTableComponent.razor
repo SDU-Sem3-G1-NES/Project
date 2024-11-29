@@ -15,15 +15,18 @@
             }
             @if(selected)
             {
-                <MudSelect T="ITable" MultiSelection="true" Label="Choose Table" Class="mb-4" @bind-SelectedValues="SelectedTables">
-                    @if (tableinfo != null)
-                    {
-                        @foreach (var table in tableinfo)
-                        {
-                            <MudSelectItem Value="@table">@table.Name | @table.Manufacturer</MudSelectItem>
-                        }
-                    }
-                </MudSelect>
+                <MudTable T="ITable" Items="tableinfo" Class="mb-4" Height="400px" MultiSelection="true" Hover="true" FixedHeader="true" @bind-SelectedItems="SelectedTables">
+                    <HeaderContent>
+                        <MudTh>Table Name</MudTh>
+                        <MudTh>Manufacturer</MudTh>
+                        <MudTh>GUID</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Name</MudTd>
+                        <MudTh>@context.Manufacturer</MudTh>
+                        <MudTh>@context.GUID</MudTh>
+                    </RowTemplate>
+                </MudTable>
             }
             
 
