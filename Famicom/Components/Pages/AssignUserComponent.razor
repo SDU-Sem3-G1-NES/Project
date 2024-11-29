@@ -1,43 +1,29 @@
 ﻿@inherits ComponentBase 
 
-@if (ShouldAskQuestion)
-{
-    <MudContainer Class="d-flex justify-content-center align-items-center" Style="margin: 100px;">
-        <MudPaper Class="pa-4">
-            <MudText>Do you want to assign table to user ?</MudText>
-            <div class="d-flex justify-content-center mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
-                <MudSpacer />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ChangeView">Assign</MudButton>
-            </div>
-        </MudPaper>
-    </MudContainer>
-}
-else
-{
-    <MudContainer Class="d-flex justify-content-center align-items-center" Style="margin: 100px;">
-        <MudPaper Class="pa-4">
-            <MudText>Assign table:</MudText>
-            <div class="d-flex flex-column mt-4">
-                <MudSelect T="string" Label="Select Table" @bind-Value="selectedTable">
-                    @foreach (var table in Tables)
-                    {
-                        <MudSelectItem Value="@table.GUID">@table.Name</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudText>To user:</MudText>
-                <MudSelect T="int" Label="Select User" @bind-Value="selectedUser">
-                    @foreach (var user in Users)
-                    {
-                        <MudSelectItem Value="@user.UserID">@user.Name</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
-            <div class="d-flex justify-content-center mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
-                <MudSpacer />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AssignTable">Assign</MudButton>
-            </div>
-        </MudPaper>
-    </MudContainer>
-}
+
+<MudContainer Class="d-flex justify-content-center align-items-center" Style="margin: 100px;">
+    <MudPaper Class="pa-4">
+        <MudText>Assign table:</MudText>
+        <div class="d-flex flex-column mt-4">
+            <MudSelect T="string" Label="Select Table" @bind-Value="selectedTable">
+                @foreach (var table in Tables)
+                {
+                    <MudSelectItem Value="@table.GUID">@table.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudText>To user:</MudText>
+            <MudSelect T="int" Label="Select User" @bind-Value="selectedUser">
+                @foreach (var user in Users)
+                {
+                    <MudSelectItem Value="@user.UserID">@user.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AssignTable">Assign</MudButton>
+        </div>
+    </MudPaper>
+</MudContainer>
+

@@ -22,6 +22,7 @@ namespace Famicom.Components.Pages
         public bool IsTableOverlayActivated { get; set; } = false;
         public bool IsUserOverlayActivated { get; set; } = false;
         public bool IsAssignOverlayActivated { get; set; } = false;
+        public string searchString = "";
 
         #region Properties for Search, Filter and Sorting
         public string? orderValue { get; set; }
@@ -96,21 +97,13 @@ namespace Famicom.Components.Pages
         {
             IsUserOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
-            if (!isCancelled)
-            {
-                AssignOverlay(true);
-            }
         }
 
         public async Task HandleTableAdded(bool isCancelled)
         {
             IsTableOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
-            if (!isCancelled)
-            {
-                AssignOverlay(true);
-            }
-            RefreshPage();
+            Table = tableService.GetAllTables();
 
 
 
@@ -120,6 +113,21 @@ namespace Famicom.Components.Pages
         {
             IsAssignOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
+        }
+        #endregion
+
+        #region For table
+        public bool FilterFunc(ITable element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.GUID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
         }
         #endregion
 

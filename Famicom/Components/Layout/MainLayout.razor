@@ -5,9 +5,10 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-    
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    @if (isLoggedIn)
+    {
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
         <MudText Typo="Typo.h5" Class="ml-3">Famicom Table Managment</MudText>
         <MudSpacer />
@@ -17,7 +18,7 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" >
         <NavMenu />
     </MudDrawer>
-    
+    }
     <CascadingValue Value="email">
         <CascadingValue Value="userId">
             <MudMainContent Class="mt-16 pa-4">

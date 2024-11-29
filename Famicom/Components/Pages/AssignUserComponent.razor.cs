@@ -9,8 +9,6 @@ namespace Famicom.Components.Pages
     public partial class AssignUserComponent : ComponentBase
     {
         private bool AddUserVisible { get; set; }
-
-        private bool ShouldAskQuestion { get; set; }
         public required List<IUser> Users { get; set; }
         public required string selectedTable { get; set; }
         public int selectedUser { get; set; }
@@ -28,7 +26,6 @@ namespace Famicom.Components.Pages
 
         protected override void OnInitialized()
         {
-            ShouldAskQuestion = true;
             Users = userService.GetAllUsers();
             Tables = tableService.GetUserFreeTable();
             AddUserVisible = false;
@@ -41,12 +38,6 @@ namespace Famicom.Components.Pages
             await OnUserAssigned.InvokeAsync(null);
         }
 
-        private void ChangeView()
-        {
-            ShouldAskQuestion = !ShouldAskQuestion;
-        }
-
-
 
         private async Task AssignTable()
         {
@@ -54,7 +45,6 @@ namespace Famicom.Components.Pages
             {
                 tableService.AddTableUser(selectedUser, selectedTable);
                 Snackbar.Add("Table assigned successfully", Severity.Success);
-                ShouldAskQuestion = true;
             }
             catch (Exception e)
             {

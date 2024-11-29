@@ -1,4 +1,4 @@
-﻿@page "/table"
+﻿@page "/admin"
 @inherits TableBase
 
 <PageTitle>Table Management</PageTitle>
@@ -48,10 +48,24 @@
     <AssignUserComponent OnUserAssigned="HandleUserAssigned" />
 </MudOverlay>
 
-<MudContainer MaxWidth="MaxWidth.False" Style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px; overflow: scroll; justify-content: center;">
-    @foreach (var table in Table) 
-    {
-        <TableComponent Table="@table"/>    
-    }
-</MudContainer>
+@if (Table != null)
+{
+    <MudTable T="ITable" Items="Table" Class="mb-4" Height="auto" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true"  Filter="new Func<ITable,bool>(FilterFunc)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Select Tables</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Table Name">@context.Name</MudTd>
+            <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+            <MudTd DataLabel="GUID">@context.GUID</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
 

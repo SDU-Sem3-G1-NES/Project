@@ -21,7 +21,6 @@ namespace Famicom.Components.Pages
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
         private string? TableManufacturer { get; set; }
-        private bool IsAddingTableVisible { get; set; }
         private string? ErrorMessage { get; set; }
         public required int TableApi { get; set; }
         public required string ApiName { get; set; }
@@ -36,12 +35,6 @@ namespace Famicom.Components.Pages
 
         private string searchString = "";
 
-        public AddTableComponent()
-        {
-            IsAddingTableVisible = false;
-
-
-        }
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
@@ -130,10 +123,6 @@ namespace Famicom.Components.Pages
             await OnTableAdded.InvokeAsync(true);
         }
 
-        private void ShowAddUser()
-        {
-            IsAddingTableVisible = !IsAddingTableVisible;
-        }
 
         private void AddManualy()
         {
@@ -156,7 +145,6 @@ namespace Famicom.Components.Pages
                     {
                         tableService.AddTable(table.GUID, table.Name, table.Manufacturer, TableApi);
                     }
-                    ShowAddUser(); // Show the add user question overlay
                     AddManualy();
                     Snackbar.Add("Tables added successfully", Severity.Success);
                 }
@@ -180,7 +168,6 @@ namespace Famicom.Components.Pages
                 {
                     tableService.AddTable(TableGuid, TableName, TableManufacturer, TableApi);
                     ErrorMessage = null;
-                    ShowAddUser(); // Show the add user question overlay
                     AddManualy();
                     Snackbar.Add("Table added successfully", Severity.Success);
 
