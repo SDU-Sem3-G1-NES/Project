@@ -200,7 +200,7 @@ namespace DataAccess
 
         public List<IUser> GetAllUsers()
         {
-            var sql = $"SELECT u_id,u_name,u_mail,u_type FROM users";
+            var sql = $"SELECT u_id,u_name,u_mail,u_type,ut_permissions FROM users INNER JOIN user_types on u_type = ut_id";
 
             List<IUser> users = new List<IUser>();
 
