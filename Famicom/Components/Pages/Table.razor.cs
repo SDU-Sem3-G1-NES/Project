@@ -57,7 +57,6 @@ namespace Famicom.Components.Pages
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             try {
-                
                 var userId = await SessionStorage.GetItemAsync<int>("UserId");
                 await Protect();
             } catch (Exception) {
@@ -142,10 +141,10 @@ namespace Famicom.Components.Pages
         }
         #endregion
 
-
         private async Task Protect()
         {
-            UserPermissionService.SetUser(userModel.GetUser(userId: await SessionStorage.GetItemAsync<int>("UserId"))!);
+            var userid = await SessionStorage.GetItemAsync<int>("UserId");
+            UserPermissionService.SetUser(userModel.GetUser(userId: userid)!);
             if(!UserPermissionService.RequireOne("CanAccess_TablePage")) NavigationManager.NavigateTo("/unauthorised");
         }
     }

@@ -83,10 +83,10 @@ namespace Famicom.Components.Pages
                         await SessionStorage.SetItemAsync("SessionId", sessionID);
                         await SessionStorage.SetItemAsync("UserId", userId);
                         await SessionStorage.SetItemAsync("Email", loginModel.Email);
+                        await SessionStorage.SetItemAsync("IsLoggedIn", true);
 
                         LoginStateService.IsLoggedIn = true;
-                        var email = await SessionStorage.GetItemAsync<string>("Email");
-                        var user = userService.GetUser(email);
+                        var user = userService.GetUser(loginModel.Email);
                         userPermissionService.SetUser(user!);
 
                         Navigation?.NavigateTo("/");
