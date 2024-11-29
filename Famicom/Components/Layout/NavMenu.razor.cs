@@ -55,7 +55,7 @@ namespace Famicom.Components.Layout
                     NavItems.Add(new NavItem("Health", Icons.Material.Filled.HealthAndSafety, "health"));
                     break;
                 case "Cleaner":
-                    NavItems.Add(new NavItem("Cleaning", Icons.Material.Filled.CleaningServices, "cleaning"));
+                    NavItems.Add(new NavItem("Cleaning", Icons.Material.Filled.CleaningServices, "/Dashboard"));
                     break;
                 default:
                     Snackbar!.Add("Invalid user type", Severity.Error);
