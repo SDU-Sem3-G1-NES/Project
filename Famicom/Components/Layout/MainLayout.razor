@@ -16,7 +16,7 @@
                 <MudText Typo="Typo.h5" Class="ml-3">Famicom Table Managment</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Href="login" Edge="Edge.End"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@Logout" Edge="Edge.End"/>
             </MudAppBar>
             <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" >
                 <NavMenu @ref="_navMenu"/>

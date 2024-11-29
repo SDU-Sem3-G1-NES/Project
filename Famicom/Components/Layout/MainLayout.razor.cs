@@ -64,6 +64,8 @@ namespace Famicom.Components.Layout
 
             if (isLoggedIn)
             {
+                email = await SessionStorage!.GetItemAsync<string>("Email");
+                userId = await SessionStorage!.GetItemAsync<int>("UserId");
                 return;
             }
 
