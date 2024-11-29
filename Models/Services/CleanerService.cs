@@ -32,17 +32,29 @@ namespace Famicom.Models
             {
                 // Retrieve all tables from the database
                 var tables = tableService.GetAllTables();
-                foreach (var table in tables)
-                {
-                    var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
-                    _tableController.SetTableHeight(1320, table.GUID, _progress);
-                }
-
                 if (tables.Count == 0)
                 {
                     await ReportErrorAsync("No tables found in the database.");
                     return;
                 }
+
+                var tasks = new List<Task>();
+                foreach (var table in tables)
+                {
+                    var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
+                    tasks.Add(_tableController.SetTableHeight(1320, table.GUID, _progress));
+                    Console.WriteLine($"Table {table.Name} has been updated.");
+                }
+
+                try
+                {
+                    await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Exception occurred while waiting for all tasks to complete: {ex.Message}");
+                }
+
             }
             catch (Exception e)
             {
