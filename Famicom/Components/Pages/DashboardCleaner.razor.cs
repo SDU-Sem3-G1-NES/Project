@@ -12,7 +12,6 @@ namespace Famicom.Components.Pages
     public partial class DashboardCleaner : ComponentBase
     {
         public bool IsCleaningMode { get; private set; }
-
         private CleanerService? cleanerService { get; set; }
         private CleanerModel? cleanerModel { get; set; }
 
@@ -28,6 +27,7 @@ namespace Famicom.Components.Pages
             var client = httpClientFactory!.CreateClient("default");
             cleanerService = new CleanerService(tableControllerService, client);
             cleanerModel = new CleanerModel(cleanerService);
+            IsCleaningMode = false;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -46,12 +46,13 @@ namespace Famicom.Components.Pages
 
         public async Task ToggleCleaningMode()
         {
+
             IsCleaningMode = !IsCleaningMode;
-            if (cleanerModel != null)
+            if (IsCleaningMode && cleanerModel != null)
             {
                 await cleanerModel.UpdateAllTablesMaxHeight();
             }
-            if (cleanerModel != null)
+            else if (!IsCleaningMode && cleanerModel != null)
             {
                 await cleanerModel.RevertAllTables();
             }

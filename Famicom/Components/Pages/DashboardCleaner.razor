@@ -1,4 +1,5 @@
-﻿@page "/cleaning"
+﻿@page "/cleaner"
+@inject ISnackbar Snackbar
 @inherits ComponentBase
 
 <PageTitle>Cleaner Panel</PageTitle>
@@ -10,7 +11,7 @@
     <MudCard Class="mt-4">
         <MudCardContent>
             <MudText Typo="Typo.subtitle1">
-                Current Status: @("Cleaning Mode is " + (IsCleaningMode ? "Running..." : "Turned Off"))
+                Current Status: @("Cleaning Mode is " + (IsCleaningMode ? "ON" : "OFF"))
             </MudText>
             <MudButton Color="Color.Primary"
                        OnClick="@ToggleCleaningMode">
