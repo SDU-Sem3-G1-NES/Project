@@ -8,17 +8,20 @@ namespace Famicom.Components.Layout
     public partial class MainLayout : LayoutComponentBase
     {
         protected bool isLoggedIn;
-        public string? email;
-        public int? userId;
+
+        public string? email { get; set; }
+        public int? userId { get; set; }
 
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
 
         [Inject]
         private NavigationManager? Navigation { get; set; }
-
+        
         [Inject] 
         private LoginStateService LoginStateService { get; set; } = default!;
+        
+        public NavMenu _navMenu { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -30,7 +33,7 @@ namespace Famicom.Components.Layout
                 PaletteDark = _darkPalette,
                 LayoutProperties = new LayoutProperties()
             };
-
+            _navMenu = new NavMenu();
             await base.OnInitializedAsync();
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -39,7 +42,12 @@ namespace Famicom.Components.Layout
             {
                 await CheckLogin();
             }
+            else {
+                await _navMenu.GetNavItems(email!);
+            }
+            await base.OnInitializedAsync();
         }
+        
 
         private async Task CheckLogin()
         {
@@ -69,9 +77,11 @@ namespace Famicom.Components.Layout
                 Navigation.NavigateTo("/Error");
             }
         }
+
         private bool _drawerOpen = true;
         private bool _isDarkMode = true;
         private MudTheme? _theme = null;
+
         private async Task Logout()
         {
             if (SessionStorage != null)
@@ -83,6 +93,7 @@ namespace Famicom.Components.Layout
                 StateHasChanged();
             }
         }
+
         private async void HandleLoginStateChanged()
         {
             await CheckLogin();

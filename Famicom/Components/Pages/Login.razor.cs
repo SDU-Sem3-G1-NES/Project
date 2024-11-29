@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Blazored.SessionStorage;
 using Famicom.Models;
 using Models.Services;
+using System.Runtime.InteropServices;
 
 namespace Famicom.Components.Pages
 {
@@ -15,6 +16,9 @@ namespace Famicom.Components.Pages
 
         [Inject] 
         private LoginStateService LoginStateService { get; set; } = default!;
+
+        [Inject]
+        private UserPermissionService userPermissionService { get; set; } = default!;
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }
@@ -79,8 +83,11 @@ namespace Famicom.Components.Pages
                         await SessionStorage.SetItemAsync("SessionId", sessionID);
                         await SessionStorage.SetItemAsync("UserId", userId);
                         await SessionStorage.SetItemAsync("Email", loginModel.Email);
+                        await SessionStorage.SetItemAsync("IsLoggedIn", true);
 
                         LoginStateService.IsLoggedIn = true;
+                        var user = userService.GetUser(loginModel.Email);
+                        userPermissionService.SetUser(user!);
 
                         Navigation?.NavigateTo("/");
                     }

@@ -7,13 +7,18 @@ using static MudBlazor.Colors;
 using Models.Services;
 using System.Diagnostics;
 using DotNetEnv;
+using Blazored.SessionStorage;
 
 namespace Famicom.Components.Pages
 {
     public partial class TableBase : ComponentBase
     {
-        [Inject]
-        private NavigationManager? NavigationManager { get; set; }
+        [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+        [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
+
+        [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
+
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService(); 
@@ -39,12 +44,25 @@ namespace Famicom.Components.Pages
         #endregion
 
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-
+            userModel = new UserModel();            
             tableService = new TableService();
             Table = tableService.GetAllTables();
             PanelTitle = GetUserType();
+
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            try {
+                var userId = await SessionStorage.GetItemAsync<int>("UserId");
+                await Protect();
+            } catch (Exception) {
+                NavigationManager?.NavigateTo("/error");
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private string GetUserType()
@@ -123,6 +141,11 @@ namespace Famicom.Components.Pages
         }
         #endregion
 
-
+        private async Task Protect()
+        {
+            var userid = await SessionStorage.GetItemAsync<int>("UserId");
+            UserPermissionService.SetUser(userModel.GetUser(userId: userid)!);
+            if(!UserPermissionService.RequireOne("CanAccess_TablePage")) NavigationManager.NavigateTo("/unauthorised");
+        }
     }
 }

@@ -18,5 +18,15 @@ namespace Famicom.Components.Pages
         [CascadingParameter]
         public int? UserId { get; set; }
 
+        [Inject] NavigationManager? Navigation { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            if(Navigation != null && Navigation.Uri.Replace(Navigation.BaseUri, "/") == "/") {
+                Navigation.NavigateTo("/Dashboard");
+                return;
+            }
+            await base.OnInitializedAsync();
+        }
     }
 }

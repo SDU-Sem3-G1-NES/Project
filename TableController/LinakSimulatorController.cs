@@ -125,6 +125,8 @@ public class LinakSimulatorController : ITableController
                 );
         });
         try {
+            var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
+            tempTable.state.position_mm = height;
             var response = await _tasks.SetTableHeight(height, guid);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
