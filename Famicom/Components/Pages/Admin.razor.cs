@@ -53,6 +53,12 @@ namespace Famicom.Components.Pages
             PanelTitle = GetUserType();
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await Protect();
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
         private string GetUserType()
         {
             string userType = userModel.GetUserType();

@@ -49,11 +49,7 @@ namespace Famicom.Components.Pages
                     StateHasChanged();
                     break;
                 case "Cleaner":
-                    _content = builder =>
-                    {
-                        builder.OpenComponent(0, typeof(DashboardCleaner));
-                        builder.CloseComponent();
-                    };
+                    Navigation.NavigateTo("/Cleaning");
                     StateHasChanged();
                     break;
                 default:
