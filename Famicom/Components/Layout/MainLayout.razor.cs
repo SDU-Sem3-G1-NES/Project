@@ -9,8 +9,8 @@ namespace Famicom.Components.Layout
         protected bool isLoggedIn;
         private bool isPrerendering = true;
 
-        public string? email;
-        public int? userId;
+        public string? email { get; set; }
+        public int? userId { get; set; }
 
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
@@ -42,6 +42,8 @@ namespace Famicom.Components.Layout
         {
             if (isLoggedIn)
             {
+                email = await SessionStorage!.GetItemAsync<string>("Email");
+                userId = await SessionStorage!.GetItemAsync<int>("UserId");
                 return;
             }
 

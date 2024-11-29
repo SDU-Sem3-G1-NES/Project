@@ -91,9 +91,9 @@ namespace Models.Services
         {
             userRepository.DeleteUserHabit(id);
         }
-        public IUser? GetUser(string email)
+        public IUser? GetUser(string? email = null, int? userId = null)
         {
-            return userRepository.GetUser(email);
+            return userRepository.GetUser(email, userId);
         }
 
         public IUser? GetUser(int id)

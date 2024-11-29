@@ -7,6 +7,7 @@ using static MudBlazor.Colors;
 using Models.Services;
 using System.Diagnostics;
 using DotNetEnv;
+using Blazored.SessionStorage;
 
 namespace Famicom.Components.Pages
 {
@@ -14,6 +15,8 @@ namespace Famicom.Components.Pages
     {
         [Inject]
         private NavigationManager? NavigationManager { get; set; }
+
+        [Inject] ISessionStorageService? SessionStorage { get; set; }
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService(); 
@@ -39,12 +42,25 @@ namespace Famicom.Components.Pages
         #endregion
 
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-
+            userModel = new UserModel();            
             tableService = new TableService();
             Table = tableService.GetAllTables();
             PanelTitle = GetUserType();
+
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            try {
+                var userId = await SessionStorage!.GetItemAsync<int>("UserId");
+                await Protect(userModel.GetUser(null , userId)!);
+            } catch (Exception) {
+                NavigationManager?.NavigateTo("/error");
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private string GetUserType()
@@ -124,5 +140,11 @@ namespace Famicom.Components.Pages
         #endregion
 
 
+        private async Task Protect(IUser user)
+        {
+                if(user.HasPermission(UserPermissions.GODMODE)) return;
+                else if(user.HasPermission(UserPermissions.CanAccess_TablePage)) return;
+                else NavigationManager!.NavigateTo("/unauthorised");
+        }
     }
 }
