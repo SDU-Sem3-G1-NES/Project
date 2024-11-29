@@ -19,6 +19,7 @@ builder.Services.AddHttpClient("default", client =>
 }).ConfigurePrimaryHttpMessageHandler(() => handler);
 
 builder.Services.AddSingleton<TableControllerService>();
+builder.Services.AddScoped<LoginStateService>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();

@@ -1,4 +1,5 @@
 ﻿using Blazored.SessionStorage;
+using Famicom.Components.Pages;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,8 +8,6 @@ namespace Famicom.Components.Layout
     public partial class MainLayout : LayoutComponentBase
     {
         protected bool isLoggedIn;
-        private bool isPrerendering = true;
-
         public string? email;
         public int? userId;
 
@@ -18,48 +17,48 @@ namespace Famicom.Components.Layout
         [Inject]
         private NavigationManager? Navigation { get; set; }
 
+        [Inject] 
+        private LoginStateService LoginStateService { get; set; } = default!;
+
+        protected override async Task OnInitializedAsync()
+        {
+            LoginStateService.OnLoginStateChanged += HandleLoginStateChanged;
+
+            _theme = new()
+            {
+                PaletteLight = _lightPalette,
+                PaletteDark = _darkPalette,
+                LayoutProperties = new LayoutProperties()
+            };
+
+            await base.OnInitializedAsync();
+        }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(firstRender)
+            if (firstRender)
             {
-                isPrerendering = true;
                 await CheckLogin();
-                isPrerendering = false;
             }
         }
 
-        protected override async Task OnParametersSetAsync()
+        private async Task CheckLogin()
         {
-            if(!isPrerendering) await CheckLogin();
-        }
-
-        private async Task CheckLogin() 
-        {
-            if (isLoggedIn)
+            if (SessionStorage == null || Navigation == null)
             {
-                return;
-            }
-
-            if(Navigation == null)
-            {
-                throw new Exception("NavigationManager not found.");
+                throw new Exception("Required services are missing.");
             }
 
             try
             {
-                if (SessionStorage == null)
-                {
-                    Navigation.NavigateTo("/Login");
-                    return;
-                }
-
                 email = await SessionStorage.GetItemAsync<string>("Email");
                 userId = await SessionStorage.GetItemAsync<int>("UserId");
+
                 if (email == null || userId == null)
                 {
                     Navigation.NavigateTo("/Login");
                     return;
                 }
+
 
                 isLoggedIn = true;
                 StateHasChanged();
@@ -70,22 +69,23 @@ namespace Famicom.Components.Layout
                 Navigation.NavigateTo("/Error");
             }
         }
-        
-
         private bool _drawerOpen = true;
         private bool _isDarkMode = true;
         private MudTheme? _theme = null;
-
-        protected override void OnInitialized()
+        private async Task Logout()
         {
-            base.OnInitialized();
-
-            _theme = new()
-                {
-                    PaletteLight = _lightPalette,
-                    PaletteDark = _darkPalette,
-                    LayoutProperties = new LayoutProperties()
-                };
+            if (SessionStorage != null)
+            {
+                await SessionStorage.ClearAsync();
+                LoginStateService.IsLoggedIn = false;
+                isLoggedIn = false;
+                Navigation?.NavigateTo("/Login");
+                StateHasChanged();
+            }
+        }
+        private async void HandleLoginStateChanged()
+        {
+            await CheckLogin();
         }
 
         private void DrawerToggle()

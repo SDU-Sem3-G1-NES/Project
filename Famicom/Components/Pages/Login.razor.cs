@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Components;
 using Blazored.SessionStorage;
 using Famicom.Models;
@@ -14,52 +13,99 @@ namespace Famicom.Components.Pages
         [Inject]
         private ISessionStorageService? SessionStorage { get; set; }
 
+        [Inject] 
+        private LoginStateService LoginStateService { get; set; } = default!;
         private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserService userService = new UserService();
         protected string? ErrorMessage { get; set; }
         protected readonly LoginModel loginModel = new LoginModel();
         private readonly string fixedSalt;
+        private bool isInitialized;
+        protected bool isSubmitting = false;
 
         public LoginBase()
         {
             fixedSalt = userCredentialsService.GetFixedSalt();
         }
+        
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender && !isInitialized)
+            {
+                await CheckSessionStorage();
+                isInitialized = true;
+            }
+        }
+        private async Task CheckSessionStorage()
+        {
+            if (SessionStorage == null || Navigation == null)
+            {
+                throw new Exception("SessionStorage or NavigationManager not found.");
+            }
 
+            try
+            {
+                string? sessionID = await SessionStorage.GetItemAsync<string>("SessionId");
+
+                if (!string.IsNullOrEmpty(sessionID))
+                {
+                    Navigation.NavigateTo("/");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking session storage: {ex.Message}");
+            }
+        }
+        
         protected async Task OnSubmitButton()
         {
-            // Hash the email and password
-            string emailHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Email, fixedSalt);
-            string hashedEmailHex = userCredentialsService.ConvertToHex(emailHash);
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Password, fixedSalt);
-            string hashedPasswordHex = userCredentialsService.ConvertToHex(passwordHash);
-
-            if (userCredentialsService.ValidateCredentials(hashedEmailHex, hashedPasswordHex) && userService.GetUser(loginModel.Email) != null)
+            isSubmitting = true;
+            try
             {
-                var userId = userService.GetUser(loginModel.Email)!.UserID;
-                string sessionID = Guid.NewGuid().ToString();
-                // Store session ID in session storage
-                if (SessionStorage != null)
+                // Hash the email and password
+                string emailHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Email, fixedSalt);
+                string hashedEmailHex = userCredentialsService.ConvertToHex(emailHash);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(loginModel.Password, fixedSalt);
+                string hashedPasswordHex = userCredentialsService.ConvertToHex(passwordHash);
+
+                if (userCredentialsService.ValidateCredentials(hashedEmailHex, hashedPasswordHex) && userService.GetUser(loginModel.Email) != null)
                 {
-                    await SessionStorage.SetItemAsync("SessionId", sessionID);
-                    await SessionStorage.SetItemAsync("UserId", userId);
-                    await SessionStorage.SetItemAsync("Email", loginModel.Email);
+                    var userId = userService.GetUser(loginModel.Email)!.UserID;
+                    string sessionID = Guid.NewGuid().ToString();
+                    // Store session ID in session storage
+                    if (SessionStorage != null)
+                    {
+                        await SessionStorage.SetItemAsync("SessionId", sessionID);
+                        await SessionStorage.SetItemAsync("UserId", userId);
+                        await SessionStorage.SetItemAsync("Email", loginModel.Email);
+
+                        LoginStateService.IsLoggedIn = true;
+
+                        Navigation?.NavigateTo("/");
+                    }
+                    else
+                    {
+                        ErrorMessage = "Session Storage not found.";
+                        await InvokeAsync(StateHasChanged);
+                    }
                 }
                 else
                 {
-                    ErrorMessage = "Session Storage not found.";
+                    ErrorMessage = "Invalid email or password.";
                     await InvokeAsync(StateHasChanged);
                 }
-                Navigation?.NavigateTo("/");
-                await InvokeAsync(StateHasChanged);
             }
-            else
+            catch (Exception ex)
             {
-                ErrorMessage = "Invalid email or password.";
+                ErrorMessage = $"An error occurred: {ex.Message}";
                 await InvokeAsync(StateHasChanged);
             }
-            
+            finally
+            {
+                isSubmitting = false;
+            }
         }
-
         
         
     }
