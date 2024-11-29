@@ -134,6 +134,19 @@ namespace Famicom.Components.Pages
         }
         #endregion
 
+        public bool FilterFunc(ITable element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.GUID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
         private async Task Protect()
         {
             var userid = await SessionStorage.GetItemAsync<int>("UserId");
