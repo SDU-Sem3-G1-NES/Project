@@ -46,9 +46,6 @@ namespace Famicom.Components.Layout
             else {
                 await _navMenu.GetNavItems(email!);
             }
-        }
-
-
             await base.OnInitializedAsync();
         }
         
