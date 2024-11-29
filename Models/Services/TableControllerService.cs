@@ -43,7 +43,7 @@ namespace Models.Services
             }
 
         }
-        public Task<ITableController> GetTableControllerByApiName(string api)
+        public Task<ITableController> GetTableControllerByApiName(string api, HttpClient client)
         {
             switch (api)
             {

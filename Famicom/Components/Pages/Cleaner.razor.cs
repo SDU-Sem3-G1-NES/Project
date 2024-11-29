@@ -10,16 +10,15 @@ namespace Famicom.Components.Pages
     {
         public bool IsCleaningMode { get; private set; }
 
-        private CleanerService cleanerService { get; set; }
-        private CleanerModel cleanerModel { get; set; }
+        private CleanerService? cleanerService { get; set; }
+        private CleanerModel? cleanerModel { get; set; }
 
         [Inject] IHttpClientFactory? httpClientFactory { get; set; } 
 
-        public CleanerBase()
+        protected override void OnInitialized()
         {
             var tableControllerService = new TableControllerService();
-            var tableService = new TableService();
-            var client = httpClientFactory!.CreateClient();
+            var client = httpClientFactory!.CreateClient("default");
             cleanerService = new CleanerService(tableControllerService, client);
             cleanerModel = new CleanerModel(cleanerService);
         }

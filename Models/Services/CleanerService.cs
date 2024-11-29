@@ -35,7 +35,7 @@ namespace Famicom.Models
                 foreach (var table in tables)
                 {
                     var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
-                    await _tableController.SetTableHeight(table.Height ?? default(int), table.GUID, _progress);
+                    await _tableController.SetTableHeight(9999, table.GUID, _progress);
                 }
 
                 if (tables.Count == 0)
