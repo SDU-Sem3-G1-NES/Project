@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DataAccess;
+using Microsoft.AspNetCore.Components;
 using Models.Services;
 using MudBlazor;
 using SharedModels;
@@ -32,6 +33,8 @@ namespace Famicom.Components.Pages
         private bool loading { get; set; } = false;
         private bool selected { get; set; } = false;
         public bool ManualAddition { get; set; } = false;
+
+        private string searchString = "";
 
         public AddTableComponent()
         {
@@ -88,11 +91,15 @@ namespace Famicom.Components.Pages
                         var tableIds = await tableController.GetAllTableIds();
 
                         int count = 0;
+                        List<ITable> tables = tableService.GetAllTables();
                         foreach (var tableId in tableIds)
                         {
                             count++;
+                            if(tables.Any(x => x.GUID == tableId))
+                            {
+                                continue;
+                            }
                             getTables.Add(await tableController.GetFullTableInfo(tableId));
-                            Debug.WriteLine("Table " + count + " added");
 
                         }
                         tableinfo = getTables;
@@ -144,7 +151,7 @@ namespace Famicom.Components.Pages
                 }
 
                 try
-                {
+                {   
                     foreach (var table in SelectedTables)
                     {
                         tableService.AddTable(table.GUID, table.Name, table.Manufacturer, TableApi);
@@ -191,5 +198,19 @@ namespace Famicom.Components.Pages
 
 
         }
+
+        private bool FilterFunc(ITable element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.GUID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
     }
 }

@@ -15,16 +15,21 @@
             }
             @if(selected)
             {
-                <MudTable T="ITable" Items="tableinfo" Class="mb-4" Height="400px" MultiSelection="true" Hover="true" FixedHeader="true" @bind-SelectedItems="SelectedTables">
+                <MudTable T="ITable" Items="tableinfo" Class="mb-4" Height="400px" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" @bind-SelectedItems="SelectedTables" Filter="new Func<ITable,bool>(FilterFunc)">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Select Tables</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
                     <HeaderContent>
-                        <MudTh>Table Name</MudTh>
-                        <MudTh>Manufacturer</MudTh>
-                        <MudTh>GUID</MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd>@context.Name</MudTd>
-                        <MudTh>@context.Manufacturer</MudTh>
-                        <MudTh>@context.GUID</MudTh>
+                        <MudTd DataLabel="Table Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+                        <MudTd DataLabel="GUID">@context.GUID</MudTd>
                     </RowTemplate>
                 </MudTable>
             }
