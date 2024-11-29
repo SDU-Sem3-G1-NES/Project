@@ -124,7 +124,7 @@ namespace TableController.Tests
             var guid = "test-guid";
 
             _linakSimulatorTasksMock
-                .Setup(x => x.SetTableInfo(It.IsAny<LinakApiTable>()))
+                .Setup(x => x.SetTableHeight(It.IsAny<int>(), guid))
                 .ReturnsAsync(responseMessage);
             _linakSimulatorTasksMock
                 .Setup(x => x.GetTableInfo(It.IsAny<string>()))
@@ -334,6 +334,32 @@ namespace TableController.Tests
             // Act
             expectedTable.lastErrors = null;
             var result = await _tasks.SetTableInfo(expectedTable);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+        
+        [Fact]
+        public async Task SetTableHeight_SetsHeightCorrectly()
+        {
+            // Arrange
+            GetFreshObjects();
+            var guid = "test-guid";
+            var newHeight = 800;
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(new Dictionary<string, object> { { "position_mm", newHeight } }))
+            };
+
+            _httpMessageHandlerMock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(r => r.RequestUri == new Uri($"{_baseUrl}/desks/{guid}/state") && r.Method == HttpMethod.Put),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _tasks.SetTableHeight(newHeight, guid);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);

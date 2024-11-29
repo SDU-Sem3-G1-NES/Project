@@ -127,7 +127,7 @@ public class LinakSimulatorController : ITableController
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
-            var response = await _tasks.SetTableInfo(tempTable);
+            var response = await _tasks.SetTableHeight(height, guid);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong

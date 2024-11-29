@@ -11,17 +11,17 @@ using Blazored.SessionStorage;
 
 namespace Famicom.Components.Pages
 {
-    public partial class TableBase : ComponentBase
+    public partial class AdminBase : ComponentBase
     {
+       
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
 
         [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
-
         public string? PanelTitle { get; set; }
 
-        private TableService tableService = new TableService(); 
+        private TableService tableService = new TableService();
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
         public bool IsTableOverlayActivated { get; set; } = false;
@@ -38,32 +38,19 @@ namespace Famicom.Components.Pages
         public bool coerceText { get; set; }
 
         //Mock data for rooms and tables
-        public List<string> roomNames = new List<string>() {"None","Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
+        public List<string> roomNames = new List<string>() { "None", "Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
 
         public List<string> tableNames = new List<string>() { "None", "Table 1", "Table 2", "Table 3", "Table 4", "Table 5", "Julka", "Hulk", "SpiderMan", "America", "Razor" };
 
         #endregion
 
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            userModel = new UserModel();            
+
             tableService = new TableService();
             Table = tableService.GetAllTables();
             PanelTitle = GetUserType();
-
-            await base.OnInitializedAsync();
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            try {
-                var userId = await SessionStorage.GetItemAsync<int>("UserId");
-                await Protect();
-            } catch (Exception) {
-                NavigationManager?.NavigateTo("/error");
-            }
-            await base.OnAfterRenderAsync(firstRender);
         }
 
         private string GetUserType()
@@ -78,7 +65,7 @@ namespace Famicom.Components.Pages
 
         public async Task<IEnumerable<string>> Search1(string value, CancellationToken token)
         {
-           
+
             await Task.Delay(5, token);
 
             if (string.IsNullOrEmpty(value))
@@ -134,6 +121,7 @@ namespace Famicom.Components.Pages
         }
         #endregion
 
+        #region For table
         public bool FilterFunc(ITable element)
         {
             if (string.IsNullOrWhiteSpace(searchString))
@@ -146,12 +134,13 @@ namespace Famicom.Components.Pages
                 return true;
             return false;
         }
+        #endregion
 
         private async Task Protect()
         {
             var userid = await SessionStorage.GetItemAsync<int>("UserId");
             UserPermissionService.SetUser(userModel.GetUser(userId: userid)!);
-            if(!UserPermissionService.RequireOne("CanAccess_TablePage")) NavigationManager.NavigateTo("/unauthorised");
+            if (!UserPermissionService.RequireOne("CanAccess_AdminPage")) NavigationManager.NavigateTo("/unauthorised");
         }
     }
 }
