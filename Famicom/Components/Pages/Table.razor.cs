@@ -10,13 +10,13 @@ using DotNetEnv;
 
 namespace Famicom.Components.Pages
 {
-    public partial class AdminBase : ComponentBase
+    public partial class TableBase : ComponentBase
     {
         [Inject]
         private NavigationManager? NavigationManager { get; set; }
         public string? PanelTitle { get; set; }
 
-        private TableService tableService = new TableService();
+        private TableService tableService = new TableService(); 
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
         public bool IsTableOverlayActivated { get; set; } = false;
@@ -33,7 +33,7 @@ namespace Famicom.Components.Pages
         public bool coerceText { get; set; }
 
         //Mock data for rooms and tables
-        public List<string> roomNames = new List<string>() { "None", "Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
+        public List<string> roomNames = new List<string>() {"None","Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
 
         public List<string> tableNames = new List<string>() { "None", "Table 1", "Table 2", "Table 3", "Table 4", "Table 5", "Julka", "Hulk", "SpiderMan", "America", "Razor" };
 
@@ -60,7 +60,7 @@ namespace Famicom.Components.Pages
 
         public async Task<IEnumerable<string>> Search1(string value, CancellationToken token)
         {
-
+           
             await Task.Delay(5, token);
 
             if (string.IsNullOrEmpty(value))

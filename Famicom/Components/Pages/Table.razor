@@ -1,5 +1,5 @@
-﻿@page "/admin"
-@inherits AdminBase
+﻿@page "/table"
+@inherits TableBase
 
 <PageTitle>Table Management</PageTitle>
 
@@ -9,16 +9,16 @@
 
 <MudToolBar Class="gap-6">
     <MudSelect T="string" Label="Select order" @bind-Value="orderValue">
-        <MudSelectItem Value="@("Descending")" />
+        <MudSelectItem Value="@("Descending")"/>
         <MudSelectItem Value="@("Ascending")" />
     </MudSelect>
 
     <MudSelect T="string" Label="By Room" @bind-Value="selectedRoom">
         @foreach (var room in roomNames)
         {
-            <MudSelectItem Value="@room" />
+            <MudSelectItem Value="@room"/>
         }
-
+ 
     </MudSelect>
     <MudItem xs="12" sm="6" md="4">
         <MudAutocomplete T="string" Label="Search Table" @bind-Value="selectedTable" SearchFunc="@Search1"
@@ -50,7 +50,7 @@
 
 @if (Table != null)
 {
-    <MudTable T="ITable" Items="Table" Class="mb-4" Height="auto" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<ITable,bool>(FilterFunc)">
+    <MudTable T="ITable" Items="Table" Class="mb-4" Height="auto" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true"  Filter="new Func<ITable,bool>(FilterFunc)">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Select Tables</MudText>
             <MudSpacer />
