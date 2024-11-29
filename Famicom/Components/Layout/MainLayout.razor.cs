@@ -41,9 +41,7 @@ namespace Famicom.Components.Layout
         {
             if (firstRender)
             {
-                isPrerendering = true;
                 await CheckLogin();
-                isPrerendering = false;
             }
             else {
                 await _navMenu.GetNavItems(email!);
@@ -62,18 +60,6 @@ namespace Famicom.Components.Layout
                 throw new Exception("Required services are missing.");
             }
 
-            if (isLoggedIn)
-            {
-                email = await SessionStorage!.GetItemAsync<string>("Email");
-                userId = await SessionStorage!.GetItemAsync<int>("UserId");
-                return;
-            }
-
-            if(Navigation == null)
-            {
-                throw new Exception("NavigationManager not found.");
-            }
-
             try
             {
                 email = await SessionStorage.GetItemAsync<string>("Email");
@@ -87,7 +73,6 @@ namespace Famicom.Components.Layout
 
 
                 isLoggedIn = true;
-                await _navMenu.GetNavItems(email);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -96,6 +81,7 @@ namespace Famicom.Components.Layout
                 Navigation.NavigateTo("/Error");
             }
         }
+
         private bool _drawerOpen = true;
         private bool _isDarkMode = true;
         private MudTheme? _theme = null;
