@@ -25,6 +25,7 @@ namespace Famicom.Components.Layout
 
         public async Task GetNavItems(string email)
         {
+            if(SessionStorage == null) return;
             var isLoggedIn = await SessionStorage.GetItemAsync<bool>("IsLoggedIn");
             if(!_isInitliased || !isLoggedIn) return;
             userModel = new UserModel();
