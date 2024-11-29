@@ -22,26 +22,26 @@ namespace TableControllerApi.Services
                 {
                     Status = "Test Status at: " + Time,
                 };
-                foreach (var webhook in _subscriberUriService.Webhooks)
-                {
-                    var uri = webhook.WebhookUri;
-                    try
+                    var uri = _subscriberUriService.GetByTableId("cd:fb:1a:53:fb:e6");
+                    if (uri != null)
                     {
-                        var response = await _httpClient.PostAsJsonAsync(uri, newStatus, stoppingToken);
-                        if (response.IsSuccessStatusCode)
+                        try
                         {
-                            Console.WriteLine($"Successfully sent status to {uri}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Failed to send status to {uri}");
-                        } 
+                            var response = await _httpClient.PostAsJsonAsync(uri, newStatus, stoppingToken);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                Console.WriteLine($"Successfully sent status to {uri}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Failed to send status to {uri}");
+                            } 
                         }
                         catch (Exception e)
-                    {
-                        Console.WriteLine($"Failed to send status to {uri} with error: {e.Message}");
+                        {
+                            Console.WriteLine($"Failed to send status to {uri} with error: {e.Message}");
+                        }
                     }
-                }
                 await Task.Delay(10000, stoppingToken); // Wait for 5 seconds before sending the next status
             }
         }

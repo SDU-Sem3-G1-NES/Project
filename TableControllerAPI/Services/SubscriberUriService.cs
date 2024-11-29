@@ -2,49 +2,36 @@ using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic;
 using Npgsql.Internal;
 using TableControllerApi.Models;
+using DataAccess;
 
 namespace TableControllerApi.Services
 {
     public class SubscriberUriService
     {
-        public List<TableWebhook> Webhooks { get; set; } = new();
+        private readonly SubscriberRepository subscriberRepository = new SubscriberRepository();
         public bool Add(string tableGuid, string uriString)
         {
             if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri? uriResult) && 
-            (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+            (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
+            && subscriberRepository.GetSubscriber(tableGuid) == null)
             {
-            Webhooks.Add(new TableWebhook(tableGuid, uriResult));
-            return true;
-            }
-            return false;
-        }
-        public bool Remove(string tableGuid, string uriString)
-        {
-            if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri? uriResult) && 
-            (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
-            {
-            var webhookToRemove = Webhooks.FirstOrDefault(w => w.TableGuid == tableGuid && w.WebhookUri == uriResult);
-            if (webhookToRemove != null)
-            {
-                Webhooks.Remove(webhookToRemove);
+                subscriberRepository.InsertSubscriber(tableGuid, uriString);
                 return true;
             }
+            return false;
+        }
+        public bool Remove(string tableGuid)
+        {
+            if (subscriberRepository.GetSubscriber(tableGuid) != null)
+            {
+                subscriberRepository.DeleteSubscriber(tableGuid);
+                return true;
             }
             return false;
         }
-        public TableWebhook GetByTableId(string tableGuid)
+        public string GetByTableId(string tableGuid)
         {
-            throw new NotImplementedException();
+            return subscriberRepository.GetSubscriber(tableGuid);
         }
-    }
-    public class TableWebhook
-    {
-        public TableWebhook(string tableGuid, Uri webhookUri)
-        {
-            TableGuid = tableGuid;
-            WebhookUri = webhookUri;
-        }
-        public string TableGuid { get; set; }
-        public Uri WebhookUri { get; set; }
     }
 }

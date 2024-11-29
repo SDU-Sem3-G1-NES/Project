@@ -24,28 +24,28 @@ namespace YourNamespace.Controllers
             {
                 if(_subscriberUriService.Add(guid, uri))
                 {
-                    return Ok(await Task.FromResult("Webhook added successfully."));
+                    return Ok(await Task.FromResult("Subscription added."));
                 }
                 else 
                 {
-                    return BadRequest(await Task.FromResult("Failed to add webhook. Are you using the right format?\n\"http://www.example.com/example\""));
+                    return BadRequest(await Task.FromResult("Subscribtion failed. This table might already have a subscription. Are you using the right format?\n\"http://www.example.com/example\""));
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                return BadRequest(await Task.FromResult("Failed to add webhook. " + e.Message));
+                return BadRequest(await Task.FromResult("Subscribtion failed. " + e.Message));
             }
         }
         [HttpPost("{guid}/unsubscribe")]
-        public async Task<ActionResult> RemoveWebhook(string guid, [FromBody] String uri)
+        public async Task<ActionResult> RemoveWebhook(string guid)
         {
-            Debug.WriteLine($"Received webhook unsubscribe for table {guid} with URI: {uri}");
+            Debug.WriteLine($"Received webhook unsubscribe for table {guid}");
             try
             {
-                if(_subscriberUriService.Remove(guid, uri))
+                if(_subscriberUriService.Remove(guid))
                 {
-                    return Ok(await Task.FromResult("Webhook removed successfully."));
+                    return Ok(await Task.FromResult("Unsubscribed successfully."));
                 }
                 else 
                 {
@@ -55,7 +55,7 @@ namespace YourNamespace.Controllers
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                return BadRequest(await Task.FromResult("Failed to remove webhook. " + e.Message));
+                return BadRequest(await Task.FromResult("Failed to unsubscribe. " + e.Message));
             }
         }
     }
