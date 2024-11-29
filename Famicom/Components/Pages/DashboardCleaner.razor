@@ -1,4 +1,4 @@
-﻿@page "/cleaner"
+﻿@page "/cleaning"
 @inject ISnackbar Snackbar
 @inherits ComponentBase
 
@@ -13,10 +13,18 @@
             <MudText Typo="Typo.subtitle1">
                 Current Status: @("Cleaning Mode is " + (IsCleaningMode ? "ON" : "OFF"))
             </MudText>
-            <MudButton Color="Color.Primary"
+            <MudButton Color="Color.Primary" Disabled="@IsProcessing"
                        OnClick="@ToggleCleaningMode">
                 @(IsCleaningMode ? "Deactivate Cleaning Mode" : "Activate Cleaning Mode")
             </MudButton>
         </MudCardContent>
     </MudCard>
+
+    <!-- Overlay -->
+    <MudOverlay Visible="@IsProcessing" Darkened="true">
+        <MudPaper Class="p-4" Elevation="4" Style="text-align: center;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Class="mt-2">@ProcessingMessage</MudText>
+        </MudPaper>
+    </MudOverlay>
 </MudContainer>

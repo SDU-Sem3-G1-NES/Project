@@ -2,6 +2,7 @@
 using Famicom.Models;
 using Microsoft.AspNetCore.Components;
 using Models.Services;
+using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace Famicom.Components.Pages
     public partial class DashboardCleaner : ComponentBase
     {
         public bool IsCleaningMode { get; private set; }
+        private bool IsProcessing { get; set; } = false;
+        private string ProcessingMessage { get; set; } = string.Empty;
+
         private CleanerService? cleanerService { get; set; }
         private CleanerModel? cleanerModel { get; set; }
 
@@ -46,15 +50,32 @@ namespace Famicom.Components.Pages
 
         public async Task ToggleCleaningMode()
         {
+            IsProcessing = true;
+            ProcessingMessage = IsCleaningMode 
+                ? "Deactivating Cleaning Mode, please wait..." 
+                : "Activating Cleaning Mode, please wait...";
 
-            IsCleaningMode = !IsCleaningMode;
-            if (IsCleaningMode && cleanerModel != null)
+            StateHasChanged();
+
+            try
             {
-                await cleanerModel.UpdateAllTablesMaxHeight();
+                IsCleaningMode = !IsCleaningMode;
+
+                if (IsCleaningMode && cleanerModel != null)
+                {
+                    await cleanerModel.UpdateAllTablesMaxHeight();
+                }
+                else if (!IsCleaningMode && cleanerModel != null)
+                {
+                    await cleanerModel.RevertAllTables();
+                }
+
+                Snackbar.Add(IsCleaningMode ? "Cleaning Mode activated!" : "Cleaning Mode deactivated!", Severity.Success);
             }
-            else if (!IsCleaningMode && cleanerModel != null)
+            finally
             {
-                await cleanerModel.RevertAllTables();
+                IsProcessing = false;
+                StateHasChanged();
             }
         }
     }
