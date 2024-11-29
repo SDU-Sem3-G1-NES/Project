@@ -5,11 +5,15 @@ public class Admin : IUser
 	public int UserID { get; set; }
 	public required string Name { get; set; }
 	public required string Email { get; set; }
-    public List<UserPermissions> Permissions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public required List<UserPermissions> Permissions { get; set; }
 
     public bool HasPermission(UserPermissions permission)
     {
-        throw new NotImplementedException();
+        if (Permissions.Contains(permission))
+        {
+            return true;
+        }
+        return false;
     }
 
     public IUser RetrieveUser()

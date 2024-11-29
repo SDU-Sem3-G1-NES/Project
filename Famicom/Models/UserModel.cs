@@ -12,9 +12,9 @@ namespace Famicom.Models
         {
             this.userService = new UserService();
         }
-        public IUser? GetUser(string email)
+        public IUser? GetUser(string? email = null, int? userId = null)
         {
-            this.user = userService.GetUser(email);
+            this.user = userService.GetUser(email, userId);
             return this.user;
         }
         
