@@ -117,18 +117,12 @@ public class LinakSimulatorController : ITableController
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
     public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
     {
-        var taskProgress = new Progress<int>(message =>
-        {
-            var parsedStattus = ParseTableStatus(message);
-            progress.Report( 
-                new LinakStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
-                );
-        });
+
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
             var response = await _tasks.SetTableHeight(height, guid);
-            var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
+            await _tasks.WatchTableAsItMoves(guid, height, progress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
             if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
@@ -206,7 +200,7 @@ public class LinakSimulatorController : ITableController
         return returnArray.Cast<ITableError>().ToArray();
     }
 
-    private Dictionary<TableStatus, string> ParseTableStatus(int errorCode)
+    public static Dictionary<TableStatus, string> ParseTableStatus(int errorCode)
     {
         var statusDictionary = new Dictionary<TableStatus, string>();
 
@@ -497,74 +491,81 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         return apiTables ?? [];
     }
 
-    public async Task<int> WatchTableAsItMoves(string guid, int newPosition, IProgress<int> progress) {
+    public Task WatchTableAsItMoves(string guid, int newPosition, IProgress<ITableStatusReport> progress) {
+        return Task.Run(async () => {
+            // Get last error
+            var tempTable = await GetTableInfo(guid);
+            var lastError = tempTable!.lastErrors!.LastOrDefault();
+            var lastPosition = tempTable.state.position_mm;
+            var positionSameCounter = 0;
+            var returnValue = -1;
 
-        // Get last error
-        var tempTable = await GetTableInfo(guid);
-        var lastError = tempTable!.lastErrors!.LastOrDefault();
-        var lastPosition = tempTable.state.position_mm;
-        var positionSameCounter = 0;
-        var returnValue = -1;
+            bool check = true;
+            while(check) {
+                var table = await GetTableInfo(guid);
 
-        bool check = true;
-        while(check) {
-            var table = await GetTableInfo(guid);
+                // GET errors
+                if(table == null) throw new Exception("Table not found on API!");
+                if(table.state.position_mm == null) throw new Exception("Could not get position.");
 
-            // GET errors
-            if(table == null) throw new Exception("Table not found on API!");
-            if(table.state.position_mm == null) throw new Exception("Could not get position.");
+                // Table Errors
+                if(table.lastErrors!.LastOrDefault()!.time_s < lastError!.time_s || 
+                    (table.lastErrors!.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
+                {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(table.lastErrors!.LastOrDefault()!.errorCode!.Value);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                }
 
-            // Table Errors
-            if(table.lastErrors!.LastOrDefault()!.time_s < lastError!.time_s || 
-                (table.lastErrors!.LastOrDefault()!.time_s != null && lastError!.time_s == null)) 
-            {
-                progress.Report((int)table.lastErrors!.LastOrDefault()!.errorCode!);
-            }
+                // Other Table Properties relating to collisions, etc...
+                else if(table.state.isPositionLost ?? false) {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(1);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                }
+                else if(table.state.isOverloadProtectionUp ?? false) {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(2);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                }
+                else if(table.state.isOverloadProtectionDown ?? false) {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(3);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                }
+                else if(table.state.isAntiCollision ?? false) {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(9);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                }
 
-            // Other Table Properties relating to collisions, etc...
-            else if(table.state.isPositionLost ?? false) {
-                progress.Report(1);
-            }
-            else if(table.state.isOverloadProtectionUp ?? false) {
-                progress.Report(2);
-            }
-            else if(table.state.isOverloadProtectionDown ?? false) {
-                progress.Report(3);
-            }
-            else if(table.state.isAntiCollision ?? false) {
-                progress.Report(9);
-            }
-
-            // Success if table has reached new position
-            if(table.state.position_mm == newPosition)
-            {
-                returnValue = 0;
-                check = false;
-            }
-            else {
-                if(table.state.position_mm != lastPosition) {
-                    lastPosition = table.state.position_mm;
-                    positionSameCounter = 0;
+                // Success if table has reached new position
+                if(table.state.position_mm == newPosition)
+                {
+                    returnValue = 0;
+                    check = false;
                 }
                 else {
-                    if(positionSameCounter >= 5 && (table.state.position_mm == minHeight || table.state.position_mm == maxHeight)) {
-                        progress.Report(101);
-                        returnValue = 101;
-                        check = false;
+                    if(table.state.position_mm != lastPosition) {
+                        lastPosition = table.state.position_mm;
+                        positionSameCounter = 0;
                     }
-                    positionSameCounter++;
+                    else {
+                        if(positionSameCounter >= 5 && (table.state.position_mm == minHeight || table.state.position_mm == maxHeight)) {
+                            var parsedStatus = LinakSimulatorController.ParseTableStatus(101);
+                        progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                            returnValue = 101;
+                            check = false;
+                        }
+                        positionSameCounter++;
+                    }
                 }
-            }
 
-            if(positionSameCounter > 15) {
-                progress.Report(100);
-                returnValue = 100;
-                check = false;
+                if(positionSameCounter > 15) {
+                    var parsedStatus = LinakSimulatorController.ParseTableStatus(100);
+                    progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
+                    returnValue = 100;
+                    check = false;
+                }
+                await Task.Delay(200); 
             }
-            await Task.Delay(200); 
-        }
-        if(returnValue == -1) throw new Exception("Illegal Return Value. Something went catastrophically wrong.");
-        else return returnValue;
+            if(returnValue == -1) throw new Exception("Illegal Return Value. Something went catastrophically wrong.");
+        });
     }
 }
 
@@ -573,7 +574,7 @@ internal interface ILinakSimulatorTasks {
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
     Task<HttpResponseMessage> SetTableHeight(int height, string tableId);
     Task<string[]> GetAllTableIds();
-    Task<int> WatchTableAsItMoves(string guid, int newPosition, IProgress<int> progress);
+    Task WatchTableAsItMoves(string guid, int newPosition, IProgress<ITableStatusReport> progress);
 }
 
 internal class LinakSimulatorControllerOptions {
