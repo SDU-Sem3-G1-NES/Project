@@ -20,5 +20,10 @@ namespace Famicom.Models
         {
             await cleanerService.UpdateAllTablesMaxHeight();
         }
+
+        public async Task RevertAllTables()
+        {
+            await cleanerService.RevertAllTables();
+        }
     }
 }

@@ -51,6 +51,10 @@ namespace Famicom.Components.Pages
             {
                 await cleanerModel.UpdateAllTablesMaxHeight();
             }
+            if (!IsCleaningMode)
+            {
+                await cleanerModel.RevertAllTables();
+            }
         }
     }
 }
