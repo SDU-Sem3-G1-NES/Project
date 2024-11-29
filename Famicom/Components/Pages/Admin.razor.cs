@@ -22,27 +22,15 @@ namespace Famicom.Components.Pages
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService();
+
+        private UserService userService = new UserService();
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
         public bool IsTableOverlayActivated { get; set; } = false;
         public bool IsUserOverlayActivated { get; set; } = false;
         public bool IsAssignOverlayActivated { get; set; } = false;
         public string searchString = "";
-
-        #region Properties for Search, Filter and Sorting
-        public string? orderValue { get; set; }
-        public string? selectedRoom { get; set; }
-        public string? selectedTable { get; set; }
-        public bool coerceValue { get; set; }
-        public bool resetValueOnEmptyText { get; set; }
-        public bool coerceText { get; set; }
-
-        //Mock data for rooms and tables
-        public List<string> roomNames = new List<string>() { "None", "Room 1", "Room 2", "Room 3", "Room 4", "Room 5" };
-
-        public List<string> tableNames = new List<string>() { "None", "Table 1", "Table 2", "Table 3", "Table 4", "Table 5", "Julka", "Hulk", "SpiderMan", "America", "Razor" };
-
-        #endregion
+        public required List<IUser> Users { get; set; }
 
 
         protected override void OnInitialized()
@@ -50,6 +38,7 @@ namespace Famicom.Components.Pages
 
             tableService = new TableService();
             Table = tableService.GetAllTables();
+            Users = userService.GetAllUsers();
             PanelTitle = GetUserType();
         }
 
@@ -63,15 +52,6 @@ namespace Famicom.Components.Pages
             return "User Panel";
         }
 
-        public async Task<IEnumerable<string>> Search1(string value, CancellationToken token)
-        {
-
-            await Task.Delay(5, token);
-
-            if (string.IsNullOrEmpty(value))
-                return tableNames;
-            return tableNames.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
 
         public void RefreshPage()
         {
@@ -102,6 +82,7 @@ namespace Famicom.Components.Pages
         {
             IsUserOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
+            Users = userService.GetAllUsers();
         }
 
         public async Task HandleTableAdded(bool isCancelled)
@@ -131,6 +112,19 @@ namespace Famicom.Components.Pages
             if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             if (element.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
+        public bool FilterFuncUser(IUser element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.UserID.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             return false;
         }
