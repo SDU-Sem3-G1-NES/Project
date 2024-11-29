@@ -120,4 +120,9 @@ INSERT INTO APIS (A_NAME, A_CONFIG) VALUES
 INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES 
 ('cd:fb:1a:53:fb:e6', 'DESK 4486', 'Linak A/S', 1);
 
+INSERT INTO USER_TYPES (UT_NAME, UT_PERMISSIONS) VALUES 
+('ADMIN', '["GODMODE"]'),
+('EMPLOYEE', '["CanAccess_TablePage","CanAccess_SettingsPage"]'),
+('CLEANER', '["CanAccess_SettingsPage","CanAccess_CleanerPage"]');
+
 COMMIT;

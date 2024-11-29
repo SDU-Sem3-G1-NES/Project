@@ -1,4 +1,6 @@
-﻿using SharedModels;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using SharedModels;
 
 namespace DataAccess
 {
@@ -126,13 +128,17 @@ namespace DataAccess
 
         #region Get Methods
 
-        public IUser? GetUser(string email)
+        public IUser? GetUser(string? email = null, int? id = null)
         {
-            var sql = $"SELECT u_id,u_name,u_mail,u_type FROM users WHERE u_mail = @email";
+            var sql = "";
+            if(email != null) sql = $"SELECT u_id,u_name,u_mail,u_type, ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE u_mail = @email";
+            else if(id != null) sql = $"SELECT u_id,u_name,u_mail,u_type, ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE u_id = @id";
+            else throw new ArgumentException("Either email or id must be provided");
 
             using(var cmd = dbAccess.dbDataSource.CreateCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@email", email);
+                if(email != null) cmd.Parameters.AddWithValue("@email", email);
+                else if(id != null) cmd.Parameters.AddWithValue("@id", id);
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -142,6 +148,20 @@ namespace DataAccess
                         string name = reader.GetString(1);
                         string userEmail = reader.GetString(2);
                         int userType = reader.GetInt32(3);
+                        var permissionsJson = reader.GetString(4);
+                        List<UserPermissions> permissions = new List<UserPermissions>();
+
+                        if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                        {
+                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                permissionsJson,
+                                new JsonSerializerOptions { 
+                                    Converters = {
+                                        new JsonStringEnumConverter()
+                                    }
+                                }
+                            )!;
+                        }
 
                         switch (userType)
                         {
@@ -150,21 +170,24 @@ namespace DataAccess
                                 {
                                     UserID = userId,
                                     Name = name,
-                                    Email = userEmail
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
                                 };
                             case 2:
                                 return new Employee
                                 {
                                     UserID = userId,
                                     Name = name,
-                                    Email = userEmail
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
                                 };
                             case 3:
                                 return new Cleaner
                                 {
                                     UserID = userId,
                                     Name = name,
-                                    Email = userEmail
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
                                 };
                             default:
                                 throw new ArgumentException("Invalid user type");
@@ -192,6 +215,20 @@ namespace DataAccess
                         string name = reader.GetString(1);
                         string userEmail = reader.GetString(2);
                         int userType = reader.GetInt32(3);
+                        var permissionsJson = reader.GetString(4);
+                        List<UserPermissions> permissions = new List<UserPermissions>();
+
+                        if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                        {
+                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                permissionsJson,
+                                new JsonSerializerOptions { 
+                                    Converters = {
+                                        new JsonStringEnumConverter()
+                                    }
+                                }
+                            )!;
+                        }
 
                         if (userType == 1)
                         {
@@ -199,7 +236,8 @@ namespace DataAccess
                             {
                                 UserID = userId,
                                 Name = name,
-                                Email = userEmail
+                                Email = userEmail,
+                                Permissions = permissions ?? new List<UserPermissions>()
                             };
                             users.Add(admin);
                         }
@@ -209,7 +247,8 @@ namespace DataAccess
                             {
                                 UserID = userId,
                                 Name = name,
-                                Email = userEmail
+                                Email = userEmail,
+                                Permissions = permissions ?? new List<UserPermissions>()
                             };
                             users.Add(employe);
                         }
@@ -219,7 +258,8 @@ namespace DataAccess
                             {
                                 UserID = userId,
                                 Name = name,
-                                Email = userEmail
+                                Email = userEmail,
+                                Permissions = permissions ?? new List<UserPermissions>()
                             };
                             users.Add(cleaner);
                         }

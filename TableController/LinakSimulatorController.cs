@@ -127,7 +127,7 @@ public class LinakSimulatorController : ITableController
         try {
             var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
             tempTable.state.position_mm = height;
-            var response = await _tasks.SetTableInfo(tempTable);
+            var response = await _tasks.SetTableHeight(height, guid);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
@@ -430,6 +430,27 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
         return apiTable ?? new LinakApiTable();
     }
 
+    public async Task<HttpResponseMessage> SetTableHeight(int height, string tableId) {
+        if(tableId == null) throw new Exception("Table ID is null!");
+
+        var url = $"{_baseUrl}/desks/{tableId}/state";
+        var data = new Dictionary<string, object> {
+            {"position_mm", height}
+        };
+        var json = JsonSerializer.Serialize(data);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _client.PutAsync(url, content);
+        response.EnsureSuccessStatusCode();
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var serialisedResponseBody = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+        
+        // response.EnsureSuccessStatusCode() will throw an exception if the status code is not 200, however, it is a good idea to have 
+        // a check here to ensure that the response body is what we expect it to be.
+        if(data.Any(x => x.Value.Equals(serialisedResponseBody![x.Key.ToString()]))) {
+            throw new Exception("Response body does not match request body.");
+        }
+        return new HttpResponseMessage(HttpStatusCode.OK);
+    }
     public async Task<HttpResponseMessage> SetTableInfo(LinakApiTable table) {
         if(table.id == null) throw new Exception("Table ID is null!");
         var tempTable = GetTableInfo(table.id);
@@ -550,6 +571,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
 internal interface ILinakSimulatorTasks {
     Task<LinakApiTable?> GetTableInfo(string guid);
     Task<HttpResponseMessage> SetTableInfo(LinakApiTable table);
+    Task<HttpResponseMessage> SetTableHeight(int height, string tableId);
     Task<string[]> GetAllTableIds();
     Task<int> WatchTableAsItMoves(string guid, int newPosition, IProgress<int> progress);
 }

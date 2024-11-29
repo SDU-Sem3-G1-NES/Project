@@ -1,8 +1,12 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="admin" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.TableRestaurant">Table</MudNavLink>
-    <MudNavLink Href="health" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.HealthAndSafety">Health Panel</MudNavLink>
-    <MudNavLink Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Help">About Us</MudNavLink>
+﻿@using MudBlazor
+
+<MudNavMenu>
+    @foreach(var item in NavItems)
+    {
+        <MudNavLink Href="@item.Url" Icon="@item.Icon">
+            @item.Name
+        </MudNavLink>
+    }
 </MudNavMenu>
 
 
