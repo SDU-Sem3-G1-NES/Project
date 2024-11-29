@@ -1,6 +1,6 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 @using Famicom.Components.Layout
-
+                                               
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
@@ -22,7 +22,7 @@
                 <NavMenu @ref="_navMenu"/>
             </MudDrawer>
             }
-            
+          
             <MudMainContent Class="mt-16 pa-4">
                 @Body
             </MudMainContent>

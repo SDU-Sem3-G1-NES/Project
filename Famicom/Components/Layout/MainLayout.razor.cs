@@ -18,11 +18,11 @@ namespace Famicom.Components.Layout
 
         [Inject]
         private NavigationManager? Navigation { get; set; }
-
-        public NavMenu _navMenu { get; set; } = null!;
-
+        
         [Inject] 
         private LoginStateService LoginStateService { get; set; } = default!;
+        
+        public NavMenu _navMenu { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -48,10 +48,10 @@ namespace Famicom.Components.Layout
             }
         }
 
-        protected override async Task OnParametersSetAsync()
-        {
-            if(!isPrerendering) await CheckLogin();
+
+            await base.OnInitializedAsync();
         }
+        
 
         private async Task CheckLogin()
         {
