@@ -15,6 +15,7 @@ namespace Famicom.Components.Layout
 
         private UserModel userModel { get; set; } = null!;
         [Inject] public ISnackbar? Snackbar { get; set; }
+        [Inject] private LoginStateService LoginStateService { get; set; } = default!;
 
         protected override Task OnInitializedAsync()
         {
@@ -24,7 +25,7 @@ namespace Famicom.Components.Layout
 
         public async Task GetNavItems(string email)
         {
-            if(!_isInitliased) return;
+            if(!_isInitliased || !LoginStateService.IsLoggedIn) return;
             userModel = new UserModel();
             if(email == null) {
                 Snackbar!.Add("Email not found", Severity.Error);
