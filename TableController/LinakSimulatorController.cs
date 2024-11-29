@@ -115,34 +115,6 @@ public class LinakSimulatorController : ITableController
     /// <param name="height">New Height for the table.</param>
     /// <param name="guid">GUID of the table to set height for.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
-
-    /*public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
-    {
-        var taskProgress = new Progress<int>(message =>
-        {
-            var parsedStattus = ParseTableStatus(message);
-            progress.Report( 
-                new LinakStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
-                );
-        });
-        try {
-            var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
-            tempTable.state.position_mm = height;
-            var response = await _tasks.SetTableInfo(tempTable);
-            var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
-
-            // Because return type is void, we must throw exceptions if something goes wrong
-            if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
-            await Task.CompletedTask; 
-
-        } 
-        catch (Exception e) 
-        {
-            Debug.WriteLine(e.Message);
-            await Task.FromException(new Exception(e.Message));
-        }
-        
-    }*/
     public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
     {
         var taskProgress = new Progress<int>(message =>
