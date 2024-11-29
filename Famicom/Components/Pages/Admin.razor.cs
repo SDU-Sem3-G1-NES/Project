@@ -33,13 +33,19 @@ namespace Famicom.Components.Pages
         public required List<IUser> Users { get; set; }
 
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
 
             tableService = new TableService();
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();
+            await base.OnInitializedAsync();
+        }
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await Protect();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private string GetUserType()

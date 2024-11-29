@@ -323,7 +323,32 @@ namespace DataAccess
             }
             return null;
         }
-        
+
+        public List<UserTypes> GetUserType()
+        {
+            var sql = $"SELECT ut_id, ut_name FROM user_types";
+
+            List<UserTypes> userTypes = new List<UserTypes>();
+
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        UserTypes userType = new UserTypes()
+                        {
+                            UserTypeID = reader.GetInt32(0),
+                            UserTypeName = reader.GetString(1)
+                        };
+                        userTypes.Add(userType);
+                    }
+                }
+            }
+
+            return userTypes;
+        }
+
         #endregion
 
     }
