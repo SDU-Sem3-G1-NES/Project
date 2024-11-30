@@ -19,6 +19,9 @@ namespace Famicom.Components.Pages
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
 
         [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
+
+        [Inject] public ISnackbar Snackbar { get; set; } = default!;
+
         public string? PanelTitle { get; set; }
 
         private TableService tableService = new TableService();
@@ -31,6 +34,53 @@ namespace Famicom.Components.Pages
         public bool IsAssignOverlayActivated { get; set; } = false;
         public string searchString = "";
         public required List<IUser> Users { get; set; }
+
+        #region Edit Table Variables  
+        
+        public bool tableReadOnly = true;
+        public ITable? selectedItem1 = null;
+        public LinakTable? elementBeforeEdit;
+        public HashSet<ITable> selectedItems1 = new HashSet<ITable>();
+        public TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
+        public TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+        public TableEditTrigger editTrigger = TableEditTrigger.RowClick;
+        public IEnumerable<ITable> Elements = new List<ITable>();
+
+        public void BackupItem(object element)
+        {
+            elementBeforeEdit = new(
+                ((ITable)element).Name,
+                ((ITable)element).GUID,
+                ((ITable)element).Manufacturer
+                );
+            
+        }
+
+        public void ItemHasBeenCommitted(object element)
+        {
+            try
+            {
+                tableService.UpdateTableName(((ITable)element).GUID,((ITable)element).Name);
+                tableService.UpdateTableManufacturer(((ITable)element).GUID, ((ITable)element).Manufacturer);
+                Table = tableService.GetAllTables();
+                Snackbar.Add("Table has been changed succesfuly", Severity.Success);
+                elementBeforeEdit = null;
+            }
+            catch (Exception e)
+            {
+                ResetItemToOriginalValues(element);
+                Debug.WriteLine(e.Message);
+                Snackbar.Add("An error occurred while updating the table", Severity.Error);
+            }
+        }
+
+        public void ResetItemToOriginalValues(object element)
+        {
+            ((ITable)element).Name = elementBeforeEdit!.Name;
+            ((ITable)element).Manufacturer = elementBeforeEdit!.Manufacturer;
+        }
+
+        #endregion
 
 
         protected override async Task OnInitializedAsync()
