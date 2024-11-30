@@ -4,7 +4,7 @@ namespace SharedModels
     {
         string GUID { get; set; }
         string Name { get; set; }
-        string Manufacturer { get; }
+        string Manufacturer { get; set; }
         int? Height { get; }
     }
 }

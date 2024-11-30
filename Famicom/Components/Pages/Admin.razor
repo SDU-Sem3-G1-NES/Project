@@ -1,6 +1,7 @@
 ﻿@page "/admin"
 @inherits AdminBase
 
+
 <PageTitle>Table Management</PageTitle>
 
 <MudText Align="Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
@@ -25,7 +26,20 @@
     <MudTabPanel Text="Tables" Icon="@Icons.Material.Filled.TableRestaurant">
         @if (Table != null)
         {
-            <MudTable T="ITable" Items="Table" Class="mb-4" Height="400px" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<ITable,bool>(FilterFunc)">
+            <MudTable T="ITable" Items="Table" Class="mb-4" Height="400px" style="margin: auto" 
+                      SortLabel="Sort By" 
+                      MultiSelection="false" 
+                      Hover="true" 
+                      FixedHeader="true" 
+                      Filter="new Func<ITable,bool>(FilterFunc)"
+                      ReadOnly="tableReadOnly"
+                      CanCancelEdit="true"
+                      @bind-SelectedItem="selectedItem1"
+                      CommitEditTooltip="Commit Edit"
+                      RowEditPreview="BackupItem"
+                      RowEditCancel="ResetItemToOriginalValues"
+                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="true" ApplyButtonPosition="@applyButtonPosition"
+                      EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
@@ -34,6 +48,7 @@
                         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
                         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
                     </MudMenu>
+                    <MudSwitch @bind-Value="tableReadOnly" Color="Color.Tertiary">ReadOnly Mode</MudSwitch>
                     <MudSpacer />
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
@@ -47,6 +62,21 @@
                     <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
                 </RowTemplate>
+                <RowEditingTemplate>
+                    <MudTd DataLabel="Table Name">
+                        <MudTextField @bind-Value="context.Name" Required />
+                    </MudTd>
+                    <MudTd DataLabel="Manufacturer">
+                        <MudTextField @bind-Value="context.Manufacturer" Required />
+                    </MudTd>
+                    <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                </RowEditingTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+                <EditButtonContent Context="button">
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
+                </EditButtonContent>
             </MudTable>
         }
     </MudTabPanel>
