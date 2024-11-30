@@ -17,9 +17,9 @@ namespace Models.Services
             healthRepository.InsertHealth(userId, presetID, position);
         }
 
-        public List<Health> GetHealth(int userID, DateTime? endtime)
+        public List<Health> GetHealth(int userID,DateTime? startTime = null ,DateTime? endtime = null)
         {
-            return healthRepository.GetHealthByUser(userID, endtime);
+            return healthRepository.GetHealthByUser(userID, startTime ,endtime);
         }
     }
 }

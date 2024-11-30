@@ -37,12 +37,16 @@ namespace DataAccess
 
         #region Get Methods
 
-        public List<Health> GetHealthByUser(int userID, DateTime? endtime)
+        public List<Health> GetHealthByUser(int userID,DateTime? startDate, DateTime? endtime)
         {
             string sql;
             if (endtime != null)
             {
                 sql = $"SELECT * FROM health WHERE u_id = {userID} AND h_date < {endtime}";
+            }
+            else if (startDate != null)
+            {
+                sql = $"SELECT * FROM health WHERE u_id = {userID} AND h_date > {startDate}";
             }
             else
             {
