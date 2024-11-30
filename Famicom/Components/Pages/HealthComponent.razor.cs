@@ -14,6 +14,8 @@ namespace Famicom.Components.Pages
         private DateTime? todaysDate { get; set; }
         private DateTime? todaysMorning { get; set; }
         private List<SharedModels.Health>? todayHealth { get; set; }
+        private List<SharedModels.Health>? todaySitingTime { get; set; }
+        private List<SharedModels.Health>? todayStandingTime { get; set; }
         private int userId { get; set; } = 0;
         protected override async Task OnInitializedAsync()
         {
@@ -25,8 +27,19 @@ namespace Famicom.Components.Pages
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             userId = await SessionStorage.GetItemAsync<int>("UserId");
-            todayHealth = healthService.GetHealth(userId);
+            todayHealth = healthService.GetHealth(userId, todaysMorning);
             await base.OnAfterRenderAsync(firstRender);
         }
+
+        protected void CheckPosition()
+        {
+            if (todayHealth != null)
+            {
+                todaySitingTime = todayHealth.Where(x => x.Position < 1000 ).ToList();
+                todayStandingTime = todayHealth.Where(x => x.Position > 1000 ).ToList();
+            }
+        }
+
+
     }
 }
