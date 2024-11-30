@@ -8,6 +8,9 @@ namespace TableController
         public MockTableController()
         {
         }
+
+        public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
+
         public Task<int> GetTableHeight(string guid)
         {
             Debug.WriteLine("MockTableController.GetTableHeight");

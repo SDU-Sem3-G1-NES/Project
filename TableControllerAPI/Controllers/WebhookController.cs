@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using TableControllerApi.Services;
-using TableControllerApi.Models;
 using System.Diagnostics;
 
 namespace YourNamespace.Controllers
@@ -19,7 +17,6 @@ namespace YourNamespace.Controllers
         [HttpPost("{guid}/subscribe")]
         public async Task<ActionResult> ReceiveWebhook(string guid, [FromBody] String uri)
         {
-            Debug.WriteLine($"Received webhook subscription for table {guid} with URI: {uri}");
             try
             {
                 if(_subscriberUriService.Add(guid, uri))
@@ -40,7 +37,6 @@ namespace YourNamespace.Controllers
         [HttpPost("{guid}/unsubscribe")]
         public async Task<ActionResult> RemoveWebhook(string guid)
         {
-            Debug.WriteLine($"Received webhook unsubscribe for table {guid}");
             try
             {
                 if(_subscriberUriService.Remove(guid))

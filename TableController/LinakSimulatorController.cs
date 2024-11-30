@@ -19,6 +19,8 @@ public class LinakSimulatorController : ITableController
     private ILinakSimulatorTasks _tasks;
     private readonly HttpClient _client;
 
+    public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
+
     /// <summary>
     /// Constructor for LinakSimulatorController
     /// </summary>
@@ -153,12 +155,14 @@ public class LinakSimulatorController : ITableController
     }*/
     public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
     {
+        string StatusMessage = "";
         var taskProgress = new Progress<int>(message =>
         {
             var parsedStattus = ParseTableStatus(message);
             progress.Report( 
                 new LinakStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
                 );
+            StatusMessage = parsedStattus.Values.First();
         });
         try {
             var response = await _tasks.SetTableHeight(height, guid);
@@ -167,7 +171,8 @@ public class LinakSimulatorController : ITableController
             // Because return type is void, we must throw exceptions if something goes wrong
             if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
             await Task.CompletedTask; 
-
+            Debug.WriteLine("SetTableHeight: " + StatusMessage);
+            OnTableHeightSet?.Invoke(this, new TableHeightSetEventArgs(guid, GetTableHeight(guid).Result, StatusMessage));
         } 
         catch (Exception e) 
         {

@@ -3,47 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 using SharedModels;
 using TableController;
 using Models.Services;
-using Microsoft.AspNetCore.Components;
 
 namespace TableControllerApi.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+[Route("api/[controller]")]
 [Produces("application/json")]
 public class TableController : ControllerBase
 {
     private IHttpClientFactory _clientFactory { get; set; }
     private readonly ITableControllerService _tableControllerService;
+    private string statusMessage = "";
 
-    private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
-    {
-        Debug.WriteLine(message);
-    });
+    private readonly Progress<ITableStatusReport> _progress;
     public TableController(ITableControllerService tableControllerService, IHttpClientFactory clientFactory)
     {
         _tableControllerService = tableControllerService;
         _clientFactory = clientFactory;
+        _progress  = new Progress<ITableStatusReport>(message =>
+        {
+            Debug.WriteLine(message.Message);
+            statusMessage = message.Message;
+        });
     }
     [HttpGet("{guid}")]
     public async Task<ActionResult<ITable>> GetFullTableInfo(string guid)
     {
         try
         {
-            //ignore SSL errors instad of fixing them :)
-            var handler = new HttpClientHandler
-            {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
-            var client = new HttpClient(handler);
-            //var client = _clientFactory!.CreateClient("default");
-            var _tableController = await _tableControllerService.GetTableController(guid, client);
+            var _tableController = await _tableControllerService.GetTableController(guid);
             ITable? table = await _tableController.GetFullTableInfo(guid);
             return Ok(await Task.FromResult(table));
-        }
-        catch (HttpRequestException httpRequestException)
-        {
-            Debug.WriteLine(httpRequestException.Message);
-            return StatusCode(503, await Task.FromResult("Failed to establish SSL connection."));
         }
         catch (Exception e)
         {
@@ -56,16 +46,11 @@ public class TableController : ControllerBase
     {
         try
         {
-            //ignore SSL errors instad of fixing them :)
-            var handler = new HttpClientHandler
-            {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
-            var client = new HttpClient(handler);
-            //var client = _clientFactory!.CreateClient("default");
-            var _tableController = await _tableControllerService.GetTableController(guid, client);
+            statusMessage = "Table height set successfully.";
+            var _tableController = await _tableControllerService.GetTableController(guid);
             await _tableController.SetTableHeight(height, guid, _progress);
-            return Ok(await Task.FromResult("Table height set successfully."));
+
+            return Ok(await Task.FromResult(statusMessage));
         }
         catch (Exception e)
         {

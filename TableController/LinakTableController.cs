@@ -9,6 +9,8 @@ namespace TableController
         {
         }
 
+        public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
+
         public Task<int> GetActivationCounter(string guid)
         {
             throw new NotImplementedException();

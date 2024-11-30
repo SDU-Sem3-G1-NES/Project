@@ -16,6 +16,7 @@ namespace Models.Services
     {
         Task<ITableController> GetTableController(string guid);
         Task<ITableController> GetTableController(string guid, HttpClient client);
+        Task<ITableController> GetTableControllerByApiName(string api);
         Task<ITableController> GetTableControllerByApiName(string api, HttpClient client);
     }
     public class TableControllerService : ITableControllerService
@@ -48,6 +49,7 @@ namespace Models.Services
             }
 
         }
+        public Task<ITableController> GetTableControllerByApiName(string api) => GetTableControllerByApiName(api, null!);
         public Task<ITableController> GetTableControllerByApiName(string api, HttpClient client)
         {
             switch (api)

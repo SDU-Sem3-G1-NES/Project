@@ -1,7 +1,3 @@
-using System.Runtime.CompilerServices;
-using Microsoft.VisualBasic;
-using Npgsql.Internal;
-using TableControllerApi.Models;
 using DataAccess;
 
 namespace TableControllerApi.Services
@@ -31,7 +27,7 @@ namespace TableControllerApi.Services
         }
         public string GetByTableId(string tableGuid)
         {
-            return subscriberRepository.GetSubscriber(tableGuid);
+            return subscriberRepository.GetSubscriber(tableGuid) ?? "";
         }
     }
 }
