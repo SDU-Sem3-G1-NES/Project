@@ -28,6 +28,15 @@ public class LinakSimulatorController : ITableController
         _tasks = new LinakSimulatorTasks(_client);
     }
 
+    public LinakSimulatorController()
+    {
+        var handler = new HttpClientHandler // to ignore ssl errors in KAPI
+            {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+        _client = new HttpClient(handler);
+        _tasks = new LinakSimulatorTasks(_client);
+    }
     /// <summary>
     /// Method to get all table GUIDs stored in the API.
     /// </summary>
