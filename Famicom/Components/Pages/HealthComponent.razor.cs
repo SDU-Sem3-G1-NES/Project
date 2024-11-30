@@ -13,7 +13,7 @@ namespace Famicom.Components.Pages
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
 
         private HealthService healthService = new HealthService();
-        
+
         #region Today's Health Properties
         private DateTime? todaysDate { get; set; }
         private DateTime? todaysMorning { get; set; }
@@ -65,8 +65,8 @@ namespace Famicom.Components.Pages
         {
             if (todayHealth != null)
             {
-                todaySitingTime = todayHealth.Where(x => x.Position < 1000 ).ToList();
-                todayStandingTime = todayHealth.Where(x => x.Position > 1000 ).ToList();
+                todaySitingTime = todayHealth.Where(x => x.Position < 1000).ToList();
+                todayStandingTime = todayHealth.Where(x => x.Position > 1000).ToList();
             }
             if (weeklyHealth != null)
             {
@@ -124,10 +124,11 @@ namespace Famicom.Components.Pages
 
         }
 
-    public class DayValue
-    {
-        public required string Day { get; set; }
-        public required int SittingTime { get; set; }
-        public required int StandingTime { get; set; }
+        public class DayValue
+        {
+            public required string Day { get; set; }
+            public required int SittingTime { get; set; }
+            public required int StandingTime { get; set; }
+        }
     }
 }
