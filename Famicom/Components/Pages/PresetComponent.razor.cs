@@ -47,7 +47,7 @@ namespace Famicom.Components.Pages
         {
             try
             {
-                tableModel = new TableModel(ClientFactory);
+                tableModel = new TableModel(ClientFactory, TableControllerService);
                 presetsModel = new PresetsModel(ClientFactory, TableControllerService);
             }
             catch (Exception ex)
