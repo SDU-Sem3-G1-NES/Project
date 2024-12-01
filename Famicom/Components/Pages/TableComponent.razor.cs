@@ -36,7 +36,7 @@ namespace Famicom.Components.Pages
                 ErrorMessage = ex.Message;
             }
 
-            _timer = new Timer(_ => InvokeAsync(CheckForChangedHeight), null, 5000, 5000);
+            _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 5000, 5000);
         }
 
         private void AdjustTableHeight(int height)

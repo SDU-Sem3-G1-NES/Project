@@ -56,11 +56,15 @@
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Status ?? String.Empty)">Status</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Height ?? 0)">Height</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Table Name">@context.Name</MudTd>
                     <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
                 </RowTemplate>
                 <RowEditingTemplate>
                     <MudTd DataLabel="Table Name">
@@ -70,6 +74,8 @@
                         <MudTextField @bind-Value="context.Manufacturer" Required />
                     </MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
                 </RowEditingTemplate>
                 <PagerContent>
                     <MudTablePager />

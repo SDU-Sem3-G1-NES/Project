@@ -8,6 +8,7 @@ using Models.Services;
 using System.Diagnostics;
 using DotNetEnv;
 using Blazored.SessionStorage;
+using TableController;
 
 namespace Famicom.Components.Pages
 {
@@ -21,6 +22,8 @@ namespace Famicom.Components.Pages
         [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
 
         [Inject] public ISnackbar Snackbar { get; set; } = default!;
+        [Inject] private TableControllerService tableControllerService { get; set; } = default!;
+        [Inject] private IHttpClientFactory clientFactory { get; set; } = default!;
 
         public string? PanelTitle { get; set; }
 
@@ -45,6 +48,12 @@ namespace Famicom.Components.Pages
         public TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
         public TableEditTrigger editTrigger = TableEditTrigger.RowClick;
         public IEnumerable<ITable> Elements = new List<ITable>();
+        private Timer _timer = null!;
+        private bool FullTableAndPrayCheckRunning = false;
+        private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
+        {
+            Debug.WriteLine(message);
+        });
 
         public void BackupItem(object element)
         {
@@ -90,6 +99,8 @@ namespace Famicom.Components.Pages
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();
+            _timer = new Timer(callback: _ => InvokeAsync(GetFullTableInfoAndPray), null, 5000, 5000);
+
             await base.OnInitializedAsync();
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -108,6 +119,60 @@ namespace Famicom.Components.Pages
             return "User Panel";
         }
 
+        private async Task UpdateSingleTableInfoAndPray(ITable table) {
+            try
+            {
+                var _httpClient = clientFactory.CreateClient("default");
+                var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
+                var t = await _tableController.GetFullTableInfo(table.GUID);
+                table.Height = t.Height;
+                table.Status = t.Status;
+                Debug.WriteLine($"Table {table.GUID} has height {table.Height} and status {table.Status}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"HttpRequestException occurred while updating table {table.GUID}: {ex.Message}");
+                // Optionally, log the stack trace or other details
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An unexpected exception occurred while updating table {table.GUID}: {ex.Message}");
+                // Optionally, log the stack trace or other details
+            }
+        }
+
+        private async Task GetFullTableInfoAndPray()
+        {
+            await InvokeAsync(async () =>
+            {
+                if (FullTableAndPrayCheckRunning)
+                {
+                    return;
+                }
+
+                try
+                {
+                    FullTableAndPrayCheckRunning = true;
+                    Snackbar.Add("Refreshing Table Info", Severity.Info);
+
+                    foreach (var table in Table)
+                    {   
+                        await UpdateSingleTableInfoAndPray(table);
+                    }
+
+                    StateHasChanged();
+                }
+                catch (Exception e)
+                {
+                    Snackbar.Add(e.Message, Severity.Error);
+                    return;
+                }
+                finally
+                {
+                    FullTableAndPrayCheckRunning = false;
+                }
+            });
+        }
 
         public void RefreshPage()
         {
@@ -146,9 +211,6 @@ namespace Famicom.Components.Pages
             IsTableOverlayActivated = false;
             await InvokeAsync(StateHasChanged);
             Table = tableService.GetAllTables();
-
-
-
         }
 
         public async Task HandleUserAssigned()
