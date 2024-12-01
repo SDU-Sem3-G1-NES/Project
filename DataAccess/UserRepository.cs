@@ -94,7 +94,7 @@ namespace DataAccess
 
         public void EditHashPass(string mail_hash, string newPass_hash)
         {
-            var sql = "UPDATE user_credentials SET upass_hash = @pass WHERE umail_hash = @mail";
+            var sql = @"UPDATE user_credentials SET upass_hash = decode(@pass, 'hex') WHERE umail_hash = decode(@mail, 'hex')";
             dbAccess.ExecuteNonQuery(sql, ("@pass", newPass_hash), ("@mail", mail_hash));
         }
 
