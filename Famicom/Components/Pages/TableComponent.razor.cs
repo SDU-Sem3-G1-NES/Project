@@ -68,13 +68,37 @@ namespace Famicom.Components.Pages
 
         private async Task SetTableHeight()
         {
+            _timer.Change(500, 500);
             try
             {
-                _timer.Change(500, 500);
+                var progress = new Progress<ITableStatusReport>(message =>
+                {
+                    Debug.WriteLine(message);
+                    switch (message.Status)
+                    {
+                        case TableStatus.Success:
+                            Snackbar.Add("Height set successfully", Severity.Success);
+                            break;
+                        case TableStatus.Collision:
+                            Snackbar.Add("Collision detected", Severity.Error);
+                            break;
+                        case TableStatus.Overheat:
+                            Snackbar.Add("Overheat detected", Severity.Error);
+                            break;
+                        case TableStatus.Lost:
+                            Snackbar.Add("Table lost", Severity.Error);
+                            break;
+                        case TableStatus.Overload:
+                            Snackbar.Add("Overload detected", Severity.Error);
+                            break;
+                        case TableStatus.OtherError:
+                            Snackbar.Add("An error occurred", Severity.Error);
+                            break;
+                    }
+                });
                 Snackbar.Add($"Setting height to {(decimal)tempHeight/10} cm...", Severity.Info);
-                var task = await tableModel!.SetTableHeight(tempHeight, Table.GUID);
-                var severity = task.Status == TableStatus.Success ? Severity.Success : Severity.Error;
-                Snackbar.Add($"Status: {task.Status}, Message: {task.Message}", severity);
+                
+                await tableModel!.SetTableHeight(tempHeight, Table.GUID, progress);
                 tableHeight = await tableModel.GetTableHeight(Table.GUID);
             }
             catch (Exception e)

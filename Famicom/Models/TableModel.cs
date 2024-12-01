@@ -39,21 +39,11 @@ namespace Famicom.Models
             var tableController = await TableControllerService.GetTableController(tableGUID, ClientFactory!.CreateClient("default"));
             return await tableController.GetTableHeight(tableGUID);
         }
-        public async Task<ITableStatusReport> SetTableHeight(int tableHeight, string tableGUID)
+        public async Task SetTableHeight(int tableHeight, string tableGUID, IProgress<ITableStatusReport> progress)
         {
             var tableController = await TableControllerService.GetTableController(tableGUID, ClientFactory!.CreateClient("default"));
 
-            var tcs = new TaskCompletionSource<ITableStatusReport>();
-
-            var progress = new Progress<ITableStatusReport>(message =>
-            {
-                Debug.WriteLine(message);
-                tcs.TrySetResult(message);
-            });
-
             await tableController.SetTableHeight(tableHeight, tableGUID, progress);
-            
-            return await tcs.Task;
         }
     }
 }
