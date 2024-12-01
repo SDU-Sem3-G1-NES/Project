@@ -1,6 +1,6 @@
 using DataAccess;
 
-namespace TableControllerApi.Services
+namespace Models.Services
 {
     public class SubscriberUriService
     {

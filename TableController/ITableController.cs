@@ -44,12 +44,14 @@ namespace TableController
     {
         public string Guid { get; set; }
         public int Height { get; set; }
+        public int Status { get; set; }
         public string Message { get; set; }
-        public TableHeightSetEventArgs(string guid, int height, string message)
+        public TableHeightSetEventArgs(string guid, int height, int tableStatus, string message)
         {
             Guid = guid;
             Height = height;
             Message = message;
+            Status = tableStatus;
         }
     }
 }

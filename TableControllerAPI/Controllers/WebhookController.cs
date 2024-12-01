@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TableControllerApi.Services;
+using Models.Services;
 using System.Diagnostics;
 
 namespace YourNamespace.Controllers

@@ -3,8 +3,10 @@ using Models.Services;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 
-namespace TableControllerApi.Services
+namespace Models.Services
 {
     public class SubscriberNotifyService : IHostedService
     {
@@ -14,7 +16,7 @@ namespace TableControllerApi.Services
         private readonly ITableControllerService _tableControllerService;
         private readonly LinakSimulatorController? _linakSimulatorController;
         private readonly LinakTableController? _linakTableController;
-        public SubscriberNotifyService(SubscriberUriService subscriberUriService, IHttpClientFactory clientFactory, ITableControllerService tableControllerService)
+        public SubscriberNotifyService(SubscriberUriService subscriberUriService, IHttpClientFactory clientFactory, TableControllerService tableControllerService)
         {
             _subscriberUriService = subscriberUriService;
             _clientFactory = clientFactory;
@@ -44,7 +46,8 @@ namespace TableControllerApi.Services
             var tableGuid = eventArgs.Guid;
             var height = eventArgs.Height;
             var message = eventArgs.Message;
-            dynamic infoObject = new { height = height, message = message };
+            var status = eventArgs.Status;
+            dynamic infoObject = new { height = height, status = status, message = message };
             var json = JsonSerializer.Serialize(infoObject);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
