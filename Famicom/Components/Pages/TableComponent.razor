@@ -11,20 +11,24 @@
         <MudText Typo="Typo.h6" Style="margin: 16px 0;">@((decimal)tableHeight / 10)</MudText>
     </MudCardContent>
 
-    <MudCardActions Style="display: flex; align-items: center; justify-content: space-between; padding: 8px;">
+    <MudPaper Style="margin: 10px;" Elevation="3">
+        <MudCardActions Style="display: flex; align-items: center; justify-content: space-between; padding: 8px;">
 
-        <!-- Decrease buttons -->
-        <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-10)" Disabled="@(tempHeight <= 680)">-1</MudButton>
-        <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-100)" Disabled="@(tempHeight <= 780)">-10</MudButton>
+            <!-- Decrease buttons -->
+            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-10)" Disabled="@(tempHeight <= 680)">-1</MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-100)" Disabled="@(tempHeight <= 780)">-10</MudButton>
 
-        <!-- Temporary height display -->
-        <MudText Typo="Typo.h6" Style="margin: 0 16px;">@((decimal)tempHeight / 10)</MudText>
+            <!-- Temporary height display -->
+            <MudText Typo="Typo.h6" Style="margin: 0 16px;">@((decimal)tempHeight / 10)</MudText>
 
-        <!-- Increase buttons -->
-        <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(10)" Disabled="@(tempHeight >= 1320)">+1</MudButton>
-        <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(100)" Disabled="@(tempHeight >= 1230)">+10</MudButton>
+            <!-- Increase buttons -->
+            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(10)" Disabled="@(tempHeight >= 1320)">+1</MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(100)" Disabled="@(tempHeight >= 1230)">+10</MudButton>
 
+        </MudCardActions>
         <!-- Set button -->
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SetTableHeight">Set</MudButton>
-    </MudCardActions>
+        <div Style="padding: 8px;">
+            <MudButton  FullWidth=true Variant="Variant.Filled" Color="Color.Primary" OnClick="SetTableHeight">Set</MudButton>
+        </div>
+    </MudPaper>
 </MudCard>

@@ -59,8 +59,9 @@ namespace Famicom.Components.Pages
                 }
                 catch (Exception e)
                 {
+                    tableModel = new TableModel(ClientFactory);
                     Debug.WriteLine(e.Message);
-                    Snackbar.Add("An error occurred while checking for height changes", Severity.Error);
+                    //Snackbar.Add(e.Message, Severity.Error);
                     return;
                 }
             });
