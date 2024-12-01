@@ -1,0 +1,11 @@
+﻿@inherits ComponentBase
+
+<!--This will be daily graph-->
+@if (WeeklyData != null && XAxisLabels != null && isEmpty != true)
+{
+    <MudPaper Class="mb-4">
+        <MudChart ChartType="ChartType.Bar" ChartSeries="@WeeklyData" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+        </MudPaper>
+}
+      
+

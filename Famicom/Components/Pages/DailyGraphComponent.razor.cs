@@ -1,0 +1,89 @@
+﻿using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Components;
+using Models.Services;
+using MudBlazor;
+
+namespace Famicom.Components.Pages
+{
+    public partial class DailyGraphComponent : ComponentBase
+    {
+        [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
+
+        private HealthService healthService = new HealthService();
+
+        #region Today's Health Properties
+        private DateTime? todaysDate { get; set; }
+        private DateTime? todaysMorning { get; set; }
+        private List<SharedModels.Health>? todayHealth { get; set; }
+        private List<SharedModels.Health>? todaySitingTime { get; set; }
+        private List<SharedModels.Health>? todayStandingTime { get; set; }
+        public required double TotalSittingTime { get; set; }
+        public required double TotalStandingTime { get; set; }
+
+        #endregion
+
+     
+        #region Donut Chart Properties
+        public int SelectedIndex { get; set; }
+        public required double[] DailyData { get; set; }
+        public string[]? DailyLabels { get; set; } = { "Sitting Time", "Standing Time" };
+        #endregion
+
+        private int userId { get; set; } = 0;
+        protected override async Task OnInitializedAsync()
+        {
+            todaysDate = DateTime.Now;
+            todaysMorning = DateTime.Today + new TimeSpan(6, 0, 0);
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            userId = await SessionStorage.GetItemAsync<int>("UserId");
+            todayHealth = healthService.GetHealth(userId, todaysMorning);
+            // Calculate total time spend on sitting and standing position for today
+            CalculateTotalDailyTimeSpend();
+            // Set the data for the donut chart
+            DailyData = new double[] { TotalSittingTime, TotalStandingTime };
+            StateHasChanged();
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+        public void CalculateTotalDailyTimeSpend()
+        {
+            if (todayHealth == null) return;
+            TotalSittingTime = 0;
+            TotalStandingTime = 0;
+            for (int i = 1; i < todayHealth.Count; i++)
+            {
+                var previousHealth = todayHealth[i - 1];
+                var currentHealth = todayHealth[i];
+                var timeSpent = (currentHealth.Date - previousHealth.Date).TotalHours;
+                if (previousHealth.Position < 1000 && currentHealth.Position < 1000)
+                {
+                    TotalSittingTime += timeSpent;
+                }
+                else if (previousHealth.Position > 1000 && currentHealth.Position > 1000)
+                {
+                    TotalStandingTime += timeSpent;
+                }
+                else if (previousHealth.Position < 1000 && currentHealth.Position > 1000)
+                {
+                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - previousHealth.Position) / 1000;
+                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (currentHealth.Position - 1000) / 1000;
+                    TotalSittingTime += sittingTime;
+                    TotalStandingTime += standingTime;
+                }
+                else if (previousHealth.Position > 1000 && currentHealth.Position < 1000)
+                {
+                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (previousHealth.Position - 1000) / 1000;
+                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - currentHealth.Position) / 1000;
+                    TotalSittingTime += sittingTime;
+                    TotalStandingTime += standingTime;
+                }
+            }
+
+        }
+    }
+}
+

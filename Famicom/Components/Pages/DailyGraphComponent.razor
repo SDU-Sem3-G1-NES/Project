@@ -1,0 +1,9 @@
+﻿@inherits ComponentBase
+
+<!--This will be daily graph-->
+@if (DailyData != null && (DailyData[0] > 0 || DailyData[1] > 0) )
+{
+    <MudPaper Class="mb-4">
+        <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="SelectedIndex" InputData="@DailyData" InputLabels="@DailyLabels"></MudChart>
+    </MudPaper>
+}
