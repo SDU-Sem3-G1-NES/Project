@@ -25,7 +25,9 @@ namespace Famicom.Components.Pages
         [Inject]
         IHttpClientFactory ClientFactory { get; set; } = default!;
 
-        protected override void OnInitialized()
+        private bool firstAccess = true;
+
+        protected override async Task OnInitializedAsync()
         {
             try
             {
@@ -36,7 +38,8 @@ namespace Famicom.Components.Pages
                 ErrorMessage = ex.Message;
             }
 
-            _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 5000, 5000);
+            _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 500, 5000);
+            await base.OnInitializedAsync();
         }
 
         private void AdjustTableHeight(int height)
@@ -54,6 +57,11 @@ namespace Famicom.Components.Pages
                     if (newHeight != tableHeight)
                     {
                         tableHeight = newHeight;
+                        if(firstAccess)
+                        {
+                            tempHeight = tableHeight;
+                            firstAccess = false;
+                        }
                         StateHasChanged();
                     }
                 }

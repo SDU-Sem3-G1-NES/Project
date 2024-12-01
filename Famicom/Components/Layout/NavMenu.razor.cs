@@ -45,10 +45,9 @@ namespace Famicom.Components.Layout
             {
                 case "Admin":
                     NavItems.Add(new NavItem("Dashboard", Icons.Material.Filled.Dashboard, "/Dashboard"));
-                    NavItems.Add(new NavItem("Users", Icons.Material.Filled.People, "users"));
-                    NavItems.Add(new NavItem("Rooms", Icons.Material.Filled.House, "rooms"));
                     NavItems.Add(new NavItem("Health", Icons.Material.Filled.HealthAndSafety, "health"));
                     NavItems.Add(new NavItem("Cleaning", Icons.Material.Filled.CleaningServices, "cleaning"));
+                    NavItems.Add(new NavItem("Administration", Icons.Material.Filled.AdminPanelSettings, "admin"));
                     NavItems.Add(new NavItem("Settings", Icons.Material.Filled.Settings, "settings"));
                     break;
                 case "Employee":

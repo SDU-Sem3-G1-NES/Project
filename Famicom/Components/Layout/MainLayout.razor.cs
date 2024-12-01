@@ -79,7 +79,7 @@ namespace Famicom.Components.Layout
         }
 
         private bool _drawerOpen = true;
-        private bool _isDarkMode = true;
+        private bool _isDarkMode = false;
         private MudTheme? _theme = null;
 
         private async Task Logout()
