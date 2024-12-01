@@ -7,6 +7,7 @@ using MudBlazor.Extensions;
 using System.Security.AccessControl;
 using MudBlazor;
 
+
 namespace Famicom.Components.Pages
 {
     public partial class WeeklyGraphComponent : ComponentBase
@@ -21,7 +22,7 @@ namespace Famicom.Components.Pages
         private DateTime? todaysMorning { get; set; }
         private DateTime StartOfWeek { get; set; }
         private DateTime EndOfWeek { get; set; }
-        public required List<DayValue>? dayValues { get; set; }
+        public required List<DayValue>? DayValues { get; set; } = new List<DayValue>();
         private List<SharedModels.Health>? weeklyHealth { get; set; }
         private List<SharedModels.Health>? weeklySitingTime { get; set; }
         private List<SharedModels.Health>? weeklyStandingTime { get; set; }
@@ -57,12 +58,12 @@ namespace Famicom.Components.Pages
                     new ChartSeries
                     {
                         Name = "Sitting Time",
-                        Data = dayValues!.Select(d => d.SittingTime).ToArray()
+                        Data = DayValues!.Select(d => d.SittingTime).ToArray()
                     },
                     new ChartSeries
                     {
                         Name = "Standing Time",
-                        Data = dayValues!.Select(d => d.StandingTime).ToArray()
+                        Data = DayValues!.Select(d => d.StandingTime).ToArray()
                     }
                 };
             isEmpty = IsNullOrEmpty();
@@ -131,7 +132,7 @@ namespace Famicom.Components.Pages
                 }
             }
 
-            dayValues = dailyTimes.Select(d => new DayValue
+            DayValues = dailyTimes.Select(d => new DayValue
             {
                 Day = d.Key.ToString(),
                 SittingTime = (double)d.Value.SittingTime,

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Models.Services;
 using MudBlazor;
+using static Famicom.Components.Pages.WeeklyGraphComponent;
 
 namespace Famicom.Components.Pages
 {
@@ -26,6 +27,7 @@ namespace Famicom.Components.Pages
         #region Donut Chart Properties
         public int SelectedIndex { get; set; }
         public required double[] DailyData { get; set; }
+        public required List<TodayTime>? DailyTime { get; set; } = new List<TodayTime>();
         public string[]? DailyLabels { get; set; } = { "Sitting Time", "Standing Time" };
         #endregion
 
@@ -45,6 +47,20 @@ namespace Famicom.Components.Pages
             CalculateTotalDailyTimeSpend();
             // Set the data for the donut chart
             DailyData = new double[] { TotalSittingTime, TotalStandingTime };
+            DailyTime = new List<TodayTime>
+            {
+                new TodayTime()
+                {
+                    Position = "Sitting Time",
+                    Time = TotalSittingTime
+                },
+                new TodayTime()
+                {
+                    Position = "Standing Time",
+                    Time = TotalStandingTime
+                }
+
+            };
             StateHasChanged();
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -83,6 +99,11 @@ namespace Famicom.Components.Pages
                 }
             }
 
+        }
+        public class TodayTime()
+        {
+            public required string Position { get; set; }
+            public required double Time { get; set; }
         }
     }
 }
