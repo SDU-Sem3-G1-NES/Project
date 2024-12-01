@@ -1,6 +1,10 @@
 ﻿@inherits ComponentBase
 
+<!--This will be daily graph-->
+<MudPaper Class="mb-4">
+    <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="SelectedIndex" InputData="@DailyData" InputLabels="@DailyLabels"></MudChart>
+</MudPaper>
 
 <MudPaper Class="mb-4">
-
+    <MudChart ChartType="ChartType.Bar" ChartSeries="@WeeklyData" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
 </MudPaper>
