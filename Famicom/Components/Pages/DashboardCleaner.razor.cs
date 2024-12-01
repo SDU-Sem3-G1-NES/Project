@@ -15,11 +15,12 @@ namespace Famicom.Components.Pages
         public bool IsCleaningMode { get; private set; }
         private bool IsProcessing { get; set; } = false;
         private string ProcessingMessage { get; set; } = string.Empty;
+        private bool IsFunctionRunning { get; set; } = false;
 
         private CleanerService? cleanerService { get; set; }
         private CleanerModel? cleanerModel { get; set; }
 
-        [Inject] IHttpClientFactory? httpClientFactory { get; set; } 
+        [Inject] IHttpClientFactory? httpClientFactory { get; set; }
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
         [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
@@ -44,15 +45,18 @@ namespace Famicom.Components.Pages
         {
             var userid = await SessionStorage.GetItemAsync<int>("UserId");
             UserPermissionService.SetUser(userModel.GetUser(userId: userid)!);
-            if (!UserPermissionService.RequireOne("CanAccess_CleanerPage")) 
+            if (!UserPermissionService.RequireOne("CanAccess_CleanerPage"))
                 NavigationManager.NavigateTo("/unauthorised");
         }
 
         public async Task ToggleCleaningMode()
         {
+            if (IsFunctionRunning) return;
+
+            IsFunctionRunning = true;
             IsProcessing = true;
-            ProcessingMessage = IsCleaningMode 
-                ? "Deactivating Cleaning Mode, please wait..." 
+            ProcessingMessage = IsCleaningMode
+                ? "Deactivating Cleaning Mode, please wait..."
                 : "Activating Cleaning Mode, please wait...";
 
             StateHasChanged();
@@ -72,9 +76,14 @@ namespace Famicom.Components.Pages
 
                 Snackbar.Add(IsCleaningMode ? "Cleaning Mode activated!" : "Cleaning Mode deactivated!", Severity.Success);
             }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+            }
             finally
             {
                 IsProcessing = false;
+                IsFunctionRunning = false;
                 StateHasChanged();
             }
         }
