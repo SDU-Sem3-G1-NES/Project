@@ -19,10 +19,16 @@ namespace Famicom.Components.Pages
         [Inject] ISnackbar Snackbar { get; set; } = default!;
         private UserModel userModel = new UserModel();
 
+        public ITable _table { get; set; } = null!;
+        private TableModel tableModel { get; set; } = null!;
+        private int userId { get; set; }
         public RenderFragment? _content;
+        [Inject] IHttpClientFactory clientFactory { get; set; } = default!;
+        [Inject] ISessionStorageService sessionStorage { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
+            tableModel = new TableModel(clientFactory);
             if(Navigation != null && Navigation.Uri.Replace(Navigation.BaseUri, "/") == "/") {
                 Navigation.NavigateTo("/Dashboard");
                 return;

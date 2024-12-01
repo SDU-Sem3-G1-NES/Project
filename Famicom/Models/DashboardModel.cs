@@ -8,9 +8,9 @@ namespace Famicom.Models
     {
         private readonly TableModel tableModel;
 
-        public DashboardModel()
+        public DashboardModel(TableModel model)
         {
-            tableModel = new TableModel();
+            tableModel = model;
         }
 
         public string NotificationsTitle { get; set; } = "Notifications";
