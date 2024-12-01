@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Models.Services;
 using MudBlazor;
+using SharedModels;
 using System.Diagnostics;
 
 namespace Famicom.Components.Pages
@@ -13,13 +14,16 @@ namespace Famicom.Components.Pages
         public string? UserName { get; set; }
         public string? UserEmail { get; set; }
         public string? UserPassword { get; set; }
-        public string? UserType { get; set; }
+        public int UserType { get; set; }
         public string? ErrorMessage { get; set; }
         public required string fixedSalt { get; set; }
+
+        public required List<UserTypes> UserTypes { get; set; }
 
         protected override void OnInitialized()
         {
             fixedSalt = userCredentialsService.GetFixedSalt();
+            UserTypes = userRepo.GetUserType();
         }
 
         [Parameter]
@@ -35,7 +39,7 @@ namespace Famicom.Components.Pages
 
         public async Task AddUser()
         {
-            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword) || string.IsNullOrEmpty(UserType))
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword))
             {
                 ErrorMessage = "Please fill in all fields.";
                 return;
@@ -52,11 +56,10 @@ namespace Famicom.Components.Pages
 
                 userCredentialsService.AddUserCredentials(emailHashBytes, passwordHashBytes);
 
-                if (UserType == "Admin")
-                {
-                   userRepo.AddUser(UserName, UserEmail, 1);
+               
+                userRepo.AddUser(UserName, UserEmail, UserType);
                    
-                }
+                
 
             }
             catch (Exception e)
