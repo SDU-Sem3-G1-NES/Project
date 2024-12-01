@@ -24,11 +24,11 @@ namespace Famicom.Components.Pages
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
         [Inject] private UserPermissionService UserPermissionService { get; set; } = default!;
+        [Inject] TableControllerService tableControllerService { get; set; } = default!;
         private UserModel userModel { get; set; } = new UserModel();
 
         protected override void OnInitialized()
         {
-            var tableControllerService = new TableControllerService();
             var client = httpClientFactory!.CreateClient("default");
             cleanerService = new CleanerService(tableControllerService, client);
             cleanerModel = new CleanerModel(cleanerService);
