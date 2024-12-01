@@ -2,7 +2,13 @@ using DataAccess;
 
 namespace Models.Services
 {
-    public class SubscriberUriService
+    public interface ISubscriberUriService
+    {
+        bool Add(string tableGuid, string uriString);
+        bool Remove(string tableGuid);
+        string GetByTableId(string tableGuid);
+    }
+    public class SubscriberUriService : ISubscriberUriService
     {
         private readonly SubscriberRepository subscriberRepository = new SubscriberRepository();
         public bool Add(string tableGuid, string uriString)

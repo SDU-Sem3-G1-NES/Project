@@ -50,7 +50,7 @@ var apiHost = Host.CreateDefaultBuilder()
     {
         services.AddHttpClient();
         services.AddSingleton<ITableControllerService, TableControllerService>(provider => app.Services.GetService<TableControllerService>() ?? throw new InvalidOperationException("TableControllerService not found."));
-        services.AddSingleton<SubscriberUriService>(provider => app.Services.GetService<SubscriberUriService>() ?? throw new InvalidOperationException("SubscriberUriService not found."));
+        services.AddSingleton<ISubscriberUriService, SubscriberUriService>(provider => app.Services.GetService<SubscriberUriService>() ?? throw new InvalidOperationException("SubscriberUriService not found."));
 
     }).Build();
 

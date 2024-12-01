@@ -9,7 +9,9 @@ namespace TableController
         {
         }
 
+        #pragma warning disable 67 // Disable warning for unused event
         public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
+        #pragma warning restore 67 // Restore warning
 
         public Task<int> GetTableHeight(string guid)
         {

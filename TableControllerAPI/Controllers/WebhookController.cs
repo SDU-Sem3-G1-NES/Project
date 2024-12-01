@@ -2,14 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Services;
 using System.Diagnostics;
 
-namespace YourNamespace.Controllers
+namespace TableControllerApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class WebhookController : ControllerBase
     {
-        private readonly SubscriberUriService _subscriberUriService;
-        public WebhookController(SubscriberUriService subscriberUriService)
+        private readonly ISubscriberUriService _subscriberUriService;
+        public WebhookController(ISubscriberUriService subscriberUriService)
         {
             _subscriberUriService = subscriberUriService;
         }
@@ -17,6 +17,7 @@ namespace YourNamespace.Controllers
         [HttpPost("{guid}/subscribe")]
         public async Task<ActionResult> ReceiveWebhook(string guid, [FromBody] String uri)
         {
+            Debug.WriteLine(">>Received webhook request for table " + guid + " with uri " + uri);
             try
             {
                 if(_subscriberUriService.Add(guid, uri))

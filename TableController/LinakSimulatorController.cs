@@ -17,28 +17,31 @@ namespace TableController;
 public class LinakSimulatorController : ITableController
 {
     private ILinakSimulatorTasks _tasks;
-    private readonly HttpClient _client;
+    private HttpClient _client;
+    public HttpClient HttpClient 
+    { 
+        get => _client; 
+        set 
+        {
+            _client = value;
+        } 
+    }
 
     public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
 
     /// <summary>
     /// Constructor for LinakSimulatorController
     /// </summary>
-    public LinakSimulatorController(HttpClient client)
-    {
-        _client = client;
-        _tasks = new LinakSimulatorTasks(_client);
-    }
-
     public LinakSimulatorController()
     {
-        var handler = new HttpClientHandler // to ignore ssl errors in KAPI
-            {
+        var handler = new HttpClientHandler
+        {
             ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
+        };
         _client = new HttpClient(handler);
         _tasks = new LinakSimulatorTasks(_client);
     }
+
     /// <summary>
     /// Method to get all table GUIDs stored in the API.
     /// </summary>

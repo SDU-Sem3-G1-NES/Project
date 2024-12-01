@@ -14,9 +14,7 @@ namespace Models.Services
 {
     public interface ITableControllerService
     {
-        Task<ITableController> GetTableController(string guid);
         Task<ITableController> GetTableController(string guid, HttpClient client);
-        Task<ITableController> GetTableControllerByApiName(string api);
         Task<ITableController> GetTableControllerByApiName(string api, HttpClient client);
     }
     public class TableControllerService : ITableControllerService
@@ -26,11 +24,13 @@ namespace Models.Services
         public TableControllerService()
         {
             _tableRepository = new TableRepository();
+            linakSimulatorController = new LinakSimulatorController();
+            linakTableController = new LinakTableController();
+            mockTableController = new MockTableController();
         }
-        private LinakSimulatorController linakSimulatorController = new LinakSimulatorController();
-        private LinakTableController linakTableController = new LinakTableController();
-        private MockTableController mockTableController =new MockTableController();
-        public Task<ITableController> GetTableController(string guid) => GetTableController(guid, null!);
+        private LinakSimulatorController linakSimulatorController;
+        private LinakTableController linakTableController; 
+        private MockTableController mockTableController;
         public Task<ITableController> GetTableController(string guid, HttpClient client)
         {
             var api= _tableRepository.GetTableAPI(guid);
@@ -39,6 +39,7 @@ namespace Models.Services
             switch (api)
             {
                 case "LinakSimulatorController":
+                    linakSimulatorController.HttpClient = client;
                     return Task.FromResult<ITableController>(linakSimulatorController);
                 case "LinakTableController":
                     return Task.FromResult<ITableController>(linakTableController);
@@ -49,12 +50,12 @@ namespace Models.Services
             }
 
         }
-        public Task<ITableController> GetTableControllerByApiName(string api) => GetTableControllerByApiName(api, null!);
         public Task<ITableController> GetTableControllerByApiName(string api, HttpClient client)
         {
             switch (api)
             {
                 case "Linak Simulator API V2":
+                    linakSimulatorController.HttpClient = client;
                     return Task.FromResult<ITableController>(linakSimulatorController);
                 case "Linak API":
                     return Task.FromResult<ITableController>(linakTableController);

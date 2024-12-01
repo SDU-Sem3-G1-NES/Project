@@ -23,7 +23,8 @@ namespace TableController.Tests
 
         private async Task GetFreshObjects()
         {
-            _controller = new LinakSimulatorController(new HttpClient());
+            _controller = new LinakSimulatorController();
+            _controller.HttpClient = new HttpClient();
             _linakSimulatorTasksMock = new Mock<ILinakSimulatorTasks>();
 
             var field = typeof(LinakSimulatorController)

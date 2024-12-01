@@ -13,6 +13,7 @@ public class TableController : ControllerBase
 {
     private IHttpClientFactory _clientFactory { get; set; }
     private readonly ITableControllerService _tableControllerService;
+    private HttpClient _client;
     private string statusMessage = "";
 
     private readonly Progress<ITableStatusReport> _progress;
@@ -20,6 +21,7 @@ public class TableController : ControllerBase
     {
         _tableControllerService = tableControllerService;
         _clientFactory = clientFactory;
+        _client = _clientFactory.CreateClient("default");
         _progress  = new Progress<ITableStatusReport>(message =>
         {
             Debug.WriteLine(message.Message);
@@ -31,7 +33,7 @@ public class TableController : ControllerBase
     {
         try
         {
-            var _tableController = await _tableControllerService.GetTableController(guid);
+            var _tableController = await _tableControllerService.GetTableController(guid, _client);
             ITable? table = await _tableController.GetFullTableInfo(guid);
             return Ok(await Task.FromResult(table));
         }
@@ -47,7 +49,7 @@ public class TableController : ControllerBase
         try
         {
             statusMessage = "Table height set successfully.";
-            var _tableController = await _tableControllerService.GetTableController(guid);
+            var _tableController = await _tableControllerService.GetTableController(guid, _client);
             await _tableController.SetTableHeight(height, guid, _progress);
 
             return Ok(await Task.FromResult(statusMessage));
