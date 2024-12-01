@@ -13,6 +13,8 @@ namespace Famicom.Components.Pages
         private int tableHeight { get; set; } = 1000; // mock
         private int tempHeight { get; set; } = 1000; // mock
         private string? ErrorMessage { get; set; }
+
+        private Timer _timer = null!;
         
         [Parameter]
         public required ITable Table { get; set; }
@@ -33,6 +35,8 @@ namespace Famicom.Components.Pages
             {
                 ErrorMessage = ex.Message;
             }
+
+            _timer = new Timer(_ => InvokeAsync(CheckForChangedHeight), null, 5000, 5000);
         }
 
         private void AdjustTableHeight(int height)
@@ -41,10 +45,32 @@ namespace Famicom.Components.Pages
             StateHasChanged();
         }
 
+        private async Task CheckForChangedHeight() {
+            await InvokeAsync(async () =>
+            {
+                try
+                {
+                    var newHeight = await tableModel!.GetTableHeight(Table.GUID);
+                    if (newHeight != tableHeight)
+                    {
+                        tableHeight = newHeight;
+                        StateHasChanged();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    Snackbar.Add("An error occurred while checking for height changes", Severity.Error);
+                    return;
+                }
+            });
+        }
+
         private async Task SetTableHeight()
         {
             try
             {
+                _timer.Change(500, 500);
                 Snackbar.Add($"Setting height to {(decimal)tempHeight/10} cm...", Severity.Info);
                 var task = await tableModel!.SetTableHeight(tempHeight, Table.GUID);
                 var severity = task.Status == TableStatus.Success ? Severity.Success : Severity.Error;
@@ -55,9 +81,8 @@ namespace Famicom.Components.Pages
             {
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
-                return;
             }
-
+            _timer.Change(5000, 5000);
         }
     }
 }
