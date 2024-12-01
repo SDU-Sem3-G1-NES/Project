@@ -3,7 +3,7 @@
 
 <PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
+<MudText Align="MudBlazor.Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
 
 <MudDivider DividerType="DividerType.Middle" Class="my-4" />
 
@@ -26,7 +26,7 @@
                          CoerceText="@coerceText" CoerceValue="@coerceValue" />
     </MudItem>
 
-    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+    <MudMenu Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Primary">
         <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
@@ -54,7 +54,7 @@
         <ToolBarContent>
             <MudText Typo="Typo.h6">Select Tables</MudText>
             <MudSpacer />
-            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
