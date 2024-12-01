@@ -13,6 +13,7 @@ namespace Famicom.Components.Pages
     public partial class DashboardEmployee : ComponentBase
     {
         [Inject] ISessionStorageService _sessionStorage { get; set; } = default!;
+        [Inject] IHttpClientFactory _clientFactory { get; set; } = default!;
         private TableModel _tableModel { get; set; } = null!;
         public TableComponent _tableComponent { get; set; } = null!;
         private ITable _table { get; set; } = null!; 
@@ -20,7 +21,7 @@ namespace Famicom.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _tableModel = new TableModel();
+            _tableModel = new TableModel(_clientFactory);
             await base.OnInitializedAsync();
         }
 
