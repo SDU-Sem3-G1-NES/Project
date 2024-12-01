@@ -22,8 +22,8 @@ def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000, disa
     desk_manager = DeskManager(speed)
     
     logging.info("Adding default desks...")
-    desk_manager.add_desk("cd:fb:1a:53:fb:e6", "DESK 4486", "Linak A/S", UserType.DISABLED if disable_simulation else UserType.ACTIVE)
-    desk_manager.add_desk("ee:62:5b:b8:73:1d", "DESK 6743", "Linak A/S", UserType.DISABLED if disable_simulation else UserType.STANDING)
+    desk_manager.add_desk("cd:fb:1a:53:fb:e6", "HC Desk 1", "Linak A/S", UserType.DISABLED)
+    desk_manager.add_desk("ee:62:5b:b8:73:1d", "HC Desk 2", "Linak A/S", UserType.DISABLED)
     
     if len(desk_manager.get_desk_ids()) < desks:
         logging.info(f"Adding {desks - len(desk_manager.get_desk_ids())} additional desks.")

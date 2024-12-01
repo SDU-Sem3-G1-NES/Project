@@ -56,7 +56,7 @@ namespace TableController
             return Task.FromResult(new string[] { "MockTableController.GetAllTableIds" });
         }
 
-        public Task<LinakTable> GetFullTableInfo(string guid)
+        public Task<ITable> GetFullTableInfo(string guid)
         {
             throw new NotImplementedException();
         }

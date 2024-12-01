@@ -5,6 +5,7 @@ using Models.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http;
+using ApexCharts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddAntiforgery();
+builder.Services.AddApexCharts();
 
 var app = builder.Build();
 var apiHost = Host.CreateDefaultBuilder()

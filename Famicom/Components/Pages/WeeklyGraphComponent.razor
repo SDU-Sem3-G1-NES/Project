@@ -1,0 +1,31 @@
+﻿@inherits ComponentBase
+@using ApexCharts
+
+
+<!--This will be daily graph-->
+@if (WeeklyData != null && XAxisLabels != null && isEmpty != false)
+{
+    <MudPaper Class="mb-4" Height="4oopx" Width="500px">
+        <ApexChart TItem="DayValue"
+               Title="Weekly Chart">
+
+        <ApexPointSeries TItem="DayValue"
+                         Items="DayValues"
+                         Name="Siting Time"
+                         XValue="e => e.Day"
+                         YValue="e => (decimal)e.SittingTime"
+                         SeriesType="SeriesType.Bar" />
+
+        <ApexPointSeries TItem="DayValue"
+                         Items="DayValues"
+                         Name="Standing Time"
+                         XValue="e => e.Day"
+                         YValue="e => (decimal)e.StandingTime"
+                         SeriesType="SeriesType.Bar" />
+    </ApexChart>
+    </MudPaper>
+
+}
+
+
+

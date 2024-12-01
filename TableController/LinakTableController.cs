@@ -23,7 +23,7 @@ namespace TableController
             throw new NotImplementedException();
         }
 
-        public Task<LinakTable> GetFullTableInfo(string guid)
+        public Task<ITable> GetFullTableInfo(string guid)
         {
             throw new NotImplementedException();
         }
