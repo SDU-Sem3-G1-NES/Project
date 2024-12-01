@@ -100,6 +100,7 @@ namespace Famicom.Components.Pages
             PanelTitle = GetUserType();
             await base.OnInitializedAsync();
         }
+        
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await Protect();

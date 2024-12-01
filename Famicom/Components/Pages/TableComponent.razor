@@ -1,14 +1,20 @@
 ﻿@inherits ComponentBase
 
-<MudCard Class="flex" Style="max-width: 600px; margin: auto;">
+<MudCard Class="flex" Style="margin: auto; height: 492px">
     <MudCardHeader Style="text-align: left; display: block;">
         <MudText Typo="Typo.h4"> @(Table?.Name ?? "Unknown Table Name")</MudText>
         <MudText Typo="Typo.h6"> @(Table?.Manufacturer ?? "Unknown Manufacturer")</MudText>
     </MudCardHeader>
 
     <MudCardContent Style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;">
-        <MudImage Src="images/linak-table.jpg" Alt="LINAK table" Elevation="25" Style="max-width: 400px; height: auto;" />
-        <MudText Typo="Typo.h6" Style="margin: 16px 0;">@((decimal)tableHeight / 10)</MudText>
+        <div style="width:150px; height:150px; position: relative;">
+            <MudText Typo="Typo.body2" Style="position: absolute; top: 32.5%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">Height</MudText>
+            <MudProgressCircular style="width:150px; height:150px; position: absolute;" Size="MudBlazor.Size.Large"  Color="MudBlazor.Color.Default" Value="100" />
+            <MudProgressCircular style="width:150px; height:150px; position: absolute;" Size="MudBlazor.Size.Large" Min="680" Max="1320" Color="MudBlazor.Color.Secondary" Value="@tableHeight" />
+            <MudProgressCircular style="width:150px; height:150px; position: absolute; mix-blend-mode: multiply;" Size="MudBlazor.Size.Large" Min="680" Max="1320" Color="MudBlazor.Color.Primary" Value="@tempHeight" />
+            <MudText Typo="Typo.h4" Style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">@((decimal)tableHeight / 10)</MudText>
+            <MudText Typo="Typo.body2" Style="position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">cm</MudText>
+        </div>
     </MudCardContent>
 
     <MudPaper Style="margin: 10px;" Elevation="0">

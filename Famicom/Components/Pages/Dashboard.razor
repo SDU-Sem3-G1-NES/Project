@@ -4,3 +4,11 @@
 
 <PageTitle>Dashboard</PageTitle>
 
+@if (_content != null)
+{
+    @_content
+}
+else
+{
+    <p>Loading...</p>
+}
