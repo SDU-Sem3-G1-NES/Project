@@ -104,6 +104,7 @@ namespace Famicom.Components.Pages
             }
             catch (Exception e)
             {
+                tableModel = new TableModel(ClientFactory);
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }
