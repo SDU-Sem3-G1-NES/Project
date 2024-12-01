@@ -4,9 +4,10 @@
 <!--This will be daily graph-->
 @if (DailyData != null && (DailyData[0] > 0 || DailyData[1] > 0) )
 {
-    <MudPaper Class="mb-4" Height="300px" Width="400px">
+    <MudPaper Class="mb-4" Height="492px" Width="350px">
         <ApexChart TItem="TodayTime"
-                   Title="Daily Siting and Standing time">
+                   Title="Daily Siting and Standing time"
+                   Options="options">
 
             <ApexPointSeries TItem="TodayTime"
                              Items="DailyTime"
@@ -14,7 +15,24 @@
                              Name="Time spent"
                              XValue="e => e.Position"
                              YValue="e => (decimal)e.Time"
+                             
                              />
         </ApexChart>
     </MudPaper>
+}
+
+@code {
+    private ApexChartOptions<TodayTime> options { get; set; } = new()
+        {
+            Legend = new Legend
+            {
+                Position = LegendPosition.Bottom,
+                FontSize = "15px",
+                HorizontalAlign = ApexCharts.Align.Center
+            }
+        };
+
+   
+        
+    
 }
