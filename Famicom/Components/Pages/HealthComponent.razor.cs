@@ -76,12 +76,12 @@ namespace Famicom.Components.Pages
                     new ChartSeries
                     {
                         Name = "Sitting Time",
-                        Data = dayValues.Select(d => d.SittingTime).ToArray()
+                        Data = dayValues!.Select(d => d.SittingTime).ToArray()
                     },
                     new ChartSeries
                     {
                         Name = "Standing Time",
-                        Data = dayValues.Select(d => d.StandingTime).ToArray()
+                        Data = dayValues!.Select(d => d.StandingTime).ToArray()
                     }
                 };
             StateHasChanged();
