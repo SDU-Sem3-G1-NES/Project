@@ -3,7 +3,7 @@ using Blazored.SessionStorage;
 using Famicom.Models;
 using Models.Services;
 
-
+namespace Famicom.Components;
 public partial class SettingsBase : ComponentBase
 {
     [Inject]
