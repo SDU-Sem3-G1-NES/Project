@@ -51,7 +51,7 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>LinakTable; Null if not found in API or on other error.</returns>
     /// <param name="guid">GUID of the table to get information from. Optional.</param>
-    public async Task<LinakTable> GetFullTableInfo(string guid)
+    public async Task<ITable> GetFullTableInfo(string guid)
     {
         try 
         {
@@ -70,6 +70,7 @@ public class LinakSimulatorController : ITableController
             );
             returnTable.Height = response.state.position_mm;
             returnTable.Speed = response.state.speed_mms; 
+            returnTable.Status = response.state.status;
 
             return returnTable;
         } 
@@ -212,6 +213,9 @@ public class LinakSimulatorController : ITableController
 
         switch (errorCode)
         {
+            case 0:
+                statusDictionary[TableStatus.Success] = "Success: No errors detected";
+                break;
             case 1:
                 statusDictionary[TableStatus.Lost] = "Position Lost: The desk has an unknown position and needs to be initialized";
                 break;
@@ -538,6 +542,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             // Success if table has reached new position
             if(table.state.position_mm == newPosition)
             {
+                progress.Report(0);
                 returnValue = 0;
                 check = false;
             }

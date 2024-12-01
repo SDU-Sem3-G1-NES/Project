@@ -5,7 +5,7 @@ namespace TableController
     public interface ITableController
     {
         public Task<string[]> GetAllTableIds();
-        public Task<LinakTable> GetFullTableInfo(string guid);
+        public Task<ITable> GetFullTableInfo(string guid);
         public Task<int> GetTableHeight(string guid);
         public Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress);
         public Task<int> GetTableSpeed(string guid);
