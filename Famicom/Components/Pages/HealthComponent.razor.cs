@@ -21,8 +21,8 @@ namespace Famicom.Components.Pages
         private List<SharedModels.Health>? todayHealth { get; set; }
         private List<SharedModels.Health>? todaySitingTime { get; set; }
         private List<SharedModels.Health>? todayStandingTime { get; set; }
-        public double TotalSittingTime { get; set; }
-        public double TotalStandingTime { get; set; }
+        public required double TotalSittingTime { get; set; }
+        public required double TotalStandingTime { get; set; }
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace Famicom.Components.Pages
         #endregion
         #region Donut Chart Properties
         public int SelectedIndex { get; set; }
-        public double[]? DailyData { get; set; }
+        public required double[] DailyData { get; set; }
         public string[]? DailyLabels { get; set; } = { "Sitting Time", "Standing Time" };
         #endregion
 
@@ -72,18 +72,19 @@ namespace Famicom.Components.Pages
             DailyData = new double[] { TotalSittingTime, TotalStandingTime };
             // Set the data for the bar chart
             WeeklyData = new List<ChartSeries>
-            {
-                new ChartSeries
                 {
-                    Name = "Sitting Time",
-                    Data = dayValues!.Select(d => d.SittingTime).ToArray()
-                },
-                new ChartSeries
-                {
-                    Name = "Standing Time",
-                    Data = dayValues!.Select(d => d.StandingTime).ToArray()
-                }
-            };
+                    new ChartSeries
+                    {
+                        Name = "Sitting Time",
+                        Data = dayValues.Select(d => d.SittingTime).ToArray()
+                    },
+                    new ChartSeries
+                    {
+                        Name = "Standing Time",
+                        Data = dayValues.Select(d => d.StandingTime).ToArray()
+                    }
+                };
+            StateHasChanged();
             await base.OnAfterRenderAsync(firstRender);
         }
 

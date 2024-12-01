@@ -33,30 +33,33 @@ namespace DataAccess
 
         }
 
-        #endregion
-
-        #region Get Methods
-
-        public List<Health> GetHealthByUser(int userID,DateTime? startDate, DateTime? endtime)
+        public List<Health> GetHealthByUser(int userID, DateTime? startDate, DateTime? endtime)
         {
-            string sql;
+            string sql = "SELECT * FROM health WHERE u_id = @userID";
             if (endtime != null)
             {
-                sql = $"SELECT * FROM health WHERE u_id = {userID} AND h_date < {endtime}";
+                sql += " AND h_date < @endtime";
             }
-            else if (startDate != null)
+            if (startDate != null)
             {
-                sql = $"SELECT * FROM health WHERE u_id = {userID} AND h_date > {startDate}";
-            }
-            else
-            {
-                sql = $"SELECT * FROM health WHERE u_id = {userID}";
+                sql += " AND h_date > @startDate";
             }
 
             List<Health> health = new List<Health>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using (var cmd = dbAccess.dbDataSource.CreateCommand())
             {
+                cmd.CommandText = sql;
+                cmd.Parameters.AddWithValue("@userID", userID);
+                if (endtime != null)
+                {
+                    cmd.Parameters.AddWithValue("@endtime", endtime);
+                }
+                if (startDate != null)
+                {
+                    cmd.Parameters.AddWithValue("@startDate", startDate);
+                }
+
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -66,7 +69,7 @@ namespace DataAccess
                             HealthId = reader.GetInt32(0),
                             Date = reader.GetDateTime(1),
                             UserId = reader.GetInt32(2),
-                            PresetId = reader.GetInt32(3),
+                            PresetId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
                             Position = reader.GetInt32(4)
                         };
                         health.Add(healthreport);
