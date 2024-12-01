@@ -20,10 +20,10 @@
                     <MudTextField T="string" @bind-Value="loginModel.Password" Required="true" InputType="InputType.Password" />
                 </div>
                 <div class="d-flex justify-center">
-                    <MudButton Disabled="@isSubmitting" @onclick="OnSubmitButton" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton Disabled="@isSubmitting" @onclick="OnSubmitButton" ButtonType="ButtonType.Submit" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">
                     @if (isSubmitting)
                     {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                            <MudProgressCircular Class="ms-n1" Size="MudBlazor.Size.Small" Indeterminate="true" />
                         <MudText Class="ms-2">Logging in..</MudText>
                     }
                     else

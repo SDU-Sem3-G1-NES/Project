@@ -20,6 +20,7 @@ namespace SharedModels
         public string Manufacturer { get; set; }
         public int? Height { get; set; }
         public int? Speed { get; set; }
+        public string? Status { get; set; }
         public List<ITableError>? ErrorList { get; set; }
         public int ActivationCounter { get; set; }
     }

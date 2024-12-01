@@ -4,7 +4,7 @@
 
 <PageTitle>Table Management</PageTitle>
 
-<MudText Align="Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
+<MudText Align="MudBlazor.Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
 
 <MudDivider DividerType="DividerType.Middle" Class="my-4" />
 
@@ -43,24 +43,28 @@
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
-                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Primary">
                         <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
                         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
                         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
                     </MudMenu>
-                    <MudSwitch @bind-Value="tableReadOnly" Color="Color.Tertiary">ReadOnly Mode</MudSwitch>
+                    <MudSwitch @bind-Value="tableReadOnly" Color="MudBlazor.Color.Tertiary">ReadOnly Mode</MudSwitch>
                     <MudSpacer />
-                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Status ?? String.Empty)">Status</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Height ?? 0)">Height</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Table Name">@context.Name</MudTd>
                     <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
                 </RowTemplate>
                 <RowEditingTemplate>
                     <MudTd DataLabel="Table Name">
@@ -70,12 +74,14 @@
                         <MudTextField @bind-Value="context.Manufacturer" Required />
                     </MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
                 </RowEditingTemplate>
                 <PagerContent>
                     <MudTablePager />
                 </PagerContent>
                 <EditButtonContent Context="button">
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
+                    <MudIconButton Size="@MudBlazor.Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
                 </EditButtonContent>
             </MudTable>
         }
@@ -87,13 +93,13 @@
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
-                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Primary">
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Primary">
                         <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
                         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
                         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
                     </MudMenu>
                     <MudSpacer />
-                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.UserID)">UserId</MudTableSortLabel></MudTh>

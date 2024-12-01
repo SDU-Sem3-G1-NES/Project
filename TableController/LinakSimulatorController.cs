@@ -51,7 +51,7 @@ public class LinakSimulatorController : ITableController
     /// </summary>
     /// <returns>LinakTable; Null if not found in API or on other error.</returns>
     /// <param name="guid">GUID of the table to get information from. Optional.</param>
-    public async Task<LinakTable> GetFullTableInfo(string guid)
+    public async Task<ITable> GetFullTableInfo(string guid)
     {
         try 
         {
@@ -70,6 +70,7 @@ public class LinakSimulatorController : ITableController
             );
             returnTable.Height = response.state.position_mm;
             returnTable.Speed = response.state.speed_mms; 
+            returnTable.Status = response.state.status;
 
             return returnTable;
         } 
