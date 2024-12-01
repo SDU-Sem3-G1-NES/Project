@@ -206,6 +206,9 @@ public class LinakSimulatorController : ITableController
 
         switch (errorCode)
         {
+            case 0:
+                statusDictionary[TableStatus.Success] = "Success: No errors detected";
+                break;
             case 1:
                 statusDictionary[TableStatus.Lost] = "Position Lost: The desk has an unknown position and needs to be initialized";
                 break;
@@ -534,27 +537,27 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
                     progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
                 }
 
-                // Success if table has reached new position
-                if(table.state.position_mm == newPosition)
-                {
-                    returnValue = 0;
-                    check = false;
+            // Success if table has reached new position
+            if(table.state.position_mm == newPosition)
+            {
+                progress.Report(0);
+                returnValue = 0;
+                check = false;
+            }
+            else {
+                if(table.state.position_mm != lastPosition) {
+                    lastPosition = table.state.position_mm;
+                    positionSameCounter = 0;
                 }
                 else {
-                    if(table.state.position_mm != lastPosition) {
-                        lastPosition = table.state.position_mm;
-                        positionSameCounter = 0;
+                    if(positionSameCounter >= 5 && (table.state.position_mm == minHeight || table.state.position_mm == maxHeight)) {
+                        progress.Report(101);
+                        returnValue = 101;
+                        check = false;
                     }
-                    else {
-                        if(positionSameCounter >= 5 && (table.state.position_mm == minHeight || table.state.position_mm == maxHeight)) {
-                            var parsedStatus = LinakSimulatorController.ParseTableStatus(101);
-                        progress.Report(new LinakStatusReport(guid, parsedStatus.Keys.First(), parsedStatus.Values.First()));
-                            returnValue = 101;
-                            check = false;
-                        }
-                        positionSameCounter++;
-                    }
+                    positionSameCounter++;
                 }
+            }
 
                 if(positionSameCounter > 15) {
                     var parsedStatus = LinakSimulatorController.ParseTableStatus(100);

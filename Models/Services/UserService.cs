@@ -105,5 +105,15 @@ namespace Models.Services
         {
             return userRepository.GetAllUsers();
         }
+
+        public string GetUserAssignedTable(int id)
+        {
+            return userRepository.GetUserAssignedTable(id);
+        }
+
+        public List<UserTypes> GetUserType()
+        {
+            return userRepository.GetUserType();
+        }
     }
 }
