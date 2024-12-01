@@ -11,11 +11,10 @@
         <MudText Typo="Typo.h6" Style="margin: 16px 0;">@((decimal)tableHeight / 10)</MudText>
     </MudCardContent>
 
-    <MudPaper Style="margin: 10px;" Elevation="3">
-        <MudCardActions Style="display: flex; align-items: center; justify-content: space-between; padding: 8px;">
-
+    <MudPaper Style="margin: 10px;" Elevation="0">
+        <div Style="width: auto; display: flex; align-items: center; justify-content: center; padding: 8px;">
             <!-- Decrease buttons -->
-            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-10)" Disabled="@(tempHeight <= 680)">-1</MudButton>
+            <MudButton Style="margin-right: 10px;" Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-10)" Disabled="@(tempHeight <= 680)">-1</MudButton>
             <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-100)" Disabled="@(tempHeight <= 780)">-10</MudButton>
 
             <!-- Temporary height display -->
@@ -23,12 +22,11 @@
 
             <!-- Increase buttons -->
             <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(10)" Disabled="@(tempHeight >= 1320)">+1</MudButton>
-            <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(100)" Disabled="@(tempHeight >= 1230)">+10</MudButton>
-
-        </MudCardActions>
+            <MudButton Style="margin-left: 10px;" Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(100)" Disabled="@(tempHeight >= 1230)">+10</MudButton>
+        </div>
         <!-- Set button -->
         <div Style="padding: 8px;">
-            <MudButton  FullWidth=true Variant="Variant.Filled" Color="Color.Primary" OnClick="SetTableHeight">Set</MudButton>
+            <MudButton FullWidth=true Variant="Variant.Filled" Color="Color.Primary" OnClick="SetTableHeight">Set</MudButton>
         </div>
     </MudPaper>
 </MudCard>
