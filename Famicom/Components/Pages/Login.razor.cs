@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Blazored.SessionStorage;
 using Famicom.Models;
 using Models.Services;
-using System.Runtime.InteropServices;
 
 namespace Famicom.Components.Pages
 {
