@@ -1,20 +1,29 @@
 using SharedModels;
 using Models.Services;
+using TableController;
+using System.Diagnostics;
 
 namespace Famicom.Models
 {
     public class TableModel
     {
         private readonly TableService tableService;
+        private readonly TableControllerService TableControllerService;
+        private readonly IHttpClientFactory? ClientFactory;
+        private readonly Progress<ITableStatusReport> progress;
         private ITable? table;
-        //For testing purposes only
-        private List<ITable> tableList = new();
 
-        public TableModel()
+        
+        public TableModel(IHttpClientFactory clientFactory)
         {
             this.tableService = new TableService();
+            this.TableControllerService = new TableControllerService();
+            this.ClientFactory = clientFactory;
+            this.progress = new Progress<ITableStatusReport>(message =>
+            {
+                Debug.WriteLine(message);
+            });
         }
-
 
         public ITable? GetTable(int userId)
         {
@@ -25,8 +34,16 @@ namespace Famicom.Models
             }
             return this.table;
         }
+        public async Task<int> GetTableHeight(string tableGUID)
+        {
+            var tableController = await TableControllerService.GetTableController(tableGUID, ClientFactory!.CreateClient("default"));
+            return await tableController.GetTableHeight(tableGUID);
+        }
+        public async Task SetTableHeight(int tableHeight, string tableGUID, IProgress<ITableStatusReport> progress)
+        {
+            var tableController = await TableControllerService.GetTableController(tableGUID, ClientFactory!.CreateClient("default"));
+
+            await tableController.SetTableHeight(tableHeight, tableGUID, progress);
+        }
     }
 }
-
-
-    
