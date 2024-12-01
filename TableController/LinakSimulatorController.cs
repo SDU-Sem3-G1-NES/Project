@@ -212,6 +212,9 @@ public class LinakSimulatorController : ITableController
 
         switch (errorCode)
         {
+            case 0:
+                statusDictionary[TableStatus.Success] = "Success: No errors detected";
+                break;
             case 1:
                 statusDictionary[TableStatus.Lost] = "Position Lost: The desk has an unknown position and needs to be initialized";
                 break;
@@ -538,6 +541,7 @@ internal class LinakSimulatorTasks : ILinakSimulatorTasks {
             // Success if table has reached new position
             if(table.state.position_mm == newPosition)
             {
+                progress.Report(0);
                 returnValue = 0;
                 check = false;
             }
