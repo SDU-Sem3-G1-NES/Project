@@ -5,7 +5,7 @@
 <MudContainer Class="d-flex justify-start" Style="height: 50%;">
     <MudCard Style="width: 100%; max-width: 400px; margin-top: 40px;">
         <MudCardContent>
-            <h4 class="text-center" style="margin-bottom:10px;">Change Password</h4>
+            <h4 class="d-flex justify-center" style="margin-bottom:10px;">Change Account Password</h4>
             <MudDivider style="margin-bottom: 24px;" />
 
             <form @onsubmit="OnChangePassword" style="display: flex; flex-direction: column; gap: 12px;">
@@ -25,10 +25,10 @@
                 </div>
 
                 <div class="d-flex justify-center">
-                    <MudButton Disabled="@isSubmitting" @onclick="OnChangePassword" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton Disabled="@isSubmitting" @onclick="OnChangePassword" ButtonType="ButtonType.Submit" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">
                     @if (isSubmitting)
                     {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                        <MudProgressCircular Class="ms-n1" Size="MudBlazor.Size.Small" Indeterminate="true"/>
                         <MudText Class="ms-2">Changing Password..</MudText>
                     }
                     else
@@ -39,10 +39,38 @@
                 </div>
             </form>
 
-            @if (!string.IsNullOrEmpty(ErrorMessage))
+            @if (!string.IsNullOrEmpty(Message) && string.IsNullOrEmpty(SuccessMessage) && string.IsNullOrEmpty(ConfirmMessage))
             {
-                <p>@ErrorMessage</p>
+                <p class="error-message">@Message</p>
+            }
+            @if (!string.IsNullOrEmpty(SuccessMessage))
+            {
+                <p class="success-message">@SuccessMessage</p>
+            }
+            @if (!string.IsNullOrEmpty(ConfirmMessage))
+            {
+                <p class="confirm-message">@ConfirmMessage</p>
             }
         </MudCardContent>
     </MudCard>
 </MudContainer>
+<style>
+.error-message {
+        color: red;
+        text-align: center;
+        font-size: 0.875rem;
+        margin-top: 12px;
+    }
+.success-message {
+        color: green;
+        text-align: center;
+        font-size: 0.875rem;
+        margin-top: 12px;
+    }
+.confirm-message {
+    color: orange;
+    text-align: center;
+    font-size: 0.875rem;
+    margin-top: 12px;
+}
+</style>

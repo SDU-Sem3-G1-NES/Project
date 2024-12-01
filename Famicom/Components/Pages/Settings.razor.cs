@@ -16,7 +16,9 @@ public partial class SettingsBase : ComponentBase
     private UserCredentialsService userCredentialsService = new UserCredentialsService();
     protected SettingsModel settingsModel = new SettingsModel();
     protected bool isSubmitting = false;
-    protected string? ErrorMessage { get; set; }
+    protected string? Message { get; set; }
+    protected string? SuccessMessage { get; set; }
+    protected string? ConfirmMessage { get; set; }
     private string? userEmail;
     private readonly string fixedSalt;
 
@@ -48,6 +50,9 @@ public partial class SettingsBase : ComponentBase
     }
     protected async Task OnChangePassword()
     {
+        Message = string.Empty;
+        ConfirmMessage = string.Empty;
+        SuccessMessage = string.Empty;
         await GetSessionStorage();
         isSubmitting = true;
         try
@@ -58,7 +63,7 @@ public partial class SettingsBase : ComponentBase
 
             if (NewPassword != ConfirmedPassword)
             {
-                ErrorMessage = "Passwords do not match.";
+                ConfirmMessage = "Passwords do not match.";
                 return;
             }
 
@@ -68,7 +73,7 @@ public partial class SettingsBase : ComponentBase
 
             if (userCredentialsService.ValidateCredentials(hashedEmail, hashedCurrentPassword) == false)
             {
-                ErrorMessage = "Current password is incorrect.";
+                Message = "Current password is incorrect.";
                 return;
             }
 
@@ -76,13 +81,13 @@ public partial class SettingsBase : ComponentBase
             string hashedNewPassword = userCredentialsService.ConvertToHex(BCrypt.Net.BCrypt.HashPassword(NewPassword, fixedSalt));
             userService.UpdateHashPass(hashedEmail, hashedNewPassword);
             hashedNewPassword = hashedCurrentPassword;
-            
-            Navigation?.NavigateTo("/");
-            ErrorMessage = "Password updated successfully.";
+
+            Message = string.Empty;
+            SuccessMessage = "Password updated successfully.";
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"An error occurred: {ex.Message}";
+            Message = $"An error occurred: {ex.Message}";
         }
         finally
         {
@@ -90,7 +95,6 @@ public partial class SettingsBase : ComponentBase
             settingsModel.ConfirmedPassword = string.Empty;
             settingsModel.CurrentPassword = string.Empty;
             isSubmitting = false;
-            await InvokeAsync(StateHasChanged);
         }
     }
 
