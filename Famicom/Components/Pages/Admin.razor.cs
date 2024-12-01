@@ -12,9 +12,8 @@ using TableController;
 
 namespace Famicom.Components.Pages
 {
-    public partial class AdminBase : ComponentBase
+    public partial class AdminBase : ComponentBase, IDisposable
     {
-       
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
@@ -99,13 +98,16 @@ namespace Famicom.Components.Pages
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();
-            _timer = new Timer(callback: _ => InvokeAsync(GetFullTableInfoAndPray), null, 5000, 5000);
-
             await base.OnInitializedAsync();
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await Protect();
+            if(firstRender) 
+            {
+                _timer = new Timer(async _ => await InvokeAsync(GetFullTableInfoAndPray), null, 1000, 5000);
+
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -153,8 +155,6 @@ namespace Famicom.Components.Pages
                 try
                 {
                     FullTableAndPrayCheckRunning = true;
-                    Snackbar.Add("Refreshing Table Info", Severity.Info);
-
                     foreach (var table in Table)
                     {   
                         await UpdateSingleTableInfoAndPray(table);
@@ -231,6 +231,8 @@ namespace Famicom.Components.Pages
                 return true;
             if (element.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
+            if(element.Status != null && element.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
             return false;
         }
 
@@ -258,6 +260,11 @@ namespace Famicom.Components.Pages
             var userid = await SessionStorage.GetItemAsync<int>("UserId");
             UserPermissionService.SetUser(userModel.GetUser(userId: userid)!);
             if (!UserPermissionService.RequireOne("CanAccess_AdminPage")) NavigationManager.NavigateTo("/unauthorised");
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }
