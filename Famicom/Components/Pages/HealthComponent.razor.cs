@@ -29,7 +29,7 @@ namespace Famicom.Components.Pages
         #region Weekly Health Properties
         private DateTime StartOfWeek { get; set; }
         private DateTime EndOfWeek { get; set; }
-        private List<DayValue>? dayValues { get; set; }
+        public required List<DayValue>? dayValues { get; set; }
         private List<SharedModels.Health>? weeklyHealth { get; set; }
         private List<SharedModels.Health>? weeklySitingTime { get; set; }
         private List<SharedModels.Health>? weeklyStandingTime { get; set; }
