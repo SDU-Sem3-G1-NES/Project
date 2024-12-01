@@ -1,13 +1,17 @@
 <h3>DashboardEmployee</h3>
 
-<MudGrid>
-    <MudItem xs="4">
+<div style="display: flex; justify-content: space-between;">
+    <div style="width: 420px; margin: 2px">
         <TableComponent Table="_table"></TableComponent>
-    </MudItem>
-    <MudItem xs="3">
-        <PresetComponent></PresetComponent>
-    </MudItem>
-    <MudItem xs="5">
-        <HealthComponent></HealthComponent>
-    </MudItem>
-</MudGrid>
+    </div>
+    <div style="width: 350px; margin: 2px">
+        <DailyGraphComponent />
+    </div>
+    <div style="width: auto; margin: 2px; margin-right: 10px">
+        <PresetComponent />
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <WeeklyGraphComponent />
+</div>
