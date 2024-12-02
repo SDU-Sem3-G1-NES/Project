@@ -65,6 +65,21 @@ namespace Famicom.Components.Pages
             await base.OnAfterRenderAsync(firstRender);
         }
 
+        public string GetUserSittingStandingRatio()
+        {
+            if (TotalSittingTime == 0 && TotalStandingTime == 0) return "0:0";
+            var ratio = TotalSittingTime / TotalStandingTime;
+            return $"{Math.Round(ratio, 1)}:1";
+        }
+
+        public string GetUserSittingStandingAdviceText() {
+            if (TotalSittingTime == 0 && TotalStandingTime == 0) return "";
+            var ratio = Math.Round(TotalSittingTime / TotalStandingTime, 1);
+            if(ratio > 3.5) return "You are sitting too much. You should stand up for a while.";
+            if(ratio < 2.5) return "You are standing too much. You should sit down for a while.";
+            return "";
+        }
+
         public void CalculateTotalDailyTimeSpend()
         {
             if (todayHealth == null) return;

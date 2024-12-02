@@ -1,4 +1,5 @@
 ﻿using SharedModels;
+using System.Data;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
@@ -75,19 +76,25 @@ namespace DataAccess
 
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = sql;
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
-                            tables.Add(table);
+                            while (reader.Read())
+                            {
+                                ITable table = new LinakTable(
+                                    reader.GetString(0),
+                                    reader.GetString(1)
+                                    );
+                                tables.Add(table);
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -105,19 +112,25 @@ namespace DataAccess
 
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = sql;
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
-                            tables.Add(table);
+                            while (reader.Read())
+                            {
+                                ITable table = new LinakTable(
+                                    reader.GetString(0),
+                                    reader.GetString(1)
+                                    );
+                                tables.Add(table);
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -135,21 +148,26 @@ namespace DataAccess
 
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = sql;
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
-                              
-                            
-                            roomTables.Add(table);
+                            while (reader.Read())
+                            {
+                                ITable table = new LinakTable(
+                                    reader.GetString(0),
+                                    reader.GetString(1)
+                                    );
+                                
+                                roomTables.Add(table);
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -168,19 +186,25 @@ namespace DataAccess
 
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = sql;
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            ITable table = new LinakTable(
-                                reader.GetString(0),
-                                reader.GetString(1)
-                                );
-                            tables.Add(table);
+                            while (reader.Read())
+                            {
+                                ITable table = new LinakTable(
+                                    reader.GetString(0),
+                                    reader.GetString(1)
+                                    );
+                                tables.Add(table);
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -196,17 +220,31 @@ namespace DataAccess
             var sql = $"SELECT distinct a_config FROM apis INNER JOIN tables ON apis.a_id = tables.t_api WHERE tables.t_guid = '{tableId}'";
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        while (reader.Read())
+                        cmd.CommandText = sql;
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            var node =  JsonNode.Parse(reader.GetString(0));
-                            if(node == null || !(node is JsonObject jsonObject) || !jsonObject.TryGetPropertyValue("controller", out JsonNode? controllerNode)) return null;
-                            else return controllerNode?.ToString();
+                            while (reader.Read())
+                            {
+                                var node =  JsonNode.Parse(reader.GetString(0));
+                                if(node == null || !(node is JsonObject jsonObject) || !jsonObject.TryGetPropertyValue("controller", out JsonNode? controllerNode)) 
+                                {
+                                    connection.Close();
+                                    return null;
+                                }
+                                else
+                                {
+                                    connection.Close();
+                                    return controllerNode?.ToString();
+                                } 
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
