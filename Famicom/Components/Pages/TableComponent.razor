@@ -9,13 +9,13 @@
         </MudCardHeader>
 
         <MudCardContent Style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;">
-            <div style="width:150px; height:150px; position: relative;">
-                <MudText Typo="Typo.body2" Style="position: absolute; top: 32.5%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">Height</MudText>
-                <MudProgressCircular style="width:150px; height:150px; position: absolute;" Size="MudBlazor.Size.Large"  Color="MudBlazor.Color.Default" Value="100" />
-                <MudProgressCircular style="width:150px; height:150px; position: absolute;" Size="MudBlazor.Size.Large" Min="680" Max="1320" Color="MudBlazor.Color.Secondary" Value="@tableHeight" />
-                <MudProgressCircular style="width:150px; height:150px; position: absolute; mix-blend-mode: screen;" Size="MudBlazor.Size.Large" Min="680" Max="1320" Color="MudBlazor.Color.Primary" Value="@tempHeight" />
-                <MudText Typo="Typo.h4" Style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">@((decimal)tableHeight / 10)</MudText>
-                <MudText Typo="Typo.body2" Style="position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">cm</MudText>
+            <div style="width:230px; height:230px; position: relative;">
+                <MudText Typo="Typo.h6" Style="position: absolute; top: 32.5%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">Height</MudText>
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" Size="MudBlazor.Size.Large" StrokeWidth=6 Color="MudBlazor.Color.Default" Value="100" />
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" Size="MudBlazor.Size.Large" StrokeWidth=6 Min="680" Max="1320" Color="MudBlazor.Color.Secondary" Value="@tableHeight" />
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); mix-blend-mode: screen;" Size="MudBlazor.Size.Large" StrokeWidth=6  Min="680" Max="1320" Color="MudBlazor.Color.Primary" Value="@tempHeight" />
+                <MudText Typo="Typo.h3" Style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">@((decimal)tableHeight / 10)</MudText>
+                <MudText Typo="Typo.h6" Style="position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">cm</MudText>
             </div>
         </MudCardContent>
 
@@ -47,3 +47,10 @@
         </MudCardContent>
     }
 </MudCard>
+
+<style>
+    .mud-progress-circular-svg {
+        overflow: visible !important;
+        stroke-linecap: round !important;
+    }
+</style>
