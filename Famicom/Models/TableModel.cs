@@ -14,10 +14,10 @@ namespace Famicom.Models
         private ITable? table;
 
         
-        public TableModel(IHttpClientFactory clientFactory)
+        public TableModel(IHttpClientFactory clientFactory, TableControllerService tableControllerService)
         {
             this.tableService = new TableService();
-            this.TableControllerService = new TableControllerService();
+            this.TableControllerService = tableControllerService;
             this.ClientFactory = clientFactory;
             this.progress = new Progress<ITableStatusReport>(message =>
             {

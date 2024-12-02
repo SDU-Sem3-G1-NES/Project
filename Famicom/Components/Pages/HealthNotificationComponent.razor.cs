@@ -1,20 +1,20 @@
-﻿using Famicom.Models;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using SharedModels;
+using Famicom.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
 using TableController;
 using Models.Services;
 
 namespace Famicom.Components.Pages
 {
-    public partial class TableComponent : ComponentBase
+    public partial class HealthNotificationComponent : ComponentBase
     {
         private TableModel? tableModel { get; set; }
-        private int tableHeight { get; set; } = 1000; // mock
-        private int tempHeight { get; set; } = 1000; // mock
+        private int tableHeight { get; set; }
         private string? ErrorMessage { get; set; }
-
+        private Stopwatch positionChangeStopwatch = new Stopwatch();
+        private bool isUserStanding;
         private Timer _timer = null!;
         
         [Parameter]
@@ -25,11 +25,9 @@ namespace Famicom.Components.Pages
 
         [Inject]
         IHttpClientFactory ClientFactory { get; set; } = default!;
-        
+
         [Inject]
         TableControllerService TableControllerService { get; set; } = default!;
-
-        private bool firstAccess = true;
 
         protected override async Task OnInitializedAsync()
         {
@@ -43,45 +41,79 @@ namespace Famicom.Components.Pages
             }
 
             _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 500, 5000);
+            positionChangeStopwatch.Start();
+
             await base.OnInitializedAsync();
         }
 
-        private void AdjustTableHeight(int height)
+        private async Task CheckForChangedHeight()
         {
-            tempHeight += height;
-            StateHasChanged();
-        }
-
-        private async Task CheckForChangedHeight() {
             await InvokeAsync(async () =>
             {
                 try
                 {
                     var newHeight = await tableModel!.GetTableHeight(Table.GUID);
-                    if (newHeight != tableHeight)
+                    if(tableHeight  < 1000 && newHeight > 1000)
                     {
+                        isUserStanding = true;
+                        positionChangeStopwatch.Restart();
                         tableHeight = newHeight;
-                        if(firstAccess)
+                    }
+                    if(tableHeight  > 1000 && newHeight < 1000)
+                    {
+                        isUserStanding = false;
+                        positionChangeStopwatch.Restart();
+                        tableHeight = newHeight;
+                    }
+                    // Logic for transitioning from sitting to standing
+                    if (tableHeight < 1000 && newHeight < 1000)
+                    {
+                        if(positionChangeStopwatch.Elapsed >= TimeSpan.FromMinutes(0.5))
                         {
-                            tempHeight = tableHeight;
-                            firstAccess = false;
+                            string message = "Yuo have been sitting for too long! You should stand up for a while! Press to change the table to a standing position.";
+                            Snackbar.Add(message, Severity.Info, config =>
+                            {
+                                config.RequireInteraction = true;
+                                config.ShowCloseIcon = true;
+                                config.Onclick = async snackbar =>
+                                {
+                                    isUserStanding = true;
+                                    positionChangeStopwatch.Restart();
+                                    await SetTableHeight();
+                                };
+
+                            });
                         }
-                        StateHasChanged();
+                    }
+                    // Logic for transitioning from standing to sitting
+                    if (tableHeight > 1000 && newHeight > 1000)
+                    {
+                        if(positionChangeStopwatch.Elapsed >= TimeSpan.FromMinutes(0.5))
+                        {
+                            string message = "You have been standing for too long! You should sit down for a while! Press to change table to a seated position.";
+                            Snackbar.Add(message, Severity.Info, config =>
+                            {
+                                config.RequireInteraction = true;
+                                config.Onclick = async snackbar =>
+                                {
+                                    isUserStanding = false;
+                                    positionChangeStopwatch.Restart();
+                                    await SetTableHeight();
+                                };
+                            });
+                        }
                     }
                 }
                 catch (Exception e)
                 {
                     tableModel = new TableModel(ClientFactory, TableControllerService);
                     Debug.WriteLine(e.Message);
-                    //Snackbar.Add(e.Message, Severity.Error);
                     return;
                 }
             });
         }
-
         private async Task SetTableHeight()
         {
-            _timer.Change(500, 500);
             try
             {
                 var progress = new Progress<ITableStatusReport>(message =>
@@ -109,9 +141,9 @@ namespace Famicom.Components.Pages
                             break;
                     }
                 });
-                Snackbar.Add($"Setting height to {(decimal)tempHeight/10} cm...", Severity.Info);
-                
-                await tableModel!.SetTableHeight(tempHeight, Table.GUID, progress);
+                int newHeight = isUserStanding ? 1320 : 680;
+                Snackbar.Add($"Setting height to {(decimal)newHeight / 10} cm...", Severity.Info);
+                await tableModel!.SetTableHeight(newHeight, Table.GUID, progress);
                 tableHeight = await tableModel.GetTableHeight(Table.GUID);
             }
             catch (Exception e)
@@ -120,7 +152,6 @@ namespace Famicom.Components.Pages
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }
-            _timer.Change(5000, 5000);
         }
     }
 }
