@@ -50,17 +50,24 @@ namespace DataAccess
         {
             var sql = $"SELECT s_uri FROM subscribers WHERE t_guid = @x";
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                cmd.Parameters.AddWithValue("@x", tableGuid);
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    if (reader.Read())
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@x", tableGuid);
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        return reader.GetString(reader.GetOrdinal("s_uri"));
+                        if (reader.Read())
+                        {
+                            connection.Close();
+                            return reader.GetString(reader.GetOrdinal("s_uri"));
+                        }
                     }
                 }
+                connection.Close();
             }
 
             return null;

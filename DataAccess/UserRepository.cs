@@ -137,64 +137,73 @@ namespace DataAccess
             else if(id != null) sql = $"SELECT u_id,u_name,u_mail,u_type, ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE u_id = @id";
             else throw new ArgumentException("Either email or id must be provided");
 
-            using(var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                if(email != null) cmd.Parameters.AddWithValue("@email", email);
-                else if(id != null) cmd.Parameters.AddWithValue("@id", id);
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    if(reader.Read())
+                    cmd.CommandText = sql;
+                    if(email != null) cmd.Parameters.AddWithValue("@email", email);
+                    else if(id != null) cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        int userId = reader.GetInt32(0);
-                        string name = reader.GetString(1);
-                        string userEmail = reader.GetString(2);
-                        int userType = reader.GetInt32(3);
-                        var permissionsJson = reader.GetString(4);
-                        List<UserPermissions> permissions = new List<UserPermissions>();
-
-                        if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                        if(reader.Read())
                         {
-                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
-                                permissionsJson,
-                                new JsonSerializerOptions { 
-                                    Converters = {
-                                        new JsonStringEnumConverter()
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
+
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions { 
+                                        Converters = {
+                                            new JsonStringEnumConverter()
+                                        }
                                     }
-                                }
-                            )!;
-                        }
+                                )!;
+                            }
 
-                        switch (userType)
-                        {
-                            case 1:
-                                return new Admin
-                                {
-                                    UserID = userId,
-                                    Name = name,
-                                    Email = userEmail,
-                                    Permissions = permissions ?? new List<UserPermissions>()
-                                };
-                            case 2:
-                                return new Employee
-                                {
-                                    UserID = userId,
-                                    Name = name,
-                                    Email = userEmail,
-                                    Permissions = permissions ?? new List<UserPermissions>()
-                                };
-                            case 3:
-                                return new Cleaner
-                                {
-                                    UserID = userId,
-                                    Name = name,
-                                    Email = userEmail,
-                                    Permissions = permissions ?? new List<UserPermissions>()
-                                };
-                            default:
-                                throw new ArgumentException("Invalid user type");
+                            switch (userType)
+                            {
+                                case 1:
+                                    connection.Close();
+                                    return new Admin
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                case 2:
+                                    connection.Close();
+                                    return new Employee
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                case 3:
+                                    connection.Close();
+                                    return new Cleaner
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                default:
+                                    throw new ArgumentException("Invalid user type");
+                            }
                         }
                     }
+                    connection.Close();
                     return null;
                 }
             }
@@ -206,70 +215,75 @@ namespace DataAccess
 
             List<IUser> users = new List<IUser>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        int userId = reader.GetInt32(0);
-                        string name = reader.GetString(1);
-                        string userEmail = reader.GetString(2);
-                        int userType = reader.GetInt32(3);
-                        var permissionsJson = reader.GetString(4);
-                        List<UserPermissions> permissions = new List<UserPermissions>();
-
-                        if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                        while (reader.Read())
                         {
-                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
-                                permissionsJson,
-                                new JsonSerializerOptions { 
-                                    Converters = {
-                                        new JsonStringEnumConverter()
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
+
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions { 
+                                        Converters = {
+                                            new JsonStringEnumConverter()
+                                        }
                                     }
-                                }
-                            )!;
-                        }
+                                )!;
+                            }
 
-                        if (userType == 1)
-                        {
-                            Admin admin = new Admin
+                            if (userType == 1)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(admin);
-                        }
-                        else if (userType == 2)
-                        {
-                            Employee employe = new Employee
+                                Admin admin = new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(admin);
+                            }
+                            else if (userType == 2)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(employe);
-                        }
-                        else if (userType == 3)
-                        {
-                            Cleaner cleaner = new Cleaner
+                                Employee employe = new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(employe);
+                            }
+                            else if (userType == 3)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(cleaner);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Invalid user type");
+                                Cleaner cleaner = new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(cleaner);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid user type");
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             return users;
@@ -282,17 +296,23 @@ namespace DataAccess
 
             try
             {
-                using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
                 {
-                    cmd.Parameters.AddWithValue("@userId", userId);
-
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        if (reader.Read())
+                        cmd.CommandText = sql;
+                        cmd.Parameters.AddWithValue("@userId", userId);
+
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            assignedTable = reader.GetString(0);
+                            if (reader.Read())
+                            {
+                                assignedTable = reader.GetString(0);
+                            }
                         }
                     }
+                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -307,19 +327,26 @@ namespace DataAccess
         {
             string sql = "SELECT upass_hash FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                cmd.Parameters.Add("@hashedEmailHex", NpgsqlTypes.NpgsqlDbType.Varchar).Value = hashedEmailHex;
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    if (reader.Read())
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("@hashedEmailHex", NpgsqlTypes.NpgsqlDbType.Varchar).Value = hashedEmailHex;
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        byte[] passwordHashBytes = (byte[])reader["upass_hash"];
-                        
-                        return BitConverter.ToString(passwordHashBytes).Replace("-", "").ToLower();
+                        if (reader.Read())
+                        {
+                            byte[] passwordHashBytes = (byte[])reader["upass_hash"];
+                            
+                            connection.Close();
+                            return BitConverter.ToString(passwordHashBytes).Replace("-", "").ToLower();
+                        }
                     }
                 }
+                connection.Close();
             }
             return null;
         }
@@ -330,20 +357,26 @@ namespace DataAccess
 
             List<UserTypes> userTypes = new List<UserTypes>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        UserTypes userType = new UserTypes()
+                        while (reader.Read())
                         {
-                            UserTypeID = reader.GetInt32(0),
-                            UserTypeName = reader.GetString(1)
-                        };
-                        userTypes.Add(userType);
+                            UserTypes userType = new UserTypes()
+                            {
+                                UserTypeID = reader.GetInt32(0),
+                                UserTypeName = reader.GetString(1)
+                            };
+                            userTypes.Add(userType);
+                        }
                     }
                 }
+                connection.Close();
             }
 
             return userTypes;

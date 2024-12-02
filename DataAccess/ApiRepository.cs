@@ -61,21 +61,27 @@ namespace DataAccess
 
             List<Apis> apis = new List<Apis>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Apis api = new Apis()
+                        while (reader.Read())
                         {
-                            apiID = reader.GetInt32(reader.GetOrdinal("a_id")),
-                            apiName = reader.GetString(reader.GetOrdinal("a_name")),
-                            apiConfig = reader.GetString(reader.GetOrdinal("a_config"))
-                        };
-                        apis.Add(api);
+                            Apis api = new Apis()
+                            {
+                                apiID = reader.GetInt32(reader.GetOrdinal("a_id")),
+                                apiName = reader.GetString(reader.GetOrdinal("a_name")),
+                                apiConfig = reader.GetString(reader.GetOrdinal("a_config"))
+                            };
+                            apis.Add(api);
+                        }
                     }
                 }
+                connection.Close();
             }
 
             return apis;

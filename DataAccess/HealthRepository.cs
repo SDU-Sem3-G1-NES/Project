@@ -47,42 +47,42 @@ namespace DataAccess
 
             List<Health> health = new List<Health>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand())
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("@userID", userID);
-                if (endtime != null)
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    cmd.Parameters.AddWithValue("@endtime", endtime);
-                }
-                if (startDate != null)
-                {
-                    cmd.Parameters.AddWithValue("@startDate", startDate);
-                }
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    if (endtime != null)
                     {
-                        Health healthreport = new Health()
+                        cmd.Parameters.AddWithValue("@endtime", endtime);
+                    }
+                    if (startDate != null)
+                    {
+                        cmd.Parameters.AddWithValue("@startDate", startDate);
+                    }
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
                         {
-                            HealthId = reader.GetInt32(0),
-                            Date = reader.GetDateTime(1),
-                            UserId = reader.GetInt32(2),
-                            PresetId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
-                            Position = reader.GetInt32(4)
-                        };
-                        health.Add(healthreport);
+                            Health healthreport = new Health()
+                            {
+                                HealthId = reader.GetInt32(0),
+                                Date = reader.GetDateTime(1),
+                                UserId = reader.GetInt32(2),
+                                PresetId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                                Position = reader.GetInt32(4)
+                            };
+                            health.Add(healthreport);
+                        }
                     }
                 }
+                connection.Close();
             }
-
             return health;
         }
-
-
-        #endregion
-
-
+#endregion
     }
 }
