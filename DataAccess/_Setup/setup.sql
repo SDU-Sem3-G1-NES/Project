@@ -127,7 +127,7 @@ INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES
 
 INSERT INTO USER_TYPES (UT_NAME, UT_PERMISSIONS) VALUES 
 ('ADMIN', '["GODMODE"]'),
-('EMPLOYEE', '["CanAccess_TablePage","CanAccess_SettingsPage"]'),
+('EMPLOYEE', '["CanAccess_TablePage","CanAccess_SettingsPage","CanAccess_HealthPage"]'),
 ('CLEANER', '["CanAccess_SettingsPage","CanAccess_CleanerPage"]');
 
 COMMIT;
