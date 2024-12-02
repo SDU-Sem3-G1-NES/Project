@@ -115,5 +115,10 @@ namespace Models.Services
         {
             return userRepository.GetUserType();
         }
+
+        public List<IUser> GetAllUsersButCleaners()
+        {
+            return userRepository.GetAllUsersButCleaners();
+        }
     }
 }
