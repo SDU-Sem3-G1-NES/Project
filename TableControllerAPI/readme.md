@@ -15,7 +15,7 @@ ApiKey: your-api-key-here
 
 ### Example:
 
-curl -X GET https://localhost:4488/api/Table/ee:62:5b:b8:73:1d -H "ApiKey: PUT_KEY_HERE" --insecure
+curl -X GET https://localhost:4488/api/Table/cd:fb:1a:53:fb:e6 -H "ApiKey: PUT_KEY_HERE" --insecure
 
 ### Response
 
@@ -29,10 +29,39 @@ curl -X GET https://localhost:4488/api/Table/ee:62:5b:b8:73:1d -H "ApiKey: PUT_K
 
 ### Example:
 
-curl -X PUT https://localhost:4488/api/Table/ee:62:5b:b8:73:1d/height -H "Content-Type: application/json" -H "ApiKey: PUT_KEY_HERE" -d '999' --insecure
+curl -X PUT https://localhost:4488/api/Table/cd:fb:1a:53:fb:e6/height -H "Content-Type: application/json" -H "ApiKey: PUT_KEY_HERE" -d '999' --insecure
 
 ### Response
 
 - `200 OK`: Table height set successfully.
 - `404 Bad Request`: Table not found.
 - `503 Service Unavailable`: Failed to set table height.
+
+## Subscribe (for webhooks)
+
+**PUT** `/api/Webhook/{guid}/subscribe`
+
+### Example:
+
+curl -X POST https://localhost:4488/api/Webhook/cd:fb:1a:53:fb:e6/subscribe -H "Content-Type: application/json" -H "ApiKey: PUT_KEY_HERE" -d "\\"http://localhost:5079/print\\"" --insecure
+
+### Response
+
+- `200 OK`: Subscription added.
+- `404 Bad Request`: Subscribtion failed. This table might already have a subscription. Are you using the right format?
+"http://www.example.com/example"
+- `503 Service Unavailable`: Subscribtion failed. {exception message}
+
+## Unsubscribe (for webhooks)
+
+**PUT** `/api/Webhook/{guid}/subscribe`
+
+### Example:
+
+curl -X POST https://localhost:4488/api/Webhook/cd:fb:1a:53:fb:e6/unsubscribe -H "Content-Type: application/json" -H "ApiKey: PUT_KEY_HERE" --insecure
+
+### Response
+
+- `200 OK`: Unsubscribed successfully.
+- `404 Bad Request`: Subscription not found
+- `503 Service Unavailable`: Failed to unsubscribe. {exception message}

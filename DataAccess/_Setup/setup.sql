@@ -50,6 +50,11 @@ CREATE TABLE TABLES (
     T_API INT
 );
 
+CREATE TABLE SUBSCRIBERS (
+    T_GUID VARCHAR(50) NOT NULL PRIMARY KEY,
+    S_URI VARCHAR(2083) NOT NULL
+);
+
 CREATE TABLE APIS (
     A_ID SERIAL PRIMARY KEY,
     A_NAME VARCHAR(50) NOT NULL,
@@ -122,7 +127,7 @@ INSERT INTO TABLES (T_GUID, T_NAME, T_MANUFACTURER, T_API) VALUES
 
 INSERT INTO USER_TYPES (UT_NAME, UT_PERMISSIONS) VALUES 
 ('ADMIN', '["GODMODE"]'),
-('EMPLOYEE', '["CanAccess_TablePage","CanAccess_SettingsPage"]'),
+('EMPLOYEE', '["CanAccess_TablePage","CanAccess_SettingsPage","CanAccess_HealthPage"]'),
 ('CLEANER', '["CanAccess_SettingsPage","CanAccess_CleanerPage"]');
 
 COMMIT;

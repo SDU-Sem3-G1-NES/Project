@@ -115,5 +115,15 @@ namespace Models.Services
         {
             return userRepository.GetUserType();
         }
+
+        public List<IUser> GetAllUsersButCleaners()
+        {
+            return userRepository.GetAllUsersButCleaners();
+        }
+
+        public bool DoesEmailExitst(string email)
+        {
+            return userRepository.DoesEmailExitst(email);
+        }
     }
 }

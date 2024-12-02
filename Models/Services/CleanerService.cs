@@ -39,11 +39,21 @@ namespace Famicom.Models
                 }
 
                 try {
+                    var tasks = new List<Task>();
                     foreach (var table in tables)
                     {
                         var _tableController = await tableControllerService.GetTableController(table.GUID, _httpClient);
-                        await _tableController.SetTableHeight(1320, table.GUID, _progress);
+                        tasks.Add(_tableController.SetTableHeight(1320, table.GUID, _progress));
                         Console.WriteLine($"Table {table.Name} has been updated.");
+                    }
+
+                    try
+                    {
+                        await Task.WhenAll(tasks);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Exception occurred while waiting for all tasks to complete: {ex.Message}");
                     }
                 }
                 catch(Exception ex) {

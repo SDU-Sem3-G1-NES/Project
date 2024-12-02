@@ -24,8 +24,13 @@ namespace Models.Services
         public TableControllerService()
         {
             _tableRepository = new TableRepository();
+            linakSimulatorController = new LinakSimulatorController();
+            linakTableController = new LinakTableController();
+            mockTableController = new MockTableController();
         }
-
+        private LinakSimulatorController linakSimulatorController;
+        private LinakTableController linakTableController; 
+        private MockTableController mockTableController;
         public Task<ITableController> GetTableController(string guid, HttpClient client)
         {
             var api= _tableRepository.GetTableAPI(guid);
@@ -34,11 +39,12 @@ namespace Models.Services
             switch (api)
             {
                 case "LinakSimulatorController":
-                    return Task.FromResult<ITableController>(new LinakSimulatorController(client));
+                    linakSimulatorController.HttpClient = client;
+                    return Task.FromResult<ITableController>(linakSimulatorController);
                 case "LinakTableController":
-                    return Task.FromResult<ITableController>(new LinakTableController());
+                    return Task.FromResult<ITableController>(linakTableController);
                 case "MockTableController":
-                    return Task.FromResult<ITableController>(new MockTableController());
+                    return Task.FromResult<ITableController>(mockTableController);
                 default:
                     return Task.FromException<ITableController>(new Exception("Invalid API."));
             }
@@ -49,11 +55,12 @@ namespace Models.Services
             switch (api)
             {
                 case "Linak Simulator API V2":
-                    return Task.FromResult<ITableController>(new LinakSimulatorController(client));
+                    linakSimulatorController.HttpClient = client;
+                    return Task.FromResult<ITableController>(linakSimulatorController);
                 case "Linak API":
-                    return Task.FromResult<ITableController>(new LinakTableController());
+                    return Task.FromResult<ITableController>(linakTableController);
                 case "Mock API":
-                    return Task.FromResult<ITableController>(new MockTableController());
+                    return Task.FromResult<ITableController>(mockTableController);
                 default:
                     return Task.FromException<ITableController>(new Exception("Invalid API."));
             }

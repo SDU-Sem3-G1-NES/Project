@@ -40,7 +40,6 @@ namespace Famicom.Components.Pages
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
-
         [Inject]
         TableControllerService TableControllerService { get; set; } = default!;
 
@@ -49,7 +48,7 @@ namespace Famicom.Components.Pages
             try
             {
                 tableModel = new TableModel(ClientFactory, TableControllerService);
-                presetsModel = new PresetsModel(ClientFactory);
+                presetsModel = new PresetsModel(ClientFactory, TableControllerService);
             }
             catch (Exception ex)
             {

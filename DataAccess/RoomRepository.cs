@@ -77,29 +77,33 @@ namespace DataAccess
 
             List<Rooms> rooms = new List<Rooms>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Rooms room = new Rooms()
+                        while (reader.Read())
                         {
-                            RoomId = reader.GetInt32(0),
-                            RoomName = reader.GetString(1),
-                            RoomNumber = reader.GetString(2),
-                            RoomFloor = reader.GetInt32(3)
+                            Rooms room = new Rooms()
+                            {
+                                RoomId = reader.GetInt32(0),
+                                RoomName = reader.GetString(1),
+                                RoomNumber = reader.GetString(2),
+                                RoomFloor = reader.GetInt32(3)
 
-                        };
-                        rooms.Add(room);
+                            };
+                            rooms.Add(room);
+                        }
                     }
                 }
+                connection.Close();
             }
 
             return rooms;
         }
-
-      
         #endregion
     }
 }

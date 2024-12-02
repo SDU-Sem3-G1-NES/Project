@@ -55,25 +55,31 @@ namespace DataAccess
 
             List<Presets> presets = new List<Presets>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Presets preset = new Presets()
+                        while (reader.Read())
                         {
-                            PresetId = reader.GetInt32(0),
-                            PresetName = reader.GetString(1),
-                            UserId = reader.GetInt32(2),
-                            Height = reader.GetInt32(3),
-                            Options = reader.GetString(4),
-                            Icon = reader.GetString(5)
+                            Presets preset = new Presets()
+                            {
+                                PresetId = reader.GetInt32(0),
+                                PresetName = reader.GetString(1),
+                                UserId = reader.GetInt32(2),
+                                Height = reader.GetInt32(3),
+                                Options = reader.GetString(4),
+                                Icon = reader.GetString(5)
 
-                        };
-                        presets.Add(preset);
+                            };
+                            presets.Add(preset);
+                        }
                     }
                 }
+                connection.Close();
             }
 
             return presets;

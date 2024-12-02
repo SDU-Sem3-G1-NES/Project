@@ -8,10 +8,6 @@ public partial class SettingsBase : ComponentBase
 {
     [Inject]
     private ISessionStorageService? SessionStorage { get; set; }
-
-    [Inject]
-
-    private NavigationManager? Navigation { get; set; }
     private UserService userService = new UserService();
     private UserCredentialsService userCredentialsService = new UserCredentialsService();
     protected SettingsModel settingsModel = new SettingsModel();
@@ -55,6 +51,7 @@ public partial class SettingsBase : ComponentBase
         SuccessMessage = string.Empty;
         await GetSessionStorage();
         isSubmitting = true;
+        StateHasChanged();
         try
         {
             string CurrentPassword = settingsModel.CurrentPassword;

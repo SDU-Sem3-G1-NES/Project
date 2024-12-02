@@ -13,10 +13,10 @@ namespace Famicom.Models
         private readonly HttpClient client;
         private readonly Progress<ITableStatusReport> progress;
         
-        public PresetsModel(IHttpClientFactory clientFactory)
+        public PresetsModel(IHttpClientFactory clientFactory, TableControllerService tableControllerService)
         {
             this.presetService = new PresetService();
-            this.TableControllerService = new TableControllerService();
+            this.TableControllerService = tableControllerService;
             this.ClientFactory = clientFactory;
             client = ClientFactory!.CreateClient("default");
             this.progress = new Progress<ITableStatusReport>(message =>

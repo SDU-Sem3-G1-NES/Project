@@ -85,28 +85,31 @@ namespace DataAccess
 
             List<Schedules> schedules = new List<Schedules>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Schedules shedule = new Schedules()
+                        while (reader.Read())
                         {
-                            ScheduleId = reader.GetInt32(0),
-                            ScheduleName = reader.GetString(1),
-                            ScheduleConfig = reader.GetString(2),
-                            TableName = reader.GetString(3)
-                        };
-                        schedules.Add(shedule);
+                            Schedules shedule = new Schedules()
+                            {
+                                ScheduleId = reader.GetInt32(0),
+                                ScheduleName = reader.GetString(1),
+                                ScheduleConfig = reader.GetString(2),
+                                TableName = reader.GetString(3)
+                            };
+                            schedules.Add(shedule);
+                        }
                     }
                 }
+                connection.Close();
             }
-
             return schedules;
-
         }
-
-        #endregion
+#endregion
     }
 }
