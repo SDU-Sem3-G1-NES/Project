@@ -128,13 +128,13 @@ namespace Famicom.Components.Pages
 
         public bool FilterFuncUser(IUser element)
         {
-            if (string.IsNullOrWhiteSpace(searchString))
+            if (string.IsNullOrWhiteSpace(userSearchString))
                 return true;
-            if (element.UserID.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.UserID.ToString().Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Name.Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Email.Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             return false;
         }
