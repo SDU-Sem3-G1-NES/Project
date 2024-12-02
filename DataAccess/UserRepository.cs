@@ -400,6 +400,24 @@ namespace DataAccess
             return null;
         }
 
+        public bool DoesEmailExitst(string email)
+        {
+            string sql = "SELECT u_mail FROM users WHERE u_mail = @email";
+            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            {
+                cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = email;
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+
+        }
+
         public List<UserTypes> GetUserType()
         {
             var sql = $"SELECT ut_id, ut_name FROM user_types";

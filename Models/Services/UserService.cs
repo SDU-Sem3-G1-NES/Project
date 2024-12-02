@@ -120,5 +120,10 @@ namespace Models.Services
         {
             return userRepository.GetAllUsersButCleaners();
         }
+
+        public bool DoesEmailExitst(string email)
+        {
+            return userRepository.DoesEmailExitst(email);
+        }
     }
 }
