@@ -291,7 +291,7 @@ namespace DataAccess
 
         public List<IUser> GetAllUsersButCleaners()
         {
-            var sql = $"SELECT u_id,u_name,u_mail,u_type,ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE ut_id <> 3 ";
+            var sql = $"SELECT u.u_id,u.u_name,u.u_mail,u.u_type,ut.ut_permissions FROM users AS u LEFT JOIN user_tables AS uta ON uta.u_id = u.u_id INNER JOIN user_types as ut on u_type = ut_id   WHERE ut_id <> 3 and uta.u_id is NULL";
 
             List<IUser> users = new List<IUser>();
 

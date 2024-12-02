@@ -14,7 +14,7 @@
     <MudPaper Class="pa-4">
         <MudText Typo="Typo.h6" Style="text-align: center;">Assign Table</MudText>
         <div class="d-flex flex-column mt-4">
-            <MudTable T="ITable" Items="Tables" Class="mb-4" Height="225px" Hover="true" 
+            <MudTable T="ITable" Items="Tables" Class="mb-4" Height="225px" Hover="true" Style="margin: auto; width: 424px"
                       FixedHeader="true"
                       Breakpoint="Breakpoint.Sm" @ref="mudTable"
                       RowClass="cursor-pointer" 
@@ -27,9 +27,9 @@
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
-                    <MudTh>Table Name</MudTh>
-                    <MudTh>Manufacturer</MudTh>
-                    <MudTh>GUID</MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Table Name">@context.Name</MudTd>
@@ -39,7 +39,7 @@
             </MudTable>
         </div>
         <div class="d-flex flex-column mt-4">
-            <MudTable T="IUser" Items="Users" Class="mb-4" Height="225px" style="margin: auto" Hover="true"
+            <MudTable T="IUser" Items="Users" Class="mb-4" Height="225px" Style="margin: auto; width: 424px" Hover="true"
                       FixedHeader="true" 
                       Filter="new Func<IUser,bool>(FilterFuncUser)"
                       Breakpoint="Breakpoint.Sm" @ref="mudUser"
@@ -52,9 +52,9 @@
                     <MudTextField @bind-Value="userSearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
-                    <MudTh>UserId</MudTh>
-                    <MudTh>User Name</MudTh>
-                    <MudTh>User Email</MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.UserID)">UserId</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Name)">User Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Email)">User Email</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="UserId">@context.UserID</MudTd>
