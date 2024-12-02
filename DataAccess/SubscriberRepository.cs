@@ -62,8 +62,9 @@ namespace DataAccess
                     {
                         if (reader.Read())
                         {
+                            var uri = reader.GetString(reader.GetOrdinal("s_uri"));
                             connection.Close();
-                            return reader.GetString(reader.GetOrdinal("s_uri"));
+                            return uri;
                         }
                     }
                 }
