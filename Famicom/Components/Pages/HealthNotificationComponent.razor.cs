@@ -13,6 +13,8 @@ namespace Famicom.Components.Pages
         private TableModel? tableModel { get; set; }
         private int tableHeight { get; set; }
         private string? ErrorMessage { get; set; }
+        private int UserStandingPreset = 1320;
+        private int UserSittingPreset = 680;
         private Stopwatch positionChangeStopwatch = new Stopwatch();
         private bool isUserStanding;
         private Timer _timer = null!;
@@ -68,9 +70,9 @@ namespace Famicom.Components.Pages
                     // Logic for transitioning from sitting to standing
                     if (tableHeight < 1000 && newHeight < 1000)
                     {
-                        if(positionChangeStopwatch.Elapsed >= TimeSpan.FromMinutes(0.5))
+                        if(positionChangeStopwatch.Elapsed >= TimeSpan.FromMinutes(1))
                         {
-                            string message = "Yuo have been sitting for too long! You should stand up for a while! Press to change the table to a standing position.";
+                            string message = "You have been sitting for too long! You should stand up for a while! Press to change the table to a standing position.";
                             Snackbar.Add(message, Severity.Info, config =>
                             {
                                 config.RequireInteraction = true;
@@ -81,7 +83,6 @@ namespace Famicom.Components.Pages
                                     positionChangeStopwatch.Restart();
                                     await SetTableHeight();
                                 };
-
                             });
                         }
                     }
@@ -141,7 +142,7 @@ namespace Famicom.Components.Pages
                             break;
                     }
                 });
-                int newHeight = isUserStanding ? 1320 : 680;
+                int newHeight = isUserStanding ? UserStandingPreset : UserSittingPreset;
                 Snackbar.Add($"Setting height to {(decimal)newHeight / 10} cm...", Severity.Info);
                 await tableModel!.SetTableHeight(newHeight, Table.GUID, progress);
                 tableHeight = await tableModel.GetTableHeight(Table.GUID);
