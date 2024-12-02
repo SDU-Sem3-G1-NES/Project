@@ -116,8 +116,8 @@ namespace Famicom.Components.Pages
             catch (Exception e)
             {
                 tableModel = new TableModel(ClientFactory, TableControllerService);
-                Debug.WriteLine(e.Message);
-                Snackbar.Add("An error occurred while setting the height", Severity.Error);
+                Console.WriteLine(e.Message);
+                //Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }
         }
     }
