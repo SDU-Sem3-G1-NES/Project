@@ -295,72 +295,77 @@ namespace DataAccess
 
             List<IUser> users = new List<IUser>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
             {
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        int userId = reader.GetInt32(0);
-                        string name = reader.GetString(1);
-                        string userEmail = reader.GetString(2);
-                        int userType = reader.GetInt32(3);
-                        var permissionsJson = reader.GetString(4);
-                        List<UserPermissions> permissions = new List<UserPermissions>();
-
-                        if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                        while (reader.Read())
                         {
-                            permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
-                                permissionsJson,
-                                new JsonSerializerOptions
-                                {
-                                    Converters = {
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
+
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions
+                                    {
+                                        Converters = {
                                         new JsonStringEnumConverter()
+                                        }
                                     }
-                                }
-                            )!;
-                        }
+                                )!;
+                            }
 
-                        if (userType == 1)
-                        {
-                            Admin admin = new Admin
+                            if (userType == 1)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(admin);
-                        }
-                        else if (userType == 2)
-                        {
-                            Employee employe = new Employee
+                                Admin admin = new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(admin);
+                            }
+                            else if (userType == 2)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(employe);
-                        }
-                        else if (userType == 3)
-                        {
-                            Cleaner cleaner = new Cleaner
+                                Employee employe = new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(employe);
+                            }
+                            else if (userType == 3)
                             {
-                                UserID = userId,
-                                Name = name,
-                                Email = userEmail,
-                                Permissions = permissions ?? new List<UserPermissions>()
-                            };
-                            users.Add(cleaner);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Invalid user type");
+                                Cleaner cleaner = new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(cleaner);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid user type");
+                            }
                         }
                     }
                 }
+                connection.Close();
             }
             return users;
         }
@@ -430,16 +435,23 @@ namespace DataAccess
         public bool DoesEmailExitst(string email)
         {
             string sql = "SELECT u_mail FROM users WHERE u_mail = @email";
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = email;
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    if (reader.Read())
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = email;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        return true;
+                        if (reader.Read())
+                        {
+                            connection.Close();
+                            return true;
+                        }
                     }
                 }
+                connection.Close();
             }
             return false;
 
