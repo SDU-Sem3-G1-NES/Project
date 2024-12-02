@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataAccess.ApiRepository">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAIAAAAAAAAgAAABAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>ApiRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.DbAccess">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAgAAAAAAEAAABAAAAgAAAAAAgAAAQA=</HashCode>
+      <FileName>DbAccess.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.HealthRepository">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEgAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>HealthRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.PresetRepository">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAgAAAAAAAAABAAAAABAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresetRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.RoomRepository">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAEACAAgAAABAAAAAEAAAABAAIAEA=</HashCode>
+      <FileName>RoomRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.ScheduleRepository">
+    <Position X="5.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wAAAAAAAEAAAABAAAAAAAAQAABAAAAAAABAAABgAAAA=</HashCode>
+      <FileName>ScheduleRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.TableRepository">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAADQAAAAAAAAAAAAEABAAEAAABAgBAAAAAEA=</HashCode>
+      <FileName>TableRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccess.UserRepository">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAIAgAAAAAiAECEAQAAAAEEABACAACAEAEAIgUAgAA=</HashCode>
+      <FileName>UserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

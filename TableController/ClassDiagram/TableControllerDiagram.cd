@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TableController.LinakSimulatorController" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASoAAEAAAAAAAEAIEAAAAAABAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TableController.LinakSimulatorTasks" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAQAEAAAYAAAEAAAAQAgAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TableController.LinakSimulatorControllerOptions" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAQAAAAAAAAACAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakStatusReport" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TableController.LinakTableError" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAEAAgAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TableController.LinakApiTable" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAQAAAAgA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakApiTableConfig" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakApiTableState" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAACAABAAAAAAAgABAAAAAAAAAAAIAAAAgAAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakApiTableUsage" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakApiTableError" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAgAAA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableController.LinakTableController" Collapsed="true">
+    <Position X="9.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASJAEEAAAAAAAAAIAAACAAABAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>LinakTableController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TableController.MockTableController" Collapsed="true">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASJAEEAAAAAAAAAIAAACAAABAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>MockTableController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TableController.ITableController" Collapsed="true">
+    <Position X="9.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASIAAEAAAAAAAAAIAAAAAAABAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>ITableController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TableController.ITableStatusReport" Collapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ITableController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TableController.ITableError" Collapsed="true">
+    <Position X="8" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAEAAgAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ITableController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TableController.ILinakSimulatorTasks" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAEAAAIAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>LinakSimulatorController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="TableController.TableStatus" Collapsed="true">
+    <Position X="9.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEACAAIAAAAAAAAAAAAAAAgAAAAAAEAAAAAEAAAA=</HashCode>
+      <FileName>ITableController.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

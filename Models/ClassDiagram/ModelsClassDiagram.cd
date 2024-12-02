@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SharedModels.RoomModel">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>RoomModels\RoomModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.ApiService" Collapsed="true">
+    <Position X="0.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAABAAAAAAAAAAAEAAAAAAAAIAAAAwAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ApiService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.HealthService" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAQA=</HashCode>
+      <FileName>Services\HealthService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.PresetService" Collapsed="true">
+    <Position X="0.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gCAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAIAA=</HashCode>
+      <FileName>Services\PresetService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.RoomService" Collapsed="true">
+    <Position X="2.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAIACAQACAAAAAAAAAAAAAAAAAEJAAAAg=</HashCode>
+      <FileName>Services\RoomService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.ScheduleService" Collapsed="true">
+    <Position X="4.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAhAQAAAAAAAAAAgABAASAAAAAAAAAAAAAAAAQGAA=</HashCode>
+      <FileName>Services\ScheduleService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.TableControllerService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAACIAA=</HashCode>
+      <FileName>Services\TableControllerService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Models.Services.TableService" Collapsed="true">
+    <Position X="0.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAADAAAAAAAAgAAAEAAAQAACEAAAABAAAAAEA=</HashCode>
+      <FileName>Services\TableService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.UserCredentialsService" Collapsed="true">
+    <Position X="2.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAABAIAAAAIAAQAA=</HashCode>
+      <FileName>Services\UserCredentialsService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.UserPermissionService" Collapsed="true">
+    <Position X="4.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAIAAAAAAAAAAAAAAAAAAAAAAFAAAAAQA=</HashCode>
+      <FileName>Services\UserPermissionService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Models.Services.UserService" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAECAIAAAEACgAAAAAAIAAEAAAAAAAAgEAkIAIUAwgA=</HashCode>
+      <FileName>Services\UserService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Famicom.Models.CleanerService" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAACAAAAAgBAAAAAAKAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\CleanerService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LoginStateService" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAiAAEAAAA=</HashCode>
+      <FileName>Services\LoginStateService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Models.Services.ITableControllerService" Collapsed="true">
+    <Position X="0.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAA=</HashCode>
+      <FileName>Services\TableControllerService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
