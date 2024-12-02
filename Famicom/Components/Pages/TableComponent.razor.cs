@@ -38,7 +38,7 @@ namespace Famicom.Components.Pages
                 ErrorMessage = ex.Message;
             }
 
-            _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 500, 5000);
+            _timer = new Timer(callback: _ => InvokeAsync(CheckForChangedHeight), null, 500, 500);
             await base.OnInitializedAsync();
         }
 
@@ -77,7 +77,6 @@ namespace Famicom.Components.Pages
 
         private async Task SetTableHeight()
         {
-            _timer.Change(500, 500);
             try
             {
                 var progress = new Progress<ITableStatusReport>(message =>
@@ -116,7 +115,6 @@ namespace Famicom.Components.Pages
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }
-            _timer.Change(5000, 5000);
         }
     }
 }
