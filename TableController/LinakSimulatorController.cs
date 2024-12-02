@@ -17,14 +17,28 @@ namespace TableController;
 public class LinakSimulatorController : ITableController
 {
     private ILinakSimulatorTasks _tasks;
-    private readonly HttpClient _client;
+    private HttpClient _client;
+    public HttpClient HttpClient 
+    { 
+        get => _client; 
+        set 
+        {
+            _client = value;
+        } 
+    }
+
+    public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
 
     /// <summary>
     /// Constructor for LinakSimulatorController
     /// </summary>
-    public LinakSimulatorController(HttpClient client)
+    public LinakSimulatorController()
     {
-        _client = client;
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        _client = new HttpClient(handler);
         _tasks = new LinakSimulatorTasks(_client);
     }
 
@@ -116,25 +130,30 @@ public class LinakSimulatorController : ITableController
     /// <param name="height">New Height for the table.</param>
     /// <param name="guid">GUID of the table to set height for.</param>
     /// <exception cref="Exception">Thrown if anything went wrong in the process.</exception>
+    /// 
     public async Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
     {
+        string StatusMessage = "";
+        int Status = -1;
         var taskProgress = new Progress<int>(message =>
         {
             var parsedStattus = ParseTableStatus(message);
             progress.Report( 
                 new LinakStatusReport(guid, parsedStattus.Keys.First(), parsedStattus.Values.First())
                 );
+            Status = (int)parsedStattus.Keys.First();
+            StatusMessage = parsedStattus.Values.First();
+
         });
         try {
-            var tempTable = new LinakApiTable {id = guid, state = new LinakApiTableState()};
-            tempTable.state.position_mm = height;
             var response = await _tasks.SetTableHeight(height, guid);
             var result = await _tasks.WatchTableAsItMoves(guid, height, taskProgress);
 
             // Because return type is void, we must throw exceptions if something goes wrong
             if (!response.IsSuccessStatusCode) await Task.FromException(new Exception("Failed to set table height!"));
+            Debug.WriteLine("SetTableHeight: " + StatusMessage);
+            OnTableHeightSet?.Invoke(this, new TableHeightSetEventArgs(guid, await GetTableHeight(guid), Status, StatusMessage));
             await Task.CompletedTask; 
-
         } 
         catch (Exception e) 
         {

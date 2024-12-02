@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.Services;
 
 namespace Famicom.Components.Pages
 {
@@ -14,6 +15,7 @@ namespace Famicom.Components.Pages
     {
         [Inject] ISessionStorageService _sessionStorage { get; set; } = default!;
         [Inject] IHttpClientFactory _clientFactory { get; set; } = default!;
+        [Inject] TableControllerService _tableControllerService { get; set; } = default!;
         private TableModel _tableModel { get; set; } = null!;
         public TableComponent _tableComponent { get; set; } = null!;
         private ITable _table { get; set; } = null!; 
@@ -21,7 +23,7 @@ namespace Famicom.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _tableModel = new TableModel(_clientFactory);
+            _tableModel = new TableModel(_clientFactory, _tableControllerService);
             await base.OnInitializedAsync();
         }
 

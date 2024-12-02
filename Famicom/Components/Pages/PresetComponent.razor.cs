@@ -5,6 +5,7 @@ using MudBlazor;
 using System.Diagnostics;
 using TableController;
 using Blazored.SessionStorage;
+using Models.Services;
 
 
 namespace Famicom.Components.Pages
@@ -39,13 +40,15 @@ namespace Famicom.Components.Pages
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
+        [Inject]
+        TableControllerService TableControllerService { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                tableModel = new TableModel(ClientFactory);
-                presetsModel = new PresetsModel(ClientFactory);
+                tableModel = new TableModel(ClientFactory, TableControllerService);
+                presetsModel = new PresetsModel(ClientFactory, TableControllerService);
             }
             catch (Exception ex)
             {

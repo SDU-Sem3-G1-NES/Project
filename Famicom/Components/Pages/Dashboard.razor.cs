@@ -25,10 +25,11 @@ namespace Famicom.Components.Pages
         public RenderFragment? _content;
         [Inject] IHttpClientFactory clientFactory { get; set; } = default!;
         [Inject] ISessionStorageService sessionStorage { get; set; } = default!;
+        [Inject] TableControllerService TableControllerService { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
-            tableModel = new TableModel(clientFactory);
+            tableModel = new TableModel(clientFactory, TableControllerService);
             if(Navigation != null && Navigation.Uri.Replace(Navigation.BaseUri, "/") == "/") {
                 Navigation.NavigateTo("/Dashboard");
                 return;

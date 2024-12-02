@@ -4,6 +4,7 @@ using SharedModels;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using TableController;
+using Models.Services;
 
 namespace Famicom.Components.Pages
 {
@@ -24,6 +25,9 @@ namespace Famicom.Components.Pages
 
         [Inject]
         IHttpClientFactory ClientFactory { get; set; } = default!;
+        [Inject]
+        TableControllerService TableControllerService { get; set; } = default!;
+
 
         private bool firstAccess = true;
 
@@ -31,7 +35,7 @@ namespace Famicom.Components.Pages
         {
             try
             {
-                tableModel = new TableModel(ClientFactory);
+                tableModel = new TableModel(ClientFactory, TableControllerService);
             }
             catch (Exception ex)
             {
@@ -67,7 +71,7 @@ namespace Famicom.Components.Pages
                 }
                 catch (Exception e)
                 {
-                    tableModel = new TableModel(ClientFactory);
+                    tableModel = new TableModel(ClientFactory, TableControllerService);
                     Debug.WriteLine(e.Message);
                     //Snackbar.Add(e.Message, Severity.Error);
                     return;
@@ -111,7 +115,7 @@ namespace Famicom.Components.Pages
             }
             catch (Exception e)
             {
-                tableModel = new TableModel(ClientFactory);
+                tableModel = new TableModel(ClientFactory, TableControllerService);
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }

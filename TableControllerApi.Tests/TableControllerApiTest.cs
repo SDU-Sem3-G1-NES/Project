@@ -28,7 +28,7 @@ namespace TableControllerApi.Tests
             _mockFactory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(_client);
             _mockTableControllerService = new Mock<ITableControllerService>();
             _mockTableController = new Mock<ITableController>();
-            _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object);
+            _controller = new TableControllerApi.Controllers.TableController(_mockTableControllerService.Object, _mockFactory.Object);
             var clientFactoryProperty = typeof(Controllers.TableController).GetProperty("_clientFactory", BindingFlags.NonPublic | BindingFlags.Instance);
             if (clientFactoryProperty != null)
             {
@@ -46,7 +46,6 @@ namespace TableControllerApi.Tests
             var table = new LinakTable(guid, "name");
             _mockTableControllerService.Setup(s => s.GetTableController(guid, _client)).ReturnsAsync(_mockTableController.Object);
             _mockTableController.Setup(tc => tc.GetFullTableInfo(guid)).ReturnsAsync(table);
-
             // Act
             var result = await _controller.GetFullTableInfo(guid);
 
@@ -121,6 +120,110 @@ namespace TableControllerApi.Tests
             // Assert
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("Table not found.", notFoundResult.Value);
+        }
+    }
+    public class WebhookControllerTest
+    {
+        private readonly Mock<ISubscriberUriService> _mockSubscriberUriService;
+        private readonly WebhookController _controller;
+
+        public WebhookControllerTest()
+        {
+            _mockSubscriberUriService = new Mock<ISubscriberUriService>();
+            _controller = new WebhookController(_mockSubscriberUriService.Object);
+        }
+
+        [Fact]
+        public async Task ReceiveWebhook_ReturnsOk_WhenSubscriptionAdded()
+        {
+            // Arrange
+            var guid = "test-guid";
+            var uri = "http://www.example.com/example";
+            _mockSubscriberUriService.Setup(s => s.Add(guid, uri)).Returns(true);
+
+            // Act
+            var result = await _controller.ReceiveWebhook(guid, uri);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Subscription added.", okResult.Value);
+        }
+
+        [Fact]
+        public async Task ReceiveWebhook_ReturnsBadRequest_WhenSubscriptionFails()
+        {
+            // Arrange
+            var guid = "test-guid";
+            var uri = "http://www.example.com/example";
+            _mockSubscriberUriService.Setup(s => s.Add(guid, uri)).Returns(false);
+
+            // Act
+            var result = await _controller.ReceiveWebhook(guid, uri);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Subscribtion failed. This table might already have a subscription. Are you using the right format?\n\"http://www.example.com/example\"", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task ReceiveWebhook_ReturnsBadRequest_WhenExceptionThrown()
+        {
+            // Arrange
+            var guid = "test-guid";
+            var uri = "http://www.example.com/example";
+            _mockSubscriberUriService.Setup(s => s.Add(guid, uri)).Throws(new Exception("Test exception"));
+
+            // Act
+            var result = await _controller.ReceiveWebhook(guid, uri);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Subscribtion failed. Test exception", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task RemoveWebhook_ReturnsOk_WhenUnsubscribedSuccessfully()
+        {
+            // Arrange
+            var guid = "test-guid";
+            _mockSubscriberUriService.Setup(s => s.Remove(guid)).Returns(true);
+
+            // Act
+            var result = await _controller.RemoveWebhook(guid);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Unsubscribed successfully.", okResult.Value);
+        }
+
+        [Fact]
+        public async Task RemoveWebhook_ReturnsNotFound_WhenSubscriptionNotFound()
+        {
+            // Arrange
+            var guid = "test-guid";
+            _mockSubscriberUriService.Setup(s => s.Remove(guid)).Returns(false);
+
+            // Act
+            var result = await _controller.RemoveWebhook(guid);
+
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Subscription not found", notFoundResult.Value);
+        }
+
+        [Fact]
+        public async Task RemoveWebhook_ReturnsBadRequest_WhenExceptionThrown()
+        {
+            // Arrange
+            var guid = "test-guid";
+            _mockSubscriberUriService.Setup(s => s.Remove(guid)).Throws(new Exception("Test exception"));
+
+            // Act
+            var result = await _controller.RemoveWebhook(guid);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Failed to unsubscribe. Test exception", badRequestResult.Value);
         }
     }
 }
