@@ -20,7 +20,9 @@
         <br />
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {
-            <p class="error-message">@ErrorMessage</p>
+            Snackbar.Add(ErrorMessage, Severity.Error);
+
+            <MudText Color="MudBlazor.Color.Warning" Typo="Typo.h6" Style="text-align: center">@ErrorMessage</MudText>
         }
     </MudForm>
 </MudPaper>

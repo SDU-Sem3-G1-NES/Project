@@ -38,7 +38,10 @@ namespace Famicom.Components.Pages
         }
 
         public async Task AddUser()
-        {
+        {   
+            
+            
+
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword))
             {
                 ErrorMessage = "Please fill in all fields.";
@@ -47,6 +50,12 @@ namespace Famicom.Components.Pages
 
             try
             {
+                if (userRepo.DoesEmailExitst(UserEmail!))
+                {
+                    ErrorMessage = "Email already exists";
+                    return;
+                }
+
                 string emailHash = BCrypt.Net.BCrypt.HashPassword(UserEmail, fixedSalt);
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(UserPassword, fixedSalt);
 

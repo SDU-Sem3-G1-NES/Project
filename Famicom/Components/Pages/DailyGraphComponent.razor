@@ -4,12 +4,13 @@
 <!--This will be daily graph-->
 @if (DailyData != null && (DailyData[0] > 0 || DailyData[1] > 0) )
 {
-    <MudPaper Class="mb-4" Height="492px" Width="350px">
+
+    <MudPaper Class="mb-4" Height="492px" Width="auto">
         <h2 Class="d-flex justify-center align-center" Style="padding-top:10px; margin-bottom:20px;">Daily Sitting and Standing time</h2>
         <div style="position: relative; height: 300px;">
             <ApexChart TItem="TodayTime"
                     Options="options">
-
+              
                 <ApexPointSeries TItem="TodayTime"
                                 Items="DailyTime"
                                 SeriesType="SeriesType.Donut"
@@ -28,8 +29,8 @@
 }
 else
 {
-    <MudPaper Class="mb-4" Height="492px" Width="350px">
-        <MudPaper Class="mb-4" Height="492px" Width="350px">
+    <MudPaper Class="mb-4" Height="492px" Width="auto">
+        <MudPaper Class="mb-4" Height="492px" Width="auto">
             <h2 Class="d-flex justify-center align-center" Style="padding-top:10px; margin-bottom:120px;">Daily Sitting and Standing time</h2>
             <MudCardContent Style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px;">
                 <MudIcon Icon="@Icons.Material.Filled.Info" Size="MudBlazor.Size.Large" Color="MudBlazor.Color.Secondary" />

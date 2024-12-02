@@ -289,6 +289,87 @@ namespace DataAccess
             return users;
         }
 
+        public List<IUser> GetAllUsersButCleaners()
+        {
+            var sql = $"SELECT u_id,u_name,u_mail,u_type,ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE ut_id <> 3 ";
+
+            List<IUser> users = new List<IUser>();
+
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
+
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions
+                                    {
+                                        Converters = {
+                                        new JsonStringEnumConverter()
+                                        }
+                                    }
+                                )!;
+                            }
+
+                            if (userType == 1)
+                            {
+                                Admin admin = new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(admin);
+                            }
+                            else if (userType == 2)
+                            {
+                                Employee employe = new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(employe);
+                            }
+                            else if (userType == 3)
+                            {
+                                Cleaner cleaner = new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(cleaner);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid user type");
+                            }
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return users;
+        }
+
         public string GetUserAssignedTable(int userId)
         {
             var sql = $"SELECT t.t_name FROM tables as t INNER JOIN user_tables as ut ON t.t_guid = ut.t_guid WHERE ut.u_id = @userId";
@@ -349,6 +430,31 @@ namespace DataAccess
                 connection.Close();
             }
             return null;
+        }
+
+        public bool DoesEmailExitst(string email)
+        {
+            string sql = "SELECT u_mail FROM users WHERE u_mail = @email";
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = email;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            connection.Close();
+                            return true;
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return false;
+
         }
 
         public List<UserTypes> GetUserType()
