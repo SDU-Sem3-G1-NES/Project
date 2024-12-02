@@ -4,7 +4,7 @@
 <!--This will be daily graph-->
 @if (DailyData != null && (DailyData[0] > 0 || DailyData[1] > 0) )
 {
-    <MudPaper Class="mb-4" Height="492px" Width="350px">
+    <MudPaper Class="mb-4" Height="492px" Width="auto">
         <ApexChart TItem="TodayTime"
                    Title="Daily Siting and Standing time"
                    Options="options">
@@ -22,8 +22,8 @@
 }
 else
 {
-    <MudPaper Class="mb-4" Height="492px" Width="350px">
-        <MudPaper Class="mb-4" Height="492px" Width="350px">
+    <MudPaper Class="mb-4" Height="492px" Width="auto">
+        <MudPaper Class="mb-4" Height="492px" Width="auto">
             <MudText Typo="Typo.h6" Class="d-flex justify-center align-center">Daily Siting and Standing time</MudText>
             <br /><br /><br /><br /><br /><br /><br /><br />
             <MudText Typo="Typo.h6" Class="d-flex justify-center align-center" Style="align-items: center;">No data available</MudText>
