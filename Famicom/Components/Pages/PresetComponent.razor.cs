@@ -19,7 +19,8 @@ namespace Famicom.Components.Pages
             { "fa-star", "star" },
             { "fa-heart", "heart" },
             { "fa-arrow-up", "arrow up" },
-            { "fa-arrow-down", "arrow down" }
+            { "fa-arrow-down", "arrow down" },
+            { "fa-medkit", "medkit"}
         };
         private OverlayMode currentOverlayMode = OverlayMode.None;
         private PresetsModel? presetsModel { get; set; }

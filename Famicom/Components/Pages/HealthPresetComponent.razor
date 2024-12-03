@@ -1,0 +1,30 @@
+@inherits ComponentBase
+
+<MudCard Class="pa-4">
+    <MudCardHeader Style="justify-content: center;">
+        <h2 Style="padding-top:10px; margin-bottom:20px;">Health Presets</h2>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1">Enter your height to calculate the optimal table heights for you.</MudText>
+        <MudTextField @bind-Value="UserHeight" Variant="Variant.Filled" Margin="Margin.Dense" Immediate="true" />
+            @if (SittingPosition > 0 || StandingPosition > 0)
+            {
+                <MudCard Class="mt-4" Elevation="3">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" Align="MudBlazor.Align.Center">Calculated Table Heights</MudText>
+                        <MudText Align="MudBlazor.Align.Center" Typo="Typo.body1">Suggested sitting desk height is @((decimal)SittingPosition) cm</MudText>
+                        <MudText Align="MudBlazor.Align.Center" Typo="Typo.body1">Suggested standing desk height is @((decimal)StandingPosition) cm</MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+    </MudCardContent>
+    <MudCardActions Style="justify-content: center;">
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="3" >
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="CalculateTaskHeight">Calculate</MudButton>
+            @if (SittingPosition > 0 || StandingPosition > 0)
+            {
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="CreatePreset">Create Presets</MudButton>
+            }
+        </MudStack>
+    </MudCardActions>
+</MudCard>
