@@ -12,6 +12,7 @@ namespace DataAccess
         private string password { get; set; }
         private string dbName { get; set; }
         private string port { get; set; }
+        private string host { get; set; } 
         private string connectionString { get; set; }
         public NpgsqlDataSource dbDataSource { get; set; }
 
@@ -25,7 +26,8 @@ namespace DataAccess
             password = Env.GetString("POSTGRES_PASSWORD");
             dbName = Env.GetString("POSTGRES_DB");
             port = Env.GetString("POSTGRES_PORT");
-            connectionString = $"Host=localhost;Port={port};Database={dbName};User Id={user};Password={password};";
+            host = Env.GetString("POSTGRES_HOST");
+            connectionString = $"Host={host};Port={port};Database={dbName};User Id={user};Password={password};";
             dbDataSource = NpgsqlDataSource.Create(connectionString);
         }
 
