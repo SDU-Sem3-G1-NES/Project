@@ -46,6 +46,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Release
       - POSTGRES_HOST=postgres
       - LSAPI_URL=linaksimulatorapi
+      - POSTGRES_PORT=5432
 
 volumes:
   postgres-data: 
