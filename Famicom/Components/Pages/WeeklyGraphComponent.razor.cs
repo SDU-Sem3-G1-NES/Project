@@ -85,22 +85,47 @@ namespace Famicom.Components.Pages
 
             weeklyHealth.Sort((a, b) => a.Date.CompareTo(b.Date));
 
-            for (int i = 0; i < weeklyHealth.Count - 1; i++)
+            var groupedByDay = weeklyHealth.GroupBy(h => h.Date.Date);
+
+            foreach (var dayGroup in groupedByDay)
             {
-                var currentHealth = weeklyHealth[i];
-                var nextHealth = weeklyHealth[i + 1];
+                var dayEntries = dayGroup.OrderBy(h => h.Date).ToList();
 
-                
-                if ((nextHealth.Date - currentHealth.Date).TotalHours > 12)
-                    continue;
+               
+                var dayOfWeek = dayEntries[0].Date.DayOfWeek;
+                DaysOfWeek currentDay = (DaysOfWeek)(((int)dayOfWeek + 6) % 7);
 
-                DaysOfWeek currentDay = (DaysOfWeek)currentHealth.Date.DayOfWeek;
-                var timeSpent = (nextHealth.Date - currentHealth.Date).TotalHours;
+                for (int i = 0; i < dayEntries.Count - 1; i++)
+                {
+                    var currentHealth = dayEntries[i];
+                    var nextHealth = dayEntries[i + 1];
 
-                if (currentHealth.Position < 1000)
+                    var timeSpent = (nextHealth.Date - currentHealth.Date).TotalHours;
+
+                    // Skip if there's an unreasonable gap
+                    if (timeSpent > 12) continue;
+
+                    if (currentHealth.Position < 1000)
+                    {
+                        dailyTimes[currentDay] = (
+                            dailyTimes[currentDay].SittingTime + timeSpent,
+                            dailyTimes[currentDay].StandingTime
+                        );
+                    }
+                    else
+                    {
+                        dailyTimes[currentDay] = (
+                            dailyTimes[currentDay].SittingTime,
+                            dailyTimes[currentDay].StandingTime + timeSpent
+                        );
+                    }
+                }
+
+                var lastEntry = dayEntries.Last();
+                if (lastEntry.Position < 1000)
                 {
                     dailyTimes[currentDay] = (
-                        dailyTimes[currentDay].SittingTime + timeSpent,
+                        dailyTimes[currentDay].SittingTime + 0.5,
                         dailyTimes[currentDay].StandingTime
                     );
                 }
@@ -108,27 +133,9 @@ namespace Famicom.Components.Pages
                 {
                     dailyTimes[currentDay] = (
                         dailyTimes[currentDay].SittingTime,
-                        dailyTimes[currentDay].StandingTime + timeSpent
+                        dailyTimes[currentDay].StandingTime + 0.5
                     );
                 }
-            }
-
-            // Handle the last entry of each day
-            var lastHealth = weeklyHealth.Last();
-            DaysOfWeek lastDay = (DaysOfWeek)lastHealth.Date.DayOfWeek;
-            if (lastHealth.Position < 1000)
-            {
-                dailyTimes[lastDay] = (
-                    dailyTimes[lastDay].SittingTime + 0.5,
-                    dailyTimes[lastDay].StandingTime
-                );
-            }
-            else
-            {
-                dailyTimes[lastDay] = (
-                    dailyTimes[lastDay].SittingTime,
-                    dailyTimes[lastDay].StandingTime + 0.5
-                );
             }
 
             DayValues = dailyTimes.Select(d => new DayValue
@@ -138,6 +145,8 @@ namespace Famicom.Components.Pages
                 StandingTime = Math.Round(d.Value.StandingTime, 2)
             }).ToList();
         }
+
+
 
 
 

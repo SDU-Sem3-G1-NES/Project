@@ -87,12 +87,18 @@ namespace Famicom.Components.Pages
             TotalSittingTime = 0;
             TotalStandingTime = 0;
 
-            todayHealth.Sort((a, b) => a.Date.CompareTo(b.Date));
+            
+            var todayDate = DateTime.Today;
+            var todayData = todayHealth.Where(h => h.Date.Date == todayDate).ToList();
 
-            for (int i = 0; i < todayHealth.Count - 1; i++)
+            if (todayData.Count == 0) return;
+
+            todayData.Sort((a, b) => a.Date.CompareTo(b.Date));
+
+            for (int i = 0; i < todayData.Count - 1; i++)
             {
-                var currentHealth = todayHealth[i];
-                var nextHealth = todayHealth[i + 1];
+                var currentHealth = todayData[i];
+                var nextHealth = todayData[i + 1];
 
                 
                 if ((nextHealth.Date - currentHealth.Date).TotalHours > 12)
@@ -110,21 +116,23 @@ namespace Famicom.Components.Pages
                 }
             }
 
-            // Handle the last entry
-            var lastHealth = todayHealth.Last();
+            
+            var lastHealth = todayData.Last();
             if (lastHealth.Position < 1000)
             {
-                TotalSittingTime += 0.5; // Add 30 minutes for the last entry
+                TotalSittingTime += 0.5;
             }
             else
             {
-                TotalStandingTime += 0.5; // Add 30 minutes for the last entry
+                TotalStandingTime += 0.5;
             }
 
-            // Round the final values
+            
             TotalSittingTime = Math.Round(TotalSittingTime, 2);
             TotalStandingTime = Math.Round(TotalStandingTime, 2);
         }
+
+
 
 
         public string FormatTime(decimal hours)
