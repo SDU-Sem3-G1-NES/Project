@@ -3,6 +3,7 @@ using SharedModels;
 using Models.Services;
 using MudBlazor;
 using System.Diagnostics;
+using System;
 
 namespace Famicom.Components.Pages
 {
@@ -20,13 +21,11 @@ namespace Famicom.Components.Pages
         //Table Variables
         private string searchString = "";
         private MudTable<ITable>? mudTable;
-        public int selectedRowNumber = -1;
         private ITable? selectedTable;
         //User Variables
 
         private string userSearchString = "";
         private MudTable<IUser>? mudUser;
-        public int userSelectedRowNumber = -1;
         private IUser? selectedUser;
 
         #endregion
@@ -52,6 +51,7 @@ namespace Famicom.Components.Pages
         }
 
         #region Table Methods
+
         private void RowClickEvent(TableRowClickEventArgs<ITable> args)
         {
             if (mudTable != null)
@@ -63,16 +63,16 @@ namespace Famicom.Components.Pages
 
         private string SelectedRowClassFunc(ITable table, int rowNumber)
         {
-            if (selectedTable != null && Tables.IndexOf(selectedTable) == rowNumber)
+            if (selectedTable != null && selectedTable == table)
             {
-                selectedRowNumber = rowNumber;
                 return "selected";
             }
             return string.Empty;
         }
+
         #endregion
 
-        #region Table Methods
+        #region Table User Methods
         private void UserRowClickEvent(TableRowClickEventArgs<IUser> args)
         {
             if (mudTable != null)
@@ -84,13 +84,14 @@ namespace Famicom.Components.Pages
 
         private string USerSelectedRowClassFunc(IUser user, int userRowNumber)
         {
-            if (selectedUser != null && Users.IndexOf(selectedUser) == userRowNumber)
+            
+            if (selectedUser != null && selectedUser == user)
             {
-                userSelectedRowNumber = userRowNumber;
                 return "selected";
             }
             return string.Empty;
         }
+
         #endregion
 
 
@@ -128,13 +129,13 @@ namespace Famicom.Components.Pages
 
         public bool FilterFuncUser(IUser element)
         {
-            if (string.IsNullOrWhiteSpace(searchString))
+            if (string.IsNullOrWhiteSpace(userSearchString))
                 return true;
-            if (element.UserID.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.UserID.ToString().Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Name.Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Email.Contains(userSearchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             return false;
         }

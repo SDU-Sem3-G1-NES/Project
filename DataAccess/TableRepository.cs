@@ -71,7 +71,7 @@ namespace DataAccess
         #region Get Methods
         public List<ITable> GetTablesUser(int userId)
         {
-            var sql = $"SELECT t.t_guid,t.t_name FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_guid = t.t_guid WHERE ut.u_id = {userId}";
+            var sql = $"SELECT t.t_guid,t.t_name, t_manufacturer FROM user_tables AS ut INNER JOIN tables AS t ON ut.t_guid = t.t_guid WHERE ut.u_id = {userId}";
             List<ITable> tables = new List<ITable>();
 
             try
@@ -88,7 +88,8 @@ namespace DataAccess
                             {
                                 ITable table = new LinakTable(
                                     reader.GetString(0),
-                                    reader.GetString(1)
+                                    reader.GetString(1),
+                                    reader.IsDBNull(2) ? null : reader.GetString(2)
                                     );
                                 tables.Add(table);
                             }
@@ -107,7 +108,7 @@ namespace DataAccess
 
         public List<ITable> GetUserFreeTable()
         {
-            var sql = $"SELECT t.t_guid, t.t_name FROM tables AS t LEFT JOIN user_tables AS ut ON t.t_guid = ut.t_guid WHERE ut.t_guid IS NULL; ";
+            var sql = $"SELECT t.t_guid, t.t_name, t_manufacturer FROM tables AS t LEFT JOIN user_tables AS ut ON t.t_guid = ut.t_guid WHERE ut.t_guid IS NULL; ";
             List<ITable> tables = new List<ITable>();
 
             try
@@ -124,7 +125,8 @@ namespace DataAccess
                             {
                                 ITable table = new LinakTable(
                                     reader.GetString(0),
-                                    reader.GetString(1)
+                                    reader.GetString(1),
+                                    reader.IsDBNull(2) ? null : reader.GetString(2)
                                     );
                                 tables.Add(table);
                             }
@@ -143,7 +145,7 @@ namespace DataAccess
 
         public List<ITable> GetTablesRoom(int roomId)
         {
-            var sql = $"SELECT t.t_guid,t.t_name FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";
+            var sql = $"SELECT t.t_guid,t.t_name,t_manufacturer FROM room_tables AS rm INNER JOIN tables AS t ON rm.t_guid = t.t_guid WHERE rm.r_id = {roomId}";
             List<ITable> roomTables = new List<ITable>();
 
             try
@@ -160,7 +162,8 @@ namespace DataAccess
                             {
                                 ITable table = new LinakTable(
                                     reader.GetString(0),
-                                    reader.GetString(1)
+                                    reader.GetString(1),
+                                    reader.IsDBNull(2) ? null : reader.GetString(2)
                                     );
                                 
                                 roomTables.Add(table);
@@ -181,12 +184,12 @@ namespace DataAccess
 
         public List<ITable> GetAllTables()
         {
-            var sql = "SELECT t_guid, t_name FROM tables";
+            var sql = "SELECT t_guid, t_name, t_manufacturer FROM tables";
             List<ITable> tables = new List<ITable>();
 
             try
             {
-                using(var connection = dbAccess.dbDataSource.CreateConnection())
+                using (var connection = dbAccess.dbDataSource.CreateConnection())
                 {
                     connection.Open();
                     using (var cmd = connection.CreateCommand())
@@ -198,8 +201,9 @@ namespace DataAccess
                             {
                                 ITable table = new LinakTable(
                                     reader.GetString(0),
-                                    reader.GetString(1)
-                                    );
+                                    reader.GetString(1),
+                                    reader.IsDBNull(2) ? null : reader.GetString(2)
+                                );
                                 tables.Add(table);
                             }
                         }
@@ -209,7 +213,6 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-
                 Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
             }
             return tables;
