@@ -24,17 +24,18 @@ jobs:
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
+          compose-file: "docker-compose-rel.yml"
           up-flags: "--build -d"
           down-flags: "--volumes"
         env:
           POSTGRES_USER: "docker"
           POSTGRES_PASSWORD: "docker"
           POSTGRES_DB: "DMS"
-          POSTGRES_PORT: "5433"
+          POSTGRES_PORT: "5432"
           PGADMIN_DEFAULT_EMAIL: "somebody@example.com"
           PGADMIN_DEFAULT_PASSWORD: "github"
           PGADMIN_PORT: "5050"
           LSAPI_PORT: "8000"
-          LSAPI_URL: "127.0.0.1"
-          LSAPI_VERSION: "v1"
+          LSAPI_URL: "linaksimulatorapi"
+          LSAPI_VERSION: "v2"
           LSAPI_KEY: "testkey"
