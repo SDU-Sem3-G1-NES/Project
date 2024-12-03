@@ -26,7 +26,7 @@ namespace DataAccess
             password = Env.GetString("POSTGRES_PASSWORD");
             dbName = Env.GetString("POSTGRES_DB");
             port = Env.GetString("POSTGRES_PORT");
-            host = Env.GetString("POSTGRES_HOST");
+            host = Env.GetString("POSTGRES_HOST") ?? "localhost";
             connectionString = $"Host={host};Port={port};Database={dbName};User Id={user};Password={password};";
             dbDataSource = NpgsqlDataSource.Create(connectionString);
         }
