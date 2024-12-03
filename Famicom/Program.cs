@@ -47,7 +47,15 @@ var apiHost = Host.CreateDefaultBuilder()
         Env.Load(envPath);
         string tcapiPort = Env.GetString("TCAPI_PORT");
 
-        webBuilder.UseUrls("https://localhost:" + tcapiPort);
+        var disableHttpsRedirection = Environment.GetEnvironmentVariable("DISABLE_HTTPS_REDIRECTION");
+        if (string.IsNullOrEmpty(disableHttpsRedirection) || !bool.Parse(disableHttpsRedirection))
+        {
+            webBuilder.UseUrls("https://localhost:" + tcapiPort);
+        }
+        else
+        {
+            webBuilder.UseUrls("http://localhost:" + tcapiPort);
+        }
     }).ConfigureServices(services =>
     {
         services.AddHttpClient();

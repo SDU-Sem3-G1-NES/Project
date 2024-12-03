@@ -57,8 +57,8 @@ namespace Famicom.Components.Pages
         public void BackupItem(object element)
         {
             elementBeforeEdit = new(
-                ((ITable)element).Name,
                 ((ITable)element).GUID,
+                ((ITable)element).Name,
                 ((ITable)element).Manufacturer
                 );
             

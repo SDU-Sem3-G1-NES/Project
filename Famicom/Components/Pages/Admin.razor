@@ -1,12 +1,10 @@
 ﻿@page "/admin"
 @inherits AdminBase
 
-
+<div style="display: flex; justify-content: center; flex-direction: column;">
 <PageTitle>Table Management</PageTitle>
 
 <MudText Align="MudBlazor.Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
-
-<MudDivider DividerType="DividerType.Middle" Class="my-4" />
 
 <MudDivider DividerType="DividerType.Middle" Class="my-10" />
 
@@ -22,11 +20,11 @@
     <AssignUserComponent OnUserAssigned="HandleUserAssigned" />
 </MudOverlay>
 
-<MudTabs Outlined="true">
+    <MudTabs Outlined="true" Style="flex-grow: 1; max-height: 100vh">
     <MudTabPanel Text="Tables" Icon="@Icons.Material.Filled.TableRestaurant">
         @if (Table != null)
         {
-            <MudTable T="ITable" Items="Table" Class="mb-4" Height="400px" style="margin: auto" 
+                <MudTable T="ITable" Items="Table" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto"
                       SortLabel="Sort By" 
                       MultiSelection="false" 
                       Hover="true" 
@@ -89,7 +87,7 @@
     <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.SupervisedUserCircle">
         @if (Users != null)
         {
-            <MudTable T="IUser" Items="Users" Class="mb-4" Height="400px" style="margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
+                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
@@ -117,5 +115,5 @@
         }
     </MudTabPanel>
 </MudTabs>
-
+</div>
 
