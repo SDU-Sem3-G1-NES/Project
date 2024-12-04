@@ -67,54 +67,96 @@ namespace Famicom.Components.Pages
 
         public string GetUserSittingStandingRatio()
         {
-            if (TotalSittingTime == 0 && TotalStandingTime == 0) return "0:0";
+            if (TotalSittingTime == 0 && TotalStandingTime == 0)
+                return "0:0";
+            if (TotalStandingTime == 0)
+                return "∞:1";
+
             var ratio = TotalSittingTime / TotalStandingTime;
             return $"{Math.Round(ratio, 1)}:1";
         }
 
-        public string GetUserSittingStandingAdviceText() {
-            if (TotalSittingTime == 0 && TotalStandingTime == 0) return "";
-            var ratio = Math.Round(TotalSittingTime / TotalStandingTime, 1);
-            if(ratio > 3.5) return "You are sitting too much. You should stand up for a while.";
-            if(ratio < 2.5) return "You are standing too much. You should sit down for a while.";
+        public string GetUserSittingStandingAdviceText()
+        {
+            if (TotalSittingTime == 0 && TotalStandingTime == 0)
+                return "";
+            if (TotalStandingTime == 0)
+                return "You are sitting too much. You should stand up for a while.";
+
+            var ratio = TotalSittingTime / TotalStandingTime;
+
+            if (ratio > 3.5)
+                return "You are sitting too much. You should stand up for a while.";
+            if (ratio < 0.5)
+                return "You are standing too much. You should sit down for a while.";
+
             return "";
         }
 
+
         public void CalculateTotalDailyTimeSpend()
         {
-            if (todayHealth == null) return;
+            if (todayHealth == null || todayHealth.Count < 2) return;
+
             TotalSittingTime = 0;
             TotalStandingTime = 0;
-            for (int i = 1; i < todayHealth.Count; i++)
+
+            
+            var todayDate = DateTime.Today;
+            var todayData = todayHealth.Where(h => h.Date.Date == todayDate).ToList();
+
+            if (todayData.Count == 0) return;
+
+            todayData.Sort((a, b) => a.Date.CompareTo(b.Date));
+
+            for (int i = 0; i < todayData.Count - 1; i++)
             {
-                var previousHealth = todayHealth[i - 1];
-                var currentHealth = todayHealth[i];
-                var timeSpent = (currentHealth.Date - previousHealth.Date).TotalHours;
-                if (previousHealth.Position < 1000 && currentHealth.Position < 1000)
+                var currentHealth = todayData[i];
+                var nextHealth = todayData[i + 1];
+
+                
+                if ((nextHealth.Date - currentHealth.Date).TotalHours > 12)
+                    continue;
+
+                var timeSpent = (nextHealth.Date - currentHealth.Date).TotalHours;
+
+                if (currentHealth.Position < 1000)
                 {
                     TotalSittingTime += timeSpent;
                 }
-                else if (previousHealth.Position > 1000 && currentHealth.Position > 1000)
+                else
                 {
                     TotalStandingTime += timeSpent;
                 }
-                else if (previousHealth.Position < 1000 && currentHealth.Position > 1000)
-                {
-                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - previousHealth.Position) / 1000;
-                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (currentHealth.Position - 1000) / 1000;
-                    TotalSittingTime += sittingTime;
-                    TotalStandingTime += standingTime;
-                }
-                else if (previousHealth.Position > 1000 && currentHealth.Position < 1000)
-                {
-                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (previousHealth.Position - 1000) / 1000;
-                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - currentHealth.Position) / 1000;
-                    TotalSittingTime += sittingTime;
-                    TotalStandingTime += standingTime;
-                }
             }
 
+            
+            var lastHealth = todayData.Last();
+            if (lastHealth.Position < 1000)
+            {
+                TotalSittingTime += 0.5;
+            }
+            else
+            {
+                TotalStandingTime += 0.5;
+            }
+
+            
+            TotalSittingTime = Math.Round(TotalSittingTime, 2);
+            TotalStandingTime = Math.Round(TotalStandingTime, 2);
         }
+
+
+
+
+        public string FormatTime(decimal hours)
+        {
+            var h = (int)hours;
+            var m = (int)((hours - h) * 60);
+            return $"{h}h {m}m";
+        }
+
+
         public class TodayTime()
         {
             public required string Position { get; set; }
