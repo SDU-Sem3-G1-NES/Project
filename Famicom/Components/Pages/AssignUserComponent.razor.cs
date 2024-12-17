@@ -15,7 +15,7 @@ namespace Famicom.Components.Pages
 
         private UserService userService = new UserService();
 
-        private TableService tableService = new TableService();
+        [Inject] TableService tableService {get; set; } = default!;
 
         #region Table Variables
         //Table Variables

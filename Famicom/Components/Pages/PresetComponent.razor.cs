@@ -19,7 +19,8 @@ namespace Famicom.Components.Pages
             { "fa-star", "star" },
             { "fa-heart", "heart" },
             { "fa-arrow-up", "arrow up" },
-            { "fa-arrow-down", "arrow down" }
+            { "fa-arrow-down", "arrow down" },
+            { "fa-medkit", "medkit"}
         };
         private OverlayMode currentOverlayMode = OverlayMode.None;
         private PresetsModel? presetsModel { get; set; }
@@ -36,19 +37,27 @@ namespace Famicom.Components.Pages
         ISessionStorageService SessionStorage { get; set; } = default!;
 
         [Inject]
-        IHttpClientFactory ClientFactory { get; set; } = default!;
+        HttpClient HttpClient { get; set; } = default!;
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
+
         [Inject]
         TableControllerService TableControllerService { get; set; } = default!;
+        
+        [Inject]
+        public PresetService PresetService { get; set; } = default!;
+
+        [Inject]
+        public TableService TableService {get; set; } = default!;
+
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                tableModel = new TableModel(ClientFactory, TableControllerService);
-                presetsModel = new PresetsModel(ClientFactory, TableControllerService);
+                tableModel = new TableModel(HttpClient, TableControllerService, TableService);
+                presetsModel = new PresetsModel(HttpClient, TableControllerService, PresetService);
             }
             catch (Exception ex)
             {
@@ -115,9 +124,9 @@ namespace Famicom.Components.Pages
                 ErrorMessage = "Preset name is required.";
                 return;
             }
-            if(PresetName.Length >15)
+            if(PresetName.Length > 20)
             {
-                ErrorMessage = "The preset name must be no more than 15 characters long.";
+                ErrorMessage = "The preset name must be no more than 20 characters long.";
                 return;
             }
             if (PresetHeight < 680)
@@ -133,6 +142,15 @@ namespace Famicom.Components.Pages
             if (string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Preset icon is required.";
+                return;
+            }
+
+            var sittingPresetExists = userPresets!.Any(preset => preset.PresetName == "SittingHealthPreset");
+            var standingPresetExists = userPresets!.Any(preset => preset.PresetName == "StandingHealthPreset");
+
+            if ((PresetName == "SittingHealthPreset" && sittingPresetExists) || (PresetName == "StandingHealthPreset" && standingPresetExists))
+            {
+                ErrorMessage = $"Only one preset with the name {PresetName} is allowed.";
                 return;
             }
 
@@ -159,9 +177,9 @@ namespace Famicom.Components.Pages
                 ErrorMessage = "Preset name is required.";
                 return;
             }
-            if(PresetName.Length >15)
+            if(PresetName.Length > 20)
             {
-                ErrorMessage = "The preset name must be no more than 15 characters long.";
+                ErrorMessage = "The preset name must be no more than 20 characters long.";
                 return;
             }
             if (PresetHeight < 680)
@@ -177,6 +195,15 @@ namespace Famicom.Components.Pages
             if (string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Preset icon is required.";
+                return;
+            }
+
+            var sittingPresetExists = userPresets!.Any(preset => preset.PresetName == "SittingHealthPreset");
+            var standingPresetExists = userPresets!.Any(preset => preset.PresetName == "StandingHealthPreset");
+
+            if ((PresetName == "SittingHealthPreset" && sittingPresetExists) || (PresetName == "StandingHealthPreset" && standingPresetExists))
+            {
+                ErrorMessage = $"Only one preset with the name {PresetName} is allowed.";
                 return;
             }
 
