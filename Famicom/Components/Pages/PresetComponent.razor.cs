@@ -116,9 +116,9 @@ namespace Famicom.Components.Pages
                 ErrorMessage = "Preset name is required.";
                 return;
             }
-            if(PresetName.Length >15)
+            if(PresetName.Length > 20)
             {
-                ErrorMessage = "The preset name must be no more than 15 characters long.";
+                ErrorMessage = "The preset name must be no more than 20 characters long.";
                 return;
             }
             if (PresetHeight < 680)
@@ -134,6 +134,15 @@ namespace Famicom.Components.Pages
             if (string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Preset icon is required.";
+                return;
+            }
+
+            var sittingPresetExists = userPresets!.Any(preset => preset.PresetName == "SittingHealthPreset");
+            var standingPresetExists = userPresets!.Any(preset => preset.PresetName == "StandingHealthPreset");
+
+            if ((PresetName == "SittingHealthPreset" && sittingPresetExists) || (PresetName == "StandingHealthPreset" && standingPresetExists))
+            {
+                ErrorMessage = $"Only one preset with the name {PresetName} is allowed.";
                 return;
             }
 
@@ -160,9 +169,9 @@ namespace Famicom.Components.Pages
                 ErrorMessage = "Preset name is required.";
                 return;
             }
-            if(PresetName.Length >15)
+            if(PresetName.Length > 20)
             {
-                ErrorMessage = "The preset name must be no more than 15 characters long.";
+                ErrorMessage = "The preset name must be no more than 20 characters long.";
                 return;
             }
             if (PresetHeight < 680)
@@ -178,6 +187,15 @@ namespace Famicom.Components.Pages
             if (string.IsNullOrEmpty(PresetIcon))
             {
                 ErrorMessage = "Preset icon is required.";
+                return;
+            }
+
+            var sittingPresetExists = userPresets!.Any(preset => preset.PresetName == "SittingHealthPreset");
+            var standingPresetExists = userPresets!.Any(preset => preset.PresetName == "StandingHealthPreset");
+
+            if ((PresetName == "SittingHealthPreset" && sittingPresetExists) || (PresetName == "StandingHealthPreset" && standingPresetExists))
+            {
+                ErrorMessage = $"Only one preset with the name {PresetName} is allowed.";
                 return;
             }
 

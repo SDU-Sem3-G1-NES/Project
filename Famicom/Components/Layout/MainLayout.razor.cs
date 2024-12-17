@@ -80,6 +80,7 @@ namespace Famicom.Components.Layout
 
         private bool _drawerOpen = true;
         private bool _isDarkMode = false;
+        private bool _isHealthNotifications = false;
         private MudTheme? _theme = null;
 
         private async Task Logout()
@@ -110,6 +111,12 @@ namespace Famicom.Components.Layout
         private void DarkModeToggle()
         {
             _isDarkMode = !_isDarkMode;
+        }
+
+        private void HealthNotificationsToggle()
+        {
+            _isHealthNotifications = !_isHealthNotifications;
+            StateHasChanged();
         }
 
 
@@ -162,6 +169,12 @@ namespace Famicom.Components.Layout
             true => Icons.Material.Rounded.AutoMode,
             false => Icons.Material.Outlined.DarkMode,
 
+        };
+
+        public string HealthNotificationsButtonIcon => _isHealthNotifications switch
+        {
+            true => Icons.Material.Rounded.Notifications,
+            false => Icons.Material.Rounded.NotificationsOff,
         };
     }
 }

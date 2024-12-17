@@ -22,9 +22,10 @@ namespace Famicom.Components.Pages
         private Stopwatch positionChangeStopwatch = new Stopwatch();
         private bool isUserStanding;
         private Timer _timer = null!;
-        
+        public ITable? Table { get; set; }
+
         [Parameter]
-        public required ITable Table { get; set; }
+        public bool IsActive { get; set; }
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
@@ -49,8 +50,6 @@ namespace Famicom.Components.Pages
             {
                 errorMessage = ex.Message;
             }
-            positionChangeStopwatch.Start();
-            _timer = new Timer(callback: _ => InvokeAsync(CheckForUserHealthPresets), null, 500, 5000);
 
             await base.OnInitializedAsync();
         }
@@ -58,6 +57,17 @@ namespace Famicom.Components.Pages
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             userId = await SessionStorage.GetItemAsync<int>("UserId");
+            Table = await Task.Run(() => tableModel!.GetTable(userId));
+            if(Table != null && IsActive)
+            {
+                _timer = new Timer(callback: _ => InvokeAsync(CheckForUserHealthPresets), null, 500, 5000);
+                positionChangeStopwatch.Start();
+            }
+            else
+            {
+                _timer?.Dispose();
+                positionChangeStopwatch.Reset();
+            }
             StateHasChanged();
         }
 
@@ -79,9 +89,8 @@ namespace Famicom.Components.Pages
                     }
                     else
                     {
-                        Snackbar.Add("Sitting and standing health presets not found. Please make them in the health page.", Severity.Info);
+                        Snackbar.Add("Sitting and standing health presets not found. Please create them in the health page.", Severity.Info);
                     }
-
                 }
                 catch (Exception e)
                 {
@@ -96,7 +105,7 @@ namespace Famicom.Components.Pages
         {
             try
             {
-                var newHeight = await tableModel!.GetTableHeight(Table.GUID);
+                var newHeight = await tableModel!.GetTableHeight(Table!.GUID);
                 if(tableHeight  < 1000 && newHeight > 1000)
                 {
                     isUserStanding = true;
@@ -186,7 +195,7 @@ namespace Famicom.Components.Pages
                 });
                 int newHeight = isUserStanding ? userStandingPresetHeight : userSittingPresetHeight;
                 Snackbar.Add($"Setting height to {(decimal)newHeight / 10} cm...", Severity.Info);
-                await tableModel!.SetTableHeight(newHeight, Table.GUID, progress);
+                await tableModel!.SetTableHeight(newHeight, Table!.GUID, progress);
                 tableHeight = await tableModel.GetTableHeight(Table.GUID);
             }
             catch (Exception e)
