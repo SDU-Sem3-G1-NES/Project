@@ -22,6 +22,8 @@ namespace Famicom.Components.Pages
             { "fa-arrow-down", "arrow down" }
         };
         private OverlayMode currentOverlayMode = OverlayMode.None;
+
+        private HealthService healthService = new HealthService();
         private PresetsModel? presetsModel { get; set; }
         private TableModel? tableModel { get; set; }
         public List<Presets>? userPresets { get; set; }
@@ -99,6 +101,7 @@ namespace Famicom.Components.Pages
                 }
                 var task = await presetsModel!.SetPresetHeight(presetHeight, table.GUID);
                 var severity = task.Status == TableStatus.Success ? Severity.Success : Severity.Error;
+                healthService.AddHealth(UserId, null, presetHeight);
                 Snackbar.Add($"Status: {task.Status}, Message: {task.Message}", severity);
             }
             catch (Exception e)
