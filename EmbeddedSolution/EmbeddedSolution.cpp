@@ -5,11 +5,12 @@
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 #include "rotary_encoder.h"
+#include "display.h"
 
 
-#define ROT_A 9
-#define ROT_B 10
-#define ROT_C 11
+#define ROT_A 13
+#define ROT_B 14
+#define ROT_C 15
 rotary_encoder::input rotary_encoder_input(ROT_A, ROT_B, ROT_C);
 
 void on_rotary_encoder_change(uint gpio, uint32_t events) {
@@ -19,7 +20,6 @@ void on_rotary_encoder_change(uint gpio, uint32_t events) {
 int main()
 {
     stdio_init_all();
-
     // Initialise the Wi-Fi chip
     if (cyw43_arch_init()) {
         printf("Wi-Fi init failed\n");
@@ -42,6 +42,11 @@ int main()
     gpio_set_irq_enabled_with_callback(ROT_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
     gpio_set_irq_enabled_with_callback(ROT_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
     gpio_set_irq_enabled_with_callback(ROT_C, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
+
+
+    display oled;
+    oled.clear(false);
+    oled._printf(0, true, "Rotary Encoder");
 
     while (true) {
         rotary_encoder_input.main_loop();

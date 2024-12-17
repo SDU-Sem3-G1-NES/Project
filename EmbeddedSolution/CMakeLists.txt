@@ -38,6 +38,8 @@ pico_sdk_init()
 add_executable(EmbeddedSolution 
     EmbeddedSolution.cpp 
     rotary_encoder.cpp
+    display.cpp
+    i2c.c
 )
 
 pico_set_program_name(EmbeddedSolution "EmbeddedSolution")
