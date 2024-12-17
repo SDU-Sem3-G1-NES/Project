@@ -19,9 +19,9 @@ namespace rotary_encoder {
         last_button_push_time = 0;
     }
 
-    void input::read_rotary_encoder() 
+    int input::read_rotary_encoder() 
     {
-        check_button();
+        if(check_button()) return 3;
 
         bool ROT_A_STATE = gpio_get(ROT_A);
         bool ROT_B_STATE = gpio_get(ROT_B);
@@ -53,9 +53,11 @@ namespace rotary_encoder {
             else if(ROT_A_STATE && ROT_B_STATE) {
                 rotary_encoder_position = 3; // End of rotation measurement
                 if(rotary_encoder_states[0] == 0 && rotary_encoder_states[1] == 1) {
-                printf("Right Turn\n");
+                    printf("Right Turn\n");
+                    return 1;
                 } else if(rotary_encoder_states[0] == 1 && rotary_encoder_states[1] == 0) {
-                printf("Left Turn\n");
+                    printf("Left Turn\n");
+                    return 2;
                 }
 
                 //delay(100); // Some mild debouncing
@@ -70,17 +72,18 @@ namespace rotary_encoder {
         }
     } 
 
-    void input::check_button() {
+    bool input::check_button() {
         if(ROT_C_LAST_STATE) 
         {
             if(gpio_get(ROT_C) == 0) 
             {
                 last_button_push_time = to_ms_since_boot(get_absolute_time());
                 ROT_C_LAST_STATE = 0;
-                printf("Button Pressed\n");
-                return;
+                printf("Button Pressed!\n");
+                return true;
             }
         } 
+        return false;
     }
 
     void input::main_loop() {

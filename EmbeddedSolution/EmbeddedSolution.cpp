@@ -13,8 +13,11 @@
 #define ROT_C 15
 rotary_encoder::input rotary_encoder_input(ROT_A, ROT_B, ROT_C);
 
+int height = 90;
+int last_rot_output = 0;
+
 void on_rotary_encoder_change(uint gpio, uint32_t events) {
-    rotary_encoder_input.read_rotary_encoder();
+    last_rot_output = rotary_encoder_input.read_rotary_encoder();
 }
 
 int main()
@@ -45,10 +48,31 @@ int main()
 
 
     display oled;
-    oled.clear(false);
-    oled._printf(0, true, "Rotary Encoder");
+    oled.clear(true);
+    oled._printf(0, true, "Height: %dcm", height);
+    printf("Height: %dcm\n", height);
 
     while (true) {
         rotary_encoder_input.main_loop();
+
+        switch (last_rot_output) {
+            case 1:
+                if(height < 132) height++;
+                oled._printf(1, false, "");
+                last_rot_output = 0;
+                break;
+            case 2:
+                if(height > 68) height--;
+                oled._printf(1, false, "");
+                last_rot_output = 0;
+                break;
+            case 3:
+                oled._printf(1, true, "Button pressed");
+                last_rot_output = 0;
+                break;
+            default:
+                break;
+        }
+        oled._printf(0, true, "Height: %dcm", height);
     }
 }

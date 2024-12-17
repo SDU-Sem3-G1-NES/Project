@@ -8,11 +8,11 @@ namespace rotary_encoder {
     class input {
         public:
             input(int a, int b, int c);
-            void read_rotary_encoder();
+            int read_rotary_encoder();
             void main_loop();
 
         private:
-            void check_button();
+            bool check_button();
             volatile int ROT_A;
             volatile int ROT_B;
             volatile int ROT_C;
