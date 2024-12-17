@@ -29,12 +29,7 @@ namespace Famicom.Components.Pages
 
         #endregion
         
-        #region Bar Chart Properties
 
-        public List<ChartSeries>? WeeklyData { get; set; }
-        public string[] XAxisLabels = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-
-        #endregion
 
         private int userId { get; set; } = 0;
         protected override async Task OnInitializedAsync()
@@ -53,20 +48,8 @@ namespace Famicom.Components.Pages
             // Calculate daily time spend on sitting and standing position by Days of week
             CalculateDailyTimes();
             // Set the data for the bar chart
-            WeeklyData = new List<ChartSeries>
-                {
-                    new ChartSeries
-                    {
-                        Name = "Sitting Time",
-                        Data = DayValues!.Select(d => d.SittingTime).ToArray()
-                    },
-                    new ChartSeries
-                    {
-                        Name = "Standing Time",
-                        Data = DayValues!.Select(d => d.StandingTime).ToArray()
-                    }
-                };
-            isEmpty = IsNullOrEmpty();
+            
+       
             StateHasChanged();
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -89,56 +72,86 @@ namespace Famicom.Components.Pages
             return date.AddDays(-1 * diff).Date;
         }
 
-        private bool IsNullOrEmpty() => WeeklyData!.All(series => series.Data.All(value => value > 0));
+
+
 
         protected void CalculateDailyTimes()
         {
-            if (weeklyHealth == null) return;
+            if (weeklyHealth == null || weeklyHealth.Count == 0) return;
 
-            var dailyTimes = new Dictionary<DaysOfWeek, (double SittingTime, double StandingTime)>();
+            var dailyTimes = Enum.GetValues(typeof(DaysOfWeek))
+                .Cast<DaysOfWeek>()
+                .ToDictionary(day => day, _ => (SittingTime: 0.0, StandingTime: 0.0));
 
-            for (int i = 1; i < weeklyHealth.Count; i++)
+            weeklyHealth.Sort((a, b) => a.Date.CompareTo(b.Date));
+
+            var groupedByDay = weeklyHealth.GroupBy(h => h.Date.Date);
+
+            foreach (var dayGroup in groupedByDay)
             {
-                var previousHealth = weeklyHealth[i - 1];
-                var currentHealth = weeklyHealth[i];
+                var dayEntries = dayGroup.OrderBy(h => h.Date).ToList();
 
-                var timeSpent = (currentHealth.Date - previousHealth.Date).TotalHours;
-                DaysOfWeek day = (DaysOfWeek)Enum.Parse(typeof(DaysOfWeek), previousHealth.Date.DayOfWeek.ToString());
+               
+                var dayOfWeek = dayEntries[0].Date.DayOfWeek;
+                DaysOfWeek currentDay = (DaysOfWeek)(((int)dayOfWeek + 6) % 7);
 
-                if (!dailyTimes.ContainsKey(day))
+                for (int i = 0; i < dayEntries.Count - 1; i++)
                 {
-                    dailyTimes[day] = (0, 0);
+                    var currentHealth = dayEntries[i];
+                    var nextHealth = dayEntries[i + 1];
+
+                    var timeSpent = (nextHealth.Date - currentHealth.Date).TotalHours;
+
+                    // Skip if there's an unreasonable gap
+                    if (timeSpent > 12) continue;
+
+                    if (currentHealth.Position < 1000)
+                    {
+                        dailyTimes[currentDay] = (
+                            dailyTimes[currentDay].SittingTime + timeSpent,
+                            dailyTimes[currentDay].StandingTime
+                        );
+                    }
+                    else
+                    {
+                        dailyTimes[currentDay] = (
+                            dailyTimes[currentDay].SittingTime,
+                            dailyTimes[currentDay].StandingTime + timeSpent
+                        );
+                    }
                 }
 
-                if (previousHealth.Position < 1000 && currentHealth.Position < 1000)
+                var lastEntry = dayEntries.Last();
+                if (lastEntry.Position < 1000)
                 {
-                    dailyTimes[day] = (dailyTimes[day].SittingTime + timeSpent, dailyTimes[day].StandingTime);
+                    dailyTimes[currentDay] = (
+                        dailyTimes[currentDay].SittingTime + 0.5,
+                        dailyTimes[currentDay].StandingTime
+                    );
                 }
-                else if (previousHealth.Position > 1000 && currentHealth.Position > 1000)
+                else
                 {
-                    dailyTimes[day] = (dailyTimes[day].SittingTime, dailyTimes[day].StandingTime + timeSpent);
-                }
-                else if (previousHealth.Position < 1000 && currentHealth.Position > 1000)
-                {
-                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - previousHealth.Position) / 1000;
-                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (currentHealth.Position - 1000) / 1000;
-                    dailyTimes[day] = (dailyTimes[day].SittingTime + sittingTime, dailyTimes[day].StandingTime + standingTime);
-                }
-                else if (previousHealth.Position > 1000 && currentHealth.Position < 1000)
-                {
-                    var standingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (previousHealth.Position - 1000) / 1000;
-                    var sittingTime = (currentHealth.Date - previousHealth.Date).TotalHours * (1000 - currentHealth.Position) / 1000;
-                    dailyTimes[day] = (dailyTimes[day].SittingTime + sittingTime, dailyTimes[day].StandingTime + standingTime);
+                    dailyTimes[currentDay] = (
+                        dailyTimes[currentDay].SittingTime,
+                        dailyTimes[currentDay].StandingTime + 0.5
+                    );
                 }
             }
 
             DayValues = dailyTimes.Select(d => new DayValue
             {
                 Day = d.Key.ToString(),
-                SittingTime = (double)d.Value.SittingTime,
-                StandingTime = (double)d.Value.StandingTime
+                SittingTime = Math.Round(d.Value.SittingTime, 2),
+                StandingTime = Math.Round(d.Value.StandingTime, 2)
             }).ToList();
         }
+
+
+
+
+
+
+
 
 
         public class DayValue
