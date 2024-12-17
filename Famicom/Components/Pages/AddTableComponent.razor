@@ -1,0 +1,76 @@
+﻿﻿@if (!ManualAddition)
+{
+    //Automatic addition from api
+    <MudPaper Class="pa-4">
+        <MudForm>
+            <MudSelect T="string" Label="Choose Table API"  ValueChanged="OnTableApiChanged" Class="mb-4">
+                @foreach (var api in Apis)
+                {
+                    <MudSelectItem Value="@api.apiName">@api.apiName</MudSelectItem>
+                }
+            </MudSelect>
+
+            @if(loading){
+                <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+            }
+            @if(selected)
+            {
+                <MudTable T="ITable" Items="tableinfo" Class="mb-4" Height="400px" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" @bind-SelectedItems="SelectedTables" Filter="new Func<ITable,bool>(FilterFunc)">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Select Tables</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Table Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+                        <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+            
+
+            <MudStack Spacing="2" Class="mt-4">
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="AddManualy">Add Manualy</MudButton>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="AddTable">Add</MudButton>
+            </MudStack>
+            <br />
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="error-message">@ErrorMessage</p>
+            }
+        </MudForm>
+    </MudPaper>
+}
+else
+{   //Manual addition
+    <MudPaper Class="pa-4">
+        <MudForm>
+            <MudTextField T="string" Label="Table GUID" Required="true" RequiredError="Table GUID is required!" @bind-Value="TableGuid" Class="mb-4" />
+            <MudTextField T="string" Label="Table Name" Required="true" RequiredError="Table Name is required!" @bind-Value="TableName" Class="mb-4" />
+            <MudTextField T="string" Label="Table Manufacturer" Required="true" RequiredError="Table Manufacturer is required!" @bind-Value="TableManufacturer" Class="mb-4" />
+            <MudSelect T="int" Label="Choose Table API" @bind-Value="TableApi" Class="mb-4">
+                @foreach (var api in Apis)
+                {
+                    <MudSelectItem Value="@api.apiID">@api.apiName</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Spacing="2" Class="mt-4">
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="AddManualy">Add From Api</MudButton>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="AddTable">Add</MudButton>
+            </MudStack>
+            <br />
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="error-message">@ErrorMessage</p>
+            }
+        </MudForm>
+    </MudPaper>
+}

@@ -1,0 +1,57 @@
+﻿@inherits ComponentBase
+
+<MudCard Class="flex" Style="margin: auto; height: 492px">
+    @if(Table != null)
+    {
+        <MudCardHeader Style="text-align: left; display: block;">
+            <MudText Typo="Typo.h4"> @(Table?.Name ?? "Unknown Table Name")</MudText>
+            <MudText Typo="Typo.h6"> @(Table?.Manufacturer ?? "Unknown Manufacturer")</MudText>
+        </MudCardHeader>
+
+        <MudCardContent Style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;">
+            <div style="width:230px; height:230px; position: relative;">
+                <MudText Typo="Typo.h6" Style="position: absolute; top: 32.5%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">Height</MudText>
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity:0.15;" Size="MudBlazor.Size.Large" StrokeWidth=6 Color="MudBlazor.Color.Default" Value="100" />
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" Size="MudBlazor.Size.Large" StrokeWidth=6  Min="680" Max="1320" Color="MudBlazor.Color.Default" Value="@tempHeight" />
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" Size="MudBlazor.Size.Large" StrokeWidth=6 Min="680" Max="1320" Color="MudBlazor.Color.Secondary" Value="@tableHeight" />
+                <MudProgressCircular style="width:220px; height:220px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); mix-blend-mode: screen;" Size="MudBlazor.Size.Large" StrokeWidth=6  Min="680" Max="1320" Color="MudBlazor.Color.Primary" Value="@tempHeight" />
+                <MudText Typo="Typo.h3" Style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">@((decimal)tableHeight / 10)</MudText>
+                <MudText Typo="Typo.h6" Style="position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5;">cm</MudText>
+            </div>
+        </MudCardContent>
+
+        <MudPaper Style="margin: 10px;" Elevation="0">
+            <div Style="width: auto; display: flex; align-items: center; justify-content: center; padding: 8px;">
+                <!-- Decrease buttons -->
+                <MudButton Style="margin-right: 10px;" Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-10)" Disabled="@(tempHeight <= 680)">-1</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(-100)" Disabled="@(tempHeight <= 780)">-10</MudButton>
+
+                <!-- Temporary height display -->
+                <MudText Typo="Typo.h6" Style="margin: 0 16px;">@((decimal)tempHeight / 10)</MudText>
+
+                <!-- Increase buttons -->
+                <MudButton Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(10)" Disabled="@(tempHeight >= 1320)">+1</MudButton>
+                <MudButton Style="margin-left: 10px;" Variant="Variant.Outlined" OnClick="() => AdjustTableHeight(100)" Disabled="@(tempHeight >= 1230)">+10</MudButton>
+            </div>
+            <!-- Set button -->
+            <div Style="padding: 8px;">
+                <MudButton FullWidth=true Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="SetTableHeight">Set</MudButton>
+            </div>
+        </MudPaper>
+    }
+    else
+    {
+        <MudCardContent Style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px;">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Size="MudBlazor.Size.Large" Color="MudBlazor.Color.Secondary" />
+            <MudText Typo="Typo.h5" Style="margin-top: 8px;">No Table Assigned</MudText>
+            <MudText Typo="Typo.body1" Style="margin: 8px 0;">You don't have a table assigned. Please contact the administrator for assistance.</MudText>
+        </MudCardContent>
+    }
+</MudCard>
+
+<style>
+    .mud-progress-circular-svg {
+        overflow: visible !important;
+        stroke-linecap: round !important;
+    }
+</style>

@@ -1,4 +1,8 @@
-﻿using SharedModels;
+﻿using System.Data;
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using SharedModels;
 
 namespace DataAccess
 {
@@ -90,7 +94,7 @@ namespace DataAccess
 
         public void EditHashPass(string mail_hash, string newPass_hash)
         {
-            var sql = "UPDATE user_credentials SET upass_hash = @pass WHERE umail_hash = @mail";
+            var sql = @"UPDATE user_credentials SET upass_hash = decode(@pass, 'hex') WHERE umail_hash = decode(@mail, 'hex')";
             dbAccess.ExecuteNonQuery(sql, ("@pass", newPass_hash), ("@mail", mail_hash));
         }
 
@@ -126,93 +130,366 @@ namespace DataAccess
 
         #region Get Methods
 
-
-        public List<Employee> GetEmployee()
+        public IUser? GetUser(string? email = null, int? id = null)
         {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'EMPLOYEE'";
+            var sql = "";
+            if(email != null) sql = $"SELECT u_id,u_name,u_mail,u_type, ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE u_mail = @email";
+            else if(id != null) sql = $"SELECT u_id,u_name,u_mail,u_type, ut_permissions FROM users INNER JOIN user_types on u_type = ut_id WHERE u_id = @id";
+            else throw new ArgumentException("Either email or id must be provided");
 
-            List<Employee> Employees = new List<Employee>();
-
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
-                    {
-                        
-                        Employee employee = new Employee
-                        {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2),
+                    cmd.CommandText = sql;
+                    if(email != null) cmd.Parameters.AddWithValue("@email", email);
+                    else if(id != null) cmd.Parameters.AddWithValue("@id", id);
 
-                        };
-                        Employees.Add(employee);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if(reader.Read())
+                        {
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
+
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions { 
+                                        Converters = {
+                                            new JsonStringEnumConverter()
+                                        }
+                                    }
+                                )!;
+                            }
+
+                            switch (userType)
+                            {
+                                case 1:
+                                    connection.Close();
+                                    return new Admin
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                case 2:
+                                    connection.Close();
+                                    return new Employee
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                case 3:
+                                    connection.Close();
+                                    return new Cleaner
+                                    {
+                                        UserID = userId,
+                                        Name = name,
+                                        Email = userEmail,
+                                        Permissions = permissions ?? new List<UserPermissions>()
+                                    };
+                                default:
+                                    throw new ArgumentException("Invalid user type");
+                            }
+                        }
                     }
+                    connection.Close();
+                    return null;
                 }
             }
-
-            return Employees;
-
         }
-        public List<Admin> GetAdmin(string email)
+
+        public List<IUser> GetAllUsers()
         {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'ADMIN'";
-            List<Admin> Admins = new List<Admin>();
+            var sql = $"SELECT u_id,u_name,u_mail,u_type,ut_permissions FROM users INNER JOIN user_types on u_type = ut_id";
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            List<IUser> users = new List<IUser>();
+
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        
-                        Admin admin = new Admin
+                        while (reader.Read())
                         {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2)
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
 
-                        };
-                        Admins.Add(admin);
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions { 
+                                        Converters = {
+                                            new JsonStringEnumConverter()
+                                        }
+                                    }
+                                )!;
+                            }
+
+                            if (userType == 1)
+                            {
+                                Admin admin = new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(admin);
+                            }
+                            else if (userType == 2)
+                            {
+                                Employee employe = new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(employe);
+                            }
+                            else if (userType == 3)
+                            {
+                                Cleaner cleaner = new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(cleaner);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid user type");
+                            }
+                        }
                     }
+                    connection.Close();
                 }
             }
-
-            return Admins;
-
+            return users;
         }
-        public List<Cleaner> GetCleaner(string email)
+
+        public List<IUser> GetAllUsersButCleaners()
         {
-            var sql = $"SELECT u.u_id,u.u_name,u.u_mail FROM users as u INNER JOIN user_types AS ut ON u.u_type = ut.ut_id WHERE ut.ut_name = 'CLEANER'";
+            var sql = $"SELECT u.u_id,u.u_name,u.u_mail,u.u_type,ut.ut_permissions FROM users AS u LEFT JOIN user_tables AS uta ON uta.u_id = u.u_id INNER JOIN user_types as ut on u_type = ut_id   WHERE ut_id <> 3 and uta.u_id is NULL";
 
-            List<Cleaner> Cleaners = new List<Cleaner>();
+            List<IUser> users = new List<IUser>();
 
-            using (var cmd = dbAccess.dbDataSource.CreateCommand(sql))
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
             {
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        
-                        Cleaner cleaner = new Cleaner
+                        while (reader.Read())
                         {
-                            UserID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Email = reader.GetString(2),
+                            int userId = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string userEmail = reader.GetString(2);
+                            int userType = reader.GetInt32(3);
+                            var permissionsJson = reader.GetString(4);
+                            List<UserPermissions> permissions = new List<UserPermissions>();
 
-                        };
-                        Cleaners.Add(cleaner);
+                            if (!string.IsNullOrEmpty(permissionsJson) && permissionsJson != "{}")
+                            {
+                                permissions = JsonSerializer.Deserialize<List<UserPermissions>>(
+                                    permissionsJson,
+                                    new JsonSerializerOptions
+                                    {
+                                        Converters = {
+                                        new JsonStringEnumConverter()
+                                        }
+                                    }
+                                )!;
+                            }
+
+                            if (userType == 1)
+                            {
+                                Admin admin = new Admin
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(admin);
+                            }
+                            else if (userType == 2)
+                            {
+                                Employee employe = new Employee
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(employe);
+                            }
+                            else if (userType == 3)
+                            {
+                                Cleaner cleaner = new Cleaner
+                                {
+                                    UserID = userId,
+                                    Name = name,
+                                    Email = userEmail,
+                                    Permissions = permissions ?? new List<UserPermissions>()
+                                };
+                                users.Add(cleaner);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid user type");
+                            }
+                        }
                     }
                 }
+                connection.Close();
+            }
+            return users;
+        }
+
+        public string GetUserAssignedTable(int userId)
+        {
+            var sql = $"SELECT t.t_name FROM tables as t INNER JOIN user_tables as ut ON t.t_guid = ut.t_guid WHERE ut.u_id = @userId";
+            string assignedTable = "Table not assigned";
+
+            try
+            {
+                using(var connection = dbAccess.dbDataSource.CreateConnection())
+                {
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = sql;
+                        cmd.Parameters.AddWithValue("@userId", userId);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                assignedTable = reader.GetString(0);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while executing the SQL query: {ex.Message}");
             }
 
-            return Cleaners;
+            return assignedTable;
+        }
+
+        public string? GetHashedPassword(string hashedEmailHex)
+        {
+            string sql = "SELECT upass_hash FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";
+
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("@hashedEmailHex", NpgsqlTypes.NpgsqlDbType.Varchar).Value = hashedEmailHex;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            byte[] passwordHashBytes = (byte[])reader["upass_hash"];
+                            
+                            connection.Close();
+                            return BitConverter.ToString(passwordHashBytes).Replace("-", "").ToLower();
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return null;
+        }
+
+        public bool DoesEmailExitst(string email)
+        {
+            string sql = "SELECT u_mail FROM users WHERE u_mail = @email";
+            using (var connection = dbAccess.dbDataSource.CreateConnection())
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = email;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            connection.Close();
+                            return true;
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return false;
 
         }
 
+        public List<UserTypes> GetUserType()
+        {
+            var sql = $"SELECT ut_id, ut_name FROM user_types";
+
+            List<UserTypes> userTypes = new List<UserTypes>();
+
+            using(var connection = dbAccess.dbDataSource.CreateConnection())
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            UserTypes userType = new UserTypes()
+                            {
+                                UserTypeID = reader.GetInt32(0),
+                                UserTypeName = reader.GetString(1)
+                            };
+                            userTypes.Add(userType);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+
+            return userTypes;
+        }
 
         #endregion
 
     }
+
 }

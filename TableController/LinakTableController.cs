@@ -5,42 +5,65 @@ namespace TableController
 {
     public class LinakTableController : ITableController
     {
-        public LinakTableController(LinakTable table)
+        public LinakTableController()
         {
-            Table = table;
         }
-        public LinakTable Table { get; private set;}
-        public List<String> GetAllTables()
-        {
-            throw new NotImplementedException();
-        }
-        public int GetTableHeight(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public void SetTableHeight(int height, string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public int GetTableSpeed(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public string GetTableStatus(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public void GetTableError(string? guid = null)
-        {
-            throw new NotImplementedException();
-        }
-        public List<ITableError>? ErrorList { get; private set; }
 
-        public int GetActivationCounter(string? guid = null)
+        #pragma warning disable 67 // Disable warning for unused event
+        public event EventHandler<TableHeightSetEventArgs>? OnTableHeightSet;
+        #pragma warning restore 67 // Restore warning
+
+        public Task<int> GetActivationCounter(string guid)
         {
             throw new NotImplementedException();
         }
-        public void GetSitStandCounter(string? guid = null)
+
+        public Task<string[]> GetAllTableIds()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ITable> GetFullTableInfo(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetSitStandCounter(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task GetTableError(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTableHeight(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTableSpeed(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetTableStatus(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTableHeight(int height, string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTableHeight(int height, string guid, IProgress<ITableStatusReport> progress)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ITableError[]> ITableController.GetTableError(string guid)
         {
             throw new NotImplementedException();
         }

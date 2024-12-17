@@ -13,29 +13,40 @@ services:
     env_file:
       - .env
 
-  pgadmin:
-    container_name: DMS_DB-pgadmin
-    image: dpage/pgadmin4
-    depends_on:
-      - postgres
-    ports:
-      - "${PGADMIN_PORT}:80"
-    restart: unless-stopped
-    env_file:
-      - .env
-
   linaksimulatorapi:
     container_name: LinakSimulatorAPI
     build:
       context: ./TableController/LinakSimulatorController
     ports:
-      - "${LSAPI_PORT}:8000"
+      - "${LSAPI_PORT}:8433"
     restart: unless-stopped
     env_file:
       - .env
     volumes:
       - ./TableController/LinakSimulatorController:/app
     working_dir: /app
+  
+  aspnetapp:
+    container_name: aspnetapp
+    image: mcr.microsoft.com/dotnet/aspnet:5.0
+    build:
+      context: .
+      dockerfile: Famicom/Dockerfile
+    ports:
+      - "80:8080"
+      - "443:8443"
+      - "4488:4488"
+    depends_on:
+      - postgres
+      - linaksimulatorapi
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+      - POSTGRES_HOST=postgres
+      - LSAPI_URL=linaksimulatorapi
+      - POSTGRES_PORT=5432
 
 volumes:
   postgres-data: 

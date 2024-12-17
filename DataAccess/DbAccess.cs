@@ -12,8 +12,10 @@ namespace DataAccess
         private string password { get; set; }
         private string dbName { get; set; }
         private string port { get; set; }
+        private string host { get; set; } 
         private string connectionString { get; set; }
-        internal NpgsqlDataSource dbDataSource { get; set; }
+        public NpgsqlDataSource dbDataSource { get; set; }
+
 
         public DbAccess()
         {
@@ -24,8 +26,8 @@ namespace DataAccess
             password = Env.GetString("POSTGRES_PASSWORD");
             dbName = Env.GetString("POSTGRES_DB");
             port = Env.GetString("POSTGRES_PORT");
-            connectionString = $"Host=localhost;Port={port};Database={dbName};User Id={user};Password={password};";
-
+            host = Env.GetString("POSTGRES_HOST") ?? "localhost";
+            connectionString = $"Host={host};Port={port};Database={dbName};User Id={user};Password={password};";
             dbDataSource = NpgsqlDataSource.Create(connectionString);
         }
 
@@ -33,13 +35,19 @@ namespace DataAccess
         {
             try
             {
-                using (var cmd = dbDataSource.CreateCommand(sql))
+                using (var connection = dbDataSource.CreateConnection())
                 {
-                    foreach (var (name, value) in parameters)
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
                     {
-                        cmd.Parameters.AddWithValue(name, value);
+                        cmd.CommandText = sql;
+                        foreach (var (name, value) in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(name, value);
+                        }
+                        cmd.ExecuteNonQuery();
                     }
-                    cmd.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
             catch (Exception ex)

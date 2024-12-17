@@ -1,0 +1,119 @@
+﻿@page "/admin"
+@inherits AdminBase
+
+<div style="display: flex; justify-content: center; flex-direction: column;">
+<PageTitle>Table Management</PageTitle>
+
+<MudText Align="MudBlazor.Align.Center" Typo="Typo.h4" Style="margin:15px">@PanelTitle</MudText>
+
+<MudDivider DividerType="DividerType.Middle" Class="my-10" />
+
+<MudOverlay Visible="IsTableOverlayActivated" DarkBackground="true">
+    <AddTableComponent OnTableAdded="(isCancelled) => HandleTableAdded(isCancelled)" />
+</MudOverlay>
+
+<MudOverlay Visible="IsUserOverlayActivated" DarkBackground="true">
+    <AddUserComponent OnUserAdded="(isCancelled) => HandleUserAdded(isCancelled)" />
+</MudOverlay>
+
+<MudOverlay Visible="IsAssignOverlayActivated" DarkBackground="true">
+    <AssignUserComponent OnUserAssigned="HandleUserAssigned" />
+</MudOverlay>
+
+    <MudTabs Outlined="true" Style="flex-grow: 1; max-height: 100vh">
+    <MudTabPanel Text="Tables" Icon="@Icons.Material.Filled.TableRestaurant">
+        @if (Table != null)
+        {
+                <MudTable T="ITable" Items="Table" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto"
+                      SortLabel="Sort By" 
+                      MultiSelection="false" 
+                      Hover="true" 
+                      FixedHeader="true" 
+                      Filter="new Func<ITable,bool>(FilterFunc)"
+                      ReadOnly="tableReadOnly"
+                      CanCancelEdit="true"
+                      @bind-SelectedItem="selectedItem1"
+                      CommitEditTooltip="Commit Edit"
+                      RowEditPreview="BackupItem"
+                      RowEditCancel="ResetItemToOriginalValues"
+                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="true" ApplyButtonPosition="@applyButtonPosition"
+                      EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Select Tables</MudText>
+                    <!-- Add button to add tables and users -->
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Primary">
+                        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+                        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+                        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
+                    </MudMenu>
+                    <MudSwitch @bind-Value="tableReadOnly" Color="MudBlazor.Color.Tertiary">ReadOnly Mode</MudSwitch>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Name)">Table Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Status ?? String.Empty)">Status</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Height ?? 0)">Height</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Table Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
+                    <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
+                </RowTemplate>
+                <RowEditingTemplate>
+                    <MudTd DataLabel="Table Name">
+                        <MudTextField @bind-Value="context.Name" Required />
+                    </MudTd>
+                    <MudTd DataLabel="Manufacturer">
+                        <MudTextField @bind-Value="context.Manufacturer" Required />
+                    </MudTd>
+                    <MudTd DataLabel="GUID">@context.GUID</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Height">@context.Height</MudTd>
+                </RowEditingTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+                <EditButtonContent Context="button">
+                    <MudIconButton Size="@MudBlazor.Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" />
+                </EditButtonContent>
+            </MudTable>
+        }
+    </MudTabPanel>
+    <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.SupervisedUserCircle">
+        @if (Users != null)
+        {
+                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Select Tables</MudText>
+                    <!-- Add button to add tables and users -->
+                    <MudMenu Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Primary">
+                        <MudMenuItem OnClick="() => AddTableOverlay(true)">Add New Table</MudMenuItem>
+                        <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
+                        <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
+                    </MudMenu>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.UserID)">UserId</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Name)">User Name</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<IUser, object>(x=>x.Email)">User Email</MudTableSortLabel></MudTh>
+                    <MudTh>Assigned Table</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="UserId">@context.UserID</MudTd>
+                    <MudTd DataLabel="User Name">@context.Name</MudTd>
+                    <MudTd DataLabel="User Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Assigned Table">@CheckAssignedTable(context.UserID)</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudTabPanel>
+</MudTabs>
+</div>
+

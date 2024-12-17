@@ -1,0 +1,29 @@
+﻿@inherits ComponentBase
+@using Famicom.Components.Pages;
+@using MudBlazor;
+
+<MudPaper Class="pa-4">
+    <MudForm>
+        <MudTextField T="string" Label="User Name" Required="true" RequiredError="User Name is required!" @bind-Value="UserName" Class="mb-4" />
+        <MudTextField T="string" Label="User Email" Required="true" RequiredError="User Email is required!" @bind-Value="UserEmail" Class="mb-4" />
+        <MudTextField T="string" Label="UserPassword" Required="true" RequiredError="User Password is required!" @bind-Value="UserPassword" Class="mb-4" />
+        <MudSelect T="int" Label="User Type" @bind-Value="UserType" Class="mb-4">
+            @foreach (var type in UserTypes)
+            {
+                <MudSelectItem Value="@type.UserTypeID">@type.UserTypeName</MudSelectItem>
+            }
+        </MudSelect>
+        <MudStack Spacing="2" Class="mt-4">
+            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="AddUser">Add</MudButton>
+        </MudStack>
+        <br />
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            Snackbar.Add(ErrorMessage, Severity.Error);
+
+            <MudText Color="MudBlazor.Color.Warning" Typo="Typo.h6" Style="text-align: center">@ErrorMessage</MudText>
+        }
+    </MudForm>
+</MudPaper>
+

@@ -1,0 +1,77 @@
+@inherits ComponentBase
+
+<MudCard Style="width: auto; height: 492px">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Presets</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="MudBlazor.Color.Default" OnClick="() => OpenOverlay(OverlayMode.Add)" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (userPresets != null && userPresets.Any())
+        {
+            @foreach (var preset in userPresets)
+            {
+                <MudCard Elevation="2" Class="mb-4">
+                    <MudButton Style="width: 100%; padding: 0; display: block; text-align: left; text-transform: none;" OnClick="() => SelectPreset(preset.PresetName, preset.Height)">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudContainer Style="display: inline-flex; padding: 0;">
+                                    <MudText Typo="Typo.h6" Style="display:flex; width: 32px; align-items: center; font-size: 32px;"><i class="fa @preset.Icon"></i></MudText>
+                                    <MudContainer Style="padding: 0; margin-left: 8px;">
+                                        <MudText Typo="Typo.h6" Style="align-items: center;">@preset.PresetName</MudText>
+                                        <MudText Typo="Typo.body2" Style="color: gray;">@((decimal)preset.Height / 10) cm</MudText>
+                                    </MudContainer>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Style="margin-left: auto;" Color="MudBlazor.Color.Primary" OnClick="() => OpenOverlay(OverlayMode.Edit, preset.PresetId)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Style="margin-left: auto;" Color="MudBlazor.Color.Error" OnClick="() => DeletePreset(preset.PresetId)" />
+                                </MudContainer>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    </MudButton>
+                </MudCard>
+            }
+        }
+        else
+        {
+            <MudText>No presets available.</MudText>
+        }
+
+        <MudOverlay Visible="currentOverlayMode != OverlayMode.None" DarkBackground="true">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField @bind-Value="PresetName" Label="Preset Name" Variant="Variant.Filled" />
+                    <MudTextField @bind-Value="PresetHeight" Label="Table Height (mm)" Variant="Variant.Filled" />
+                    <MudSelect T="string" @bind-Value="PresetIcon" Label="Preset Icon" Variant="Variant.Filled">
+                        @foreach (var icon in iconOptions)
+                        {
+                            <MudSelectItem T="string" Value="@icon.Key">
+                                <i class="fa @icon.Key" style="margin-right: 8px;"></i>@icon.Value
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudText Typo="Typo.body2">
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <MudText Typo="Typo.body2" Color="MudBlazor.Color.Error">@ErrorMessage</MudText>
+                        }
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    @if (currentOverlayMode == OverlayMode.Add)
+                    {
+                        <MudButton OnClick="AddPreset" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">Add</MudButton>
+                    }
+                    else if (currentOverlayMode == OverlayMode.Edit)
+                    {
+                        <MudButton OnClick="EditPreset" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">Save</MudButton>
+                    }
+
+                    <MudButton OnClick="CancelOverlay" Color="MudBlazor.Color.Default" Variant="Variant.Filled" Style="margin-left: 8px;">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudOverlay>
+    </MudCardContent>
+</MudCard>

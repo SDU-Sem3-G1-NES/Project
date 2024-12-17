@@ -4,55 +4,71 @@ using System;
 using SharedModels;
 using Famicom.Models;
 using System.Diagnostics;
+using Models.Services;
+using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
+using Famicom.Components.Pages;
 
 namespace Famicom.Components.Pages
 {
     public partial class DashboardBase : ComponentBase
     {
-        private DashboardModel DashboardModel { get; set; } = new DashboardModel();
+        [Inject] ISessionStorageService SessionStorage { get; set; } = default!;
+        [Inject] NavigationManager Navigation { get; set; } = default!;
+        [Inject] ISnackbar Snackbar { get; set; } = default!;
+        private UserModel userModel = new UserModel();
 
-        public string NotificationsTitle => DashboardModel.NotificationsTitle;
-        public string TodayUsageGraphTitle => DashboardModel.TodayUsageGraphTitle;
-        public string WeeklyUsageGraphTitle => DashboardModel.WeeklyUsageGraphTitle;
-        public string TodayUsageGraphLabel => DashboardModel.TodayUsageGraphLabel;
-        public string WeeklyUsageGraphLabel => DashboardModel.WeeklyUsageGraphLabel;
+        public ITable _table { get; set; } = null!;
+        private TableModel tableModel { get; set; } = null!;
+        private int userId { get; set; }
+        public RenderFragment? _content;
+        [Inject] IHttpClientFactory clientFactory { get; set; } = default!;
+        [Inject] ISessionStorageService sessionStorage { get; set; } = default!;
+        [Inject] TableControllerService TableControllerService { get; set; } = default!;
 
-        public ITable Table => DashboardModel.Table;
-        public List<int> WeeklyUsageData => DashboardModel.WeeklyUsageData;
-        public List<int> TodayUsageData => DashboardModel.TodayUsageData;
-        public List<DashboardModel.Notification> Notifications => DashboardModel.Notifications;
-
-        public void StoreDashboardData()
+        protected override async Task OnInitializedAsync()
         {
-            DashboardModel.StoreDashboardData();
-        }
-
-        public void HandleNotification(DashboardModel.Notification notification)
-        {
-            if (notification.Action == "Raise desk")
-            {
-                MoveTableUp();
+            tableModel = new TableModel(clientFactory, TableControllerService);
+            if(Navigation != null && Navigation.Uri.Replace(Navigation.BaseUri, "/") == "/") {
+                Navigation.NavigateTo("/Dashboard");
+                return;
             }
-            else if (notification.Action == "Go to Health Panel")
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            var isLoggedIn = await SessionStorage.GetItemAsync<bool>("IsLoggedIn");
+            if(!isLoggedIn || _content != null) return;
+            var email = await SessionStorage.GetItemAsync<string>("Email");
+            var user = userModel.GetUser(email);
+
+            switch (user!.GetType().Name)
             {
-                //logic to navigate to health view
+                case "Employee":
+                case "Admin":
+                    _content = builder =>
+                    {
+                        builder.OpenComponent(0, typeof(DashboardEmployee));
+                        builder.CloseComponent();
+                    };
+                    StateHasChanged();
+                    break;
+                case "Cleaner":
+                    Navigation.NavigateTo("/Cleaning");
+                    StateHasChanged();
+                    break;
+                default:
+                    _content = builder =>
+                    {
+                        builder.OpenComponent(0, typeof(Unauthorised));
+                        builder.CloseComponent();
+                    };
+                    StateHasChanged();
+                    break;
             }
-        }
-
-        public void MoveTableUp()
-        {
-            Debug.WriteLine("Table moved up");
-        }
-
-        public void MoveTableDown()
-        {
-            Debug.WriteLine("Table moved Down");
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            StoreDashboardData();
+            
         }
     }
 }
