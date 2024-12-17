@@ -9,18 +9,16 @@ namespace Famicom.Models
     {
         private readonly TableService tableService;
         private readonly TableControllerService TableControllerService;
-        private readonly IHttpClientFactory? ClientFactory;
         private readonly HttpClient client;
         private readonly Progress<ITableStatusReport> progress;
         private ITable? table;
 
         
-        public TableModel(IHttpClientFactory clientFactory, TableControllerService tableControllerService)
+        public TableModel(HttpClient client, TableControllerService tableControllerService, TableService tableService)
         {
-            this.tableService = new TableService();
+            this.tableService = tableService;
             this.TableControllerService = tableControllerService;
-            this.ClientFactory = clientFactory;
-            client = ClientFactory!.CreateClient("default");
+            this.client = client;
             this.progress = new Progress<ITableStatusReport>(message =>
             {
                 Debug.WriteLine(message);

@@ -2,6 +2,7 @@ using MudBlazor.Services;
 using Famicom.Components;
 using Blazored.SessionStorage;
 using Models.Services;
+using DataAccess;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http;
@@ -25,6 +26,12 @@ builder.Services.AddScoped<LoginStateService>();
 builder.Services.AddScoped<UserPermissionService>();
 builder.Services.AddHostedService<SubscriberNotifyService>();
 builder.Services.AddSingleton<SubscriberUriService>();
+
+builder.Services.AddSingleton<PresetRepository>();
+builder.Services.AddSingleton<PresetService>();
+builder.Services.AddSingleton<TableRepository>();
+builder.Services.AddSingleton<TableService>();
+
 
 // Add MudBlazor services
 builder.Services.AddMudServices();

@@ -80,7 +80,7 @@ namespace Famicom.Components.Layout
 
         private bool _drawerOpen = true;
         private bool _isDarkMode = false;
-        private bool _isHealthNotifications = false;
+        private bool _isHealthNotifications = true;
         private MudTheme? _theme = null;
 
         private async Task Logout()
@@ -116,7 +116,6 @@ namespace Famicom.Components.Layout
         private void HealthNotificationsToggle()
         {
             _isHealthNotifications = !_isHealthNotifications;
-            StateHasChanged();
         }
 
 

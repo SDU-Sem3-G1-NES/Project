@@ -24,16 +24,19 @@ namespace Famicom.Components.Pages
         ISnackbar Snackbar { get; set; } = default!;
 
         [Inject]
-        IHttpClientFactory ClientFactory { get; set; } = default!;
+        HttpClient HttpClient { get; set; } = default!;
         
         [Inject]
         TableControllerService TableControllerService { get; set; } = default!;
+
+        [Inject]
+        public PresetService PresetService { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                presetsModel = new PresetsModel(ClientFactory, TableControllerService);
+                presetsModel = new PresetsModel(HttpClient, TableControllerService, PresetService);
             }
             catch (Exception ex)
             {

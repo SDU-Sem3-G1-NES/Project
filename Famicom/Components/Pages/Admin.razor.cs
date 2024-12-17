@@ -26,7 +26,7 @@ namespace Famicom.Components.Pages
 
         public string? PanelTitle { get; set; }
 
-        private TableService tableService = new TableService();
+        [Inject] private TableService tableService { get; set; } = default!;
 
         private UserService userService = new UserService();
         private UserModel userModel { get; set; } = new UserModel();
@@ -93,8 +93,6 @@ namespace Famicom.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-
-            tableService = new TableService();
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();

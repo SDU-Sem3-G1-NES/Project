@@ -31,7 +31,7 @@ namespace Famicom.Components.Pages
         public ISnackbar Snackbar { get; set; } = default!;
 
         [Inject]
-        IHttpClientFactory ClientFactory { get; set; } = default!;
+        HttpClient HttpClient { get; set; } = default!;
 
         [Inject]
         TableControllerService TableControllerService { get; set; } = default!;
@@ -39,12 +39,17 @@ namespace Famicom.Components.Pages
         [Inject]
         ISessionStorageService SessionStorage { get; set; } = default!;
 
+        [Inject]
+        public PresetService PresetService { get; set; } = default!;
+        [Inject]
+        public TableService TableService { get; set; } = default!;
+
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                tableModel = new TableModel(ClientFactory, TableControllerService);
-                presetsModel = new PresetsModel(ClientFactory, TableControllerService);
+                tableModel = new TableModel(HttpClient, TableControllerService, TableService);
+                presetsModel = new PresetsModel(HttpClient, TableControllerService, PresetService);
             }
             catch (Exception ex)
             {
@@ -94,7 +99,7 @@ namespace Famicom.Components.Pages
                 }
                 catch (Exception e)
                 {
-                    tableModel = new TableModel(ClientFactory, TableControllerService);
+                    tableModel = new TableModel(HttpClient, TableControllerService, TableService);
                     Debug.WriteLine(e.Message);
                     return;
                 }
@@ -158,7 +163,7 @@ namespace Famicom.Components.Pages
             }
             catch (Exception e)
             {
-                tableModel = new TableModel(ClientFactory, TableControllerService);
+                tableModel = new TableModel(HttpClient, TableControllerService, TableService);
                 Debug.WriteLine(e.Message);
                 return;
             }
@@ -200,7 +205,7 @@ namespace Famicom.Components.Pages
             }
             catch (Exception e)
             {
-                tableModel = new TableModel(ClientFactory, TableControllerService);
+                tableModel = new TableModel(HttpClient, TableControllerService, TableService);
                 Debug.WriteLine(e.Message);
                 Snackbar.Add("An error occurred while setting the height", Severity.Error);
             }

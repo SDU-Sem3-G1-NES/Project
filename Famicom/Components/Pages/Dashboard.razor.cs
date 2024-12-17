@@ -23,13 +23,14 @@ namespace Famicom.Components.Pages
         private TableModel tableModel { get; set; } = null!;
         private int userId { get; set; }
         public RenderFragment? _content;
-        [Inject] IHttpClientFactory clientFactory { get; set; } = default!;
+        [Inject] HttpClient HttpClient { get; set; } = default!;
         [Inject] ISessionStorageService sessionStorage { get; set; } = default!;
         [Inject] TableControllerService TableControllerService { get; set; } = default!;
+        [Inject] TableService tableService {get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
-            tableModel = new TableModel(clientFactory, TableControllerService);
+            tableModel = new TableModel(HttpClient, TableControllerService, tableService);
             if(Navigation != null && Navigation.Uri.Replace(Navigation.BaseUri, "/") == "/") {
                 Navigation.NavigateTo("/Dashboard");
                 return;

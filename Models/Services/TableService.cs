@@ -7,9 +7,9 @@ namespace Models.Services
     {
         private readonly TableRepository tableRepository;
 
-        public TableService()
+        public TableService(TableRepository tableRepository)
         {
-            tableRepository = new TableRepository();
+            this.tableRepository = tableRepository;
         }
         
         public void AddTable(string guid, string name, string manufacturer, int api)
