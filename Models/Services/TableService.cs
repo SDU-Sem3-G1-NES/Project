@@ -42,6 +42,11 @@ namespace Models.Services
             tableRepository.DeleteTable(id);
         }
 
+        public void DeleteTableUser(string table)
+        {
+            tableRepository.DeleteTableUser(table);
+        }
+
         public List<ITable> GetTablesUser(int userId)
         {
             return tableRepository.GetTablesUser(userId);

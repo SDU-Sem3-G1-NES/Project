@@ -29,16 +29,21 @@ namespace Famicom.Components.Pages
         private TableService tableService = new TableService();
 
         private UserService userService = new UserService();
+
+        private UserCredentialsService userCredentialsService = new UserCredentialsService();
         private UserModel userModel { get; set; } = new UserModel();
         public required List<ITable> Table { get; set; }
+        public bool userDeleteMode { get; set; } = false;
         public bool IsTableOverlayActivated { get; set; } = false;
         public bool IsUserOverlayActivated { get; set; } = false;
         public bool IsAssignOverlayActivated { get; set; } = false;
         public string searchString = "";
         public required List<IUser> Users { get; set; }
 
+        private string ?fixedSalt;
+
         #region Edit Table Variables  
-        
+
         public bool tableReadOnly = true;
         public ITable? selectedItem1 = null;
         public LinakTable? elementBeforeEdit;
@@ -61,14 +66,14 @@ namespace Famicom.Components.Pages
                 ((ITable)element).Name,
                 ((ITable)element).Manufacturer
                 );
-            
+
         }
 
         public void ItemHasBeenCommitted(object element)
         {
             try
             {
-                tableService.UpdateTableName(((ITable)element).GUID,((ITable)element).Name);
+                tableService.UpdateTableName(((ITable)element).GUID, ((ITable)element).Name);
                 tableService.UpdateTableManufacturer(((ITable)element).GUID, ((ITable)element).Manufacturer);
                 Table = tableService.GetAllTables();
                 Snackbar.Add("Table has been changed succesfuly", Severity.Success);
@@ -93,23 +98,57 @@ namespace Famicom.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-
+            fixedSalt = userCredentialsService.GetFixedSalt();
             tableService = new TableService();
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();
             await base.OnInitializedAsync();
         }
-        
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await Protect();
-            if(firstRender) 
+            if (firstRender)
             {
                 _timer = new Timer(async _ => await InvokeAsync(GetFullTableInfoAndPray), null, 1000, 5000);
 
             }
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+        public void DeleteTable(string id)
+        {
+            try
+            {
+                tableService.DeleteTableUser(id);
+                tableService.RemoveTable(id);
+                Table = tableService.GetAllTables();
+                Snackbar.Add("Table has been deleted", Severity.Success);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Snackbar.Add("An error occurred while deleting the table", Severity.Error);
+            }
+        }
+
+        public void DeleteUser(int id, string email)
+        {
+            try
+            {
+                userService.DeleteUserTable(id);
+                string emailHash = BCrypt.Net.BCrypt.HashPassword(email, fixedSalt);
+                string hashedEmailHex = userCredentialsService.ConvertToHex(emailHash);
+                userService.RemoveUserCredentials(hashedEmailHex);
+                userService.RemoveUser(id);
+                Snackbar.Add("User have been deleted succesfuly", Severity.Success);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Snackbar.Add("An error occurred while deleting the user", Severity.Error);
+            }
         }
 
         private string GetUserType()
