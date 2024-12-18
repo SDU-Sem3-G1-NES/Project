@@ -36,7 +36,7 @@
                       CommitEditTooltip="Commit Edit"
                       RowEditPreview="BackupItem"
                       RowEditCancel="ResetItemToOriginalValues"
-                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="true" ApplyButtonPosition="@applyButtonPosition"
+                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition"
                       EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
@@ -46,7 +46,7 @@
                         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
                         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
                     </MudMenu>
-                    <MudSwitch @bind-Value="tableReadOnly" Color="MudBlazor.Color.Tertiary">ReadOnly Mode</MudSwitch>
+                        <MudSwitch @bind-Value="tableReadOnly" Color="MudBlazor.Color.Tertiary">ReadOnly Mode</MudSwitch>
                     <MudSpacer />
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
@@ -55,14 +55,26 @@
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Manufacturer)">Manufacturer</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.GUID)">GUID</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Status ?? String.Empty)">Status</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<ITable, object>(x=>x.Height ?? 0)">Height</MudTableSortLabel></MudTh>
+                    <MudTh>Height</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Table Name">@context.Name</MudTd>
                     <MudTd DataLabel="Manufacturer">@context.Manufacturer</MudTd>
                     <MudTd DataLabel="GUID">@context.GUID</MudTd>
                     <MudTd DataLabel="Status">@context.Status</MudTd>
-                    <MudTd DataLabel="Height">@context.Height</MudTd>
+                        <MudTd DataLabel="Height">
+                            <div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between;">
+                                <div>
+                                    @context.Height
+                                </div>
+                                <div>
+                                @if (tableReadOnly)
+                                {
+                                    <MudIconButton Style="padding: 0px" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteTable(context.GUID,context.Name))" />
+                                }
+                                </div>
+                            </div>
+                    </MudTd>
                 </RowTemplate>
                 <RowEditingTemplate>
                     <MudTd DataLabel="Table Name">
@@ -87,7 +99,7 @@
     <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.SupervisedUserCircle">
         @if (Users != null)
         {
-                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
+                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="false" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
@@ -96,6 +108,7 @@
                         <MudMenuItem OnClick="() => AddUserOverlay(true)">Add New User</MudMenuItem>
                         <MudMenuItem OnClick="() => AssignOverlay(true)">Assign Table</MudMenuItem>
                     </MudMenu>
+                        <MudSwitch @bind-Value="userDeleteMode" Color="MudBlazor.Color.Tertiary">Delete Mode</MudSwitch>
                     <MudSpacer />
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
@@ -109,7 +122,19 @@
                     <MudTd DataLabel="UserId">@context.UserID</MudTd>
                     <MudTd DataLabel="User Name">@context.Name</MudTd>
                     <MudTd DataLabel="User Email">@context.Email</MudTd>
-                    <MudTd DataLabel="Assigned Table">@CheckAssignedTable(context.UserID)</MudTd>
+                    <MudTd DataLabel="Assigned Table">
+                            <div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between;">
+                                <div>
+                                    @CheckAssignedTable(context.UserID)
+                                </div>
+                                <div>
+                                    @if (userDeleteMode)
+                                    {
+                                        <MudIconButton Style="padding: 0px" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteUser(context.UserID,context.Email))" />
+                                    }
+                                </div>
+                            </div>
+                    </MudTd>
                 </RowTemplate>
             </MudTable>
         }

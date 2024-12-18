@@ -108,10 +108,15 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
 
-        public void DeleteUserCredentials(int id)
+        public void DeleteUserCredentials(string hashedPassword)
         {
-            var sql = "DELETE FROM user_credentials WHERE uc_id = @id";
-            dbAccess.ExecuteNonQuery(sql, ("@id", id));
+            var sql = "DELETE FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";
+            dbAccess.ExecuteNonQuery(sql, ("@hashedEmailHex", hashedPassword));
+        }
+        public void DeleteUserTable(int userId)
+        {
+            var sql = "DELETE FROM user_tables WHERE u_id = @userId";
+            dbAccess.ExecuteNonQuery(sql, ("@userId", userId));
         }
 
         public void DeleteUserType(int id)
@@ -120,11 +125,7 @@ namespace DataAccess
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
 
-        public void DeleteUserHabit(int id)
-        {
-            var sql = "DELETE FROM user_habits WHERE uh_id = @id";
-            dbAccess.ExecuteNonQuery(sql, ("@id", id));
-        }
+        
 
         #endregion
 

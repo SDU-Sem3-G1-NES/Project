@@ -77,9 +77,14 @@ namespace Models.Services
             userRepository.DeleteUser(id);
         }
 
-        public void RemoveUserCredentials(int id)
+        public void RemoveUserCredentials(string hashedEmail)
         {
-            userRepository.DeleteUserCredentials(id);
+            userRepository.DeleteUserCredentials(hashedEmail);
+        }
+
+        public void DeleteUserTable(int userId)
+        {
+            userRepository.DeleteUserTable(userId);
         }
 
         public void RemoveUserType(int id)
@@ -87,10 +92,7 @@ namespace Models.Services
             userRepository.DeleteUserType(id);
         }
 
-        public void RemoveUserHabit(int id)
-        {
-            userRepository.DeleteUserHabit(id);
-        }
+       
         public IUser? GetUser(string? email = null, int? userId = null)
         {
             return userRepository.GetUser(email, userId);

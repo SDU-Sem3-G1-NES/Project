@@ -66,6 +66,12 @@ namespace DataAccess
             var sql = "DELETE FROM tables WHERE t_guid = @id";
             dbAccess.ExecuteNonQuery(sql, ("@id", id));
         }
+
+        public void DeleteTableUser(string tableId)
+        {
+            var sql = "DELETE FROM user_tables WHERE t_guid = @tableId";
+            dbAccess.ExecuteNonQuery(sql, ("@tableId", tableId));
+        }
         #endregion
 
         #region Get Methods
