@@ -36,7 +36,7 @@
                       CommitEditTooltip="Commit Edit"
                       RowEditPreview="BackupItem"
                       RowEditCancel="ResetItemToOriginalValues"
-                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="true" ApplyButtonPosition="@applyButtonPosition"
+                      RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition"
                       EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
@@ -70,7 +70,7 @@
                                 <div>
                                 @if (tableReadOnly)
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteTable(context.GUID))" />
+                                    <MudIconButton Style="padding: 0px" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteTable(context.GUID,context.Name))" />
                                 }
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
     <MudTabPanel Text="Users" Icon="@Icons.Material.Filled.SupervisedUserCircle">
         @if (Users != null)
         {
-                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="true" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
+                <MudTable T="IUser" Items="Users" Class="mb-4" Height="45vh" Style="max-height: 100vh; margin: auto" SortLabel="Sort By" MultiSelection="false" Hover="true" FixedHeader="true" Filter="new Func<IUser,bool>(FilterFuncUser)">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Select Tables</MudText>
                     <!-- Add button to add tables and users -->
@@ -130,7 +130,7 @@
                                 <div>
                                     @if (userDeleteMode)
                                     {
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteUser(context.UserID,context.Email))" />
+                                        <MudIconButton Style="padding: 0px" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@((e) => DeleteUser(context.UserID,context.Email))" />
                                     }
                                 </div>
                             </div>

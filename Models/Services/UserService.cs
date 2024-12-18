@@ -77,9 +77,9 @@ namespace Models.Services
             userRepository.DeleteUser(id);
         }
 
-        public void RemoveUserCredentials(string id)
+        public void RemoveUserCredentials(string hashedEmail)
         {
-            userRepository.DeleteUserCredentials(id);
+            userRepository.DeleteUserCredentials(hashedEmail);
         }
 
         public void DeleteUserTable(int userId)

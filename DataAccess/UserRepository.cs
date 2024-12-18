@@ -111,7 +111,7 @@ namespace DataAccess
         public void DeleteUserCredentials(string hashedPassword)
         {
             var sql = "DELETE FROM user_credentials WHERE umail_hash = decode(@hashedEmailHex, 'hex')";
-            dbAccess.ExecuteNonQuery(sql, ("@id", hashedPassword));
+            dbAccess.ExecuteNonQuery(sql, ("@hashedEmailHex", hashedPassword));
         }
         public void DeleteUserTable(int userId)
         {

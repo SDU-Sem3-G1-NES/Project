@@ -117,14 +117,14 @@ namespace Famicom.Components.Pages
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public void DeleteTable(string id)
+        public void DeleteTable(string id,string name)
         {
             try
             {
                 tableService.DeleteTableUser(id);
                 tableService.RemoveTable(id);
                 Table = tableService.GetAllTables();
-                Snackbar.Add("Table has been deleted", Severity.Success);
+                Snackbar.Add($"{name} have been deleted succesfuly", Severity.Success);
             }
             catch (Exception e)
             {
@@ -142,12 +142,13 @@ namespace Famicom.Components.Pages
                 string hashedEmailHex = userCredentialsService.ConvertToHex(emailHash);
                 userService.RemoveUserCredentials(hashedEmailHex);
                 userService.RemoveUser(id);
-                Snackbar.Add("User have been deleted succesfuly", Severity.Success);
+                Users = userService.GetAllUsers();
+                Snackbar.Add($"{email} have been deleted succesfuly", Severity.Success);
             }
             catch(Exception e)
             {
                 Debug.WriteLine(e.Message);
-                Snackbar.Add("An error occurred while deleting the user", Severity.Error);
+                Snackbar.Add($"An error occurred while deleting the user {email}", Severity.Error);
             }
         }
 
