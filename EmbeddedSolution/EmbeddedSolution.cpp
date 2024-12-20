@@ -1,12 +1,15 @@
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "pico/cyw43_arch.h"
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 #include "rotary_encoder.h"
-#include "display.h"
+#include "ssd1306.h"
 #include "wifi.h"
+#include "font.h"
 
 #define ROT_A 13
 #define ROT_B 14
@@ -38,6 +41,19 @@ int main()
 {
     stdio_init_all();
 
+    i2c_init(i2c_default, 400000);
+    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+
+
+    ssd1306_t display;
+    display.external_vcc = false;
+    ssd1306_init(&display, 128, 64, 0x3C, i2c_default);
+    ssd1306_clear(&display);
+    ssd1306_show(&display);
+
     if (cyw43_arch_init()) {
         printf("Wi-Fi init failed\n");
         return false;
@@ -67,9 +83,13 @@ int main()
     gpio_set_irq_enabled_with_callback(ROT_C, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
 
 
-    display oled;
-    oled.clear(true);
-    oled._printf(0, true, "Height: %dcm", height);
+    //display oled;
+    //oled.clear(true);
+    //oled._printf(0, true, "Height: %dcm", height);
+    char buffer[20];
+    snprintf(buffer, sizeof(buffer), "Height: %dcm", height);
+    ssd1306_draw_string_with_font(&display, 0, 0, 1, font_8x5, buffer);
+    ssd1306_show(&display);
     printf("Height: %dcm\n", height);
 
     while (true) {
@@ -77,7 +97,9 @@ int main()
 
         if(button_pressed)
         {
-            oled._printf(0, true, "Button pressed");
+            ssd1306_clear(&display);
+            ssd1306_draw_string_with_font(&display, 0, 0, 1, font_8x5, "Button pressed");
+            ssd1306_show(&display);
             printf("Button pressed\n");
             button_pressed = false;
         }
@@ -86,12 +108,10 @@ int main()
             switch (rotary_encoder_input.get_state()) {
                 case rotary_encoder::STATES::RIGHT_TURN:
                     if(height < 132) height++;
-                    //oled._printf(1, false, "");
                     rotary_encoder_input.reset_state();
                     break;
                 case rotary_encoder::STATES::LEFT_TURN:
                     if(height > 68) height--;
-                    //oled._printf(1, false, "");
                     rotary_encoder_input.reset_state();
                     break;
                 default:
@@ -100,7 +120,11 @@ int main()
 
             if(compare_height != height)
             {
-                oled._printf(0, true, "Height: %dcm", height);
+                char buffer[20];
+                ssd1306_clear(&display);
+                snprintf(buffer, sizeof(buffer), "Height: %dcm", height);
+                ssd1306_draw_string_with_font(&display, 0, 0, 1, font_8x5, buffer);
+                ssd1306_show(&display);
                 printf("Height: %dcm\n", height);
                 compare_height = height;
             }

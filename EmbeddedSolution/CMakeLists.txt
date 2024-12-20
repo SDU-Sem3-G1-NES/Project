@@ -36,10 +36,10 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(EmbeddedSolution 
+    i2c.c
+    ssd1306.c
     EmbeddedSolution.cpp 
     rotary_encoder.cpp
-    display.cpp
-    i2c.c
 )
 
 pico_set_program_name(EmbeddedSolution "EmbeddedSolution")
@@ -66,7 +66,6 @@ target_link_libraries(EmbeddedSolution
         hardware_timer
         hardware_clocks
         pico_cyw43_arch_lwip_threadsafe_background
-        pico_stdlib
         )
 
 pico_add_extra_outputs(EmbeddedSolution)

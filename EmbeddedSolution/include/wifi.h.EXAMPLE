@@ -2,3 +2,5 @@
 
 const char *WIFI_SSID = "SSID";
 const char *WIFI_PASS = "PASS";
+const char *ASP_URL   = "xxx.xxx.xxx.xxx";
+const char *ASP_PORT  = "xxxx";
