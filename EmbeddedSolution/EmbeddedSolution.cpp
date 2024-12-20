@@ -35,6 +35,7 @@ int main()
     }
 
     // Initialise pins for the rotary encoder
+    rotary_encoder_input.reset_state();
     gpio_init(ROT_A);
     gpio_set_dir(ROT_A, GPIO_IN);
     gpio_pull_up(ROT_A);
@@ -52,17 +53,17 @@ int main()
     gpio_set_irq_enabled_with_callback(ROT_C, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
 
 
-    //display oled;
-    //oled.clear(true);
-    //oled._printf(0, true, "Height: %dcm", height);
-    //printf("Height: %dcm\n", height);
+    display oled;
+    oled.clear(true);
+    oled._printf(0, true, "Height: %dcm", height);
+    printf("Height: %dcm\n", height);
 
     while (true) {
         rotary_encoder_input.main_loop();
 
         if(button_pressed)
         {
-            //oled._printf(1, true, "Button pressed");
+            oled._printf(0, true, "Button pressed");
             printf("Button pressed\n");
             button_pressed = false;
         }
@@ -85,11 +86,10 @@ int main()
 
             if(compare_height != height)
             {
-                //oled._printf(0, true, "Height: %dcm", height);
+                oled._printf(0, true, "Height: %dcm", height);
                 printf("Height: %dcm\n", height);
                 compare_height = height;
             }
         }
-        //oled._printf(0, true, "Height: %dcm", height);
     }
 }
