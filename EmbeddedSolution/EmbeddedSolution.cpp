@@ -6,7 +6,7 @@
 #include "hardware/irq.h"
 #include "rotary_encoder.h"
 #include "display.h"
-
+#include "wifi.h"
 
 #define ROT_A 13
 #define ROT_B 14
@@ -21,17 +21,31 @@ void on_rotary_encoder_change(uint gpio, uint32_t events) {
     if(rotary_encoder_input.check_button()) {
         button_pressed = true;
         return;
-    };
+    }
     rotary_encoder_input.read_rotary_encoder();
+}
+
+bool initialise_wifi() {
+    cyw43_arch_enable_sta_mode();
+    if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 10000)) {
+        printf("Wi-Fi connect failed\n");
+        return false;
+    }
+    return true;
 }
 
 int main()
 {
     stdio_init_all();
-    // Initialise the Wi-Fi chip
+
     if (cyw43_arch_init()) {
         printf("Wi-Fi init failed\n");
-        return -1;
+        return false;
+    }
+
+    // Initialise the Wi-Fi chip
+    while(!initialise_wifi()) {
+        sleep_ms(1000);
     }
 
     // Initialise pins for the rotary encoder
