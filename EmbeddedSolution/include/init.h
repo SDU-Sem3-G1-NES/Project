@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 
-extern ssd1306_t display;
-
 bool tc_init
 (
     rotary_encoder::input *rotary_encoder_input,

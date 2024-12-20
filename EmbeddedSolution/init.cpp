@@ -10,6 +10,7 @@
 #include "ssd1306.h"
 #include "wifi.h"
 #include "font.h"
+#include "shared.h"
 
 // Bitmaps
 #include "bitmaps/LinakLogo.h"
@@ -18,6 +19,9 @@
 int attempt = 1;
 
 ssd1306_t display;
+int HEIGHT = 90;
+int COMPARE_HEIGHT = 90;
+bool BUTTON_PRESSED = false;
 
 void print_status_message(const char *message) 
 {

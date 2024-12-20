@@ -40,6 +40,7 @@ add_executable(EmbeddedSolution
     ssd1306.c
     rotary_encoder.cpp
     init.cpp
+    UI.cpp
     EmbeddedSolution.cpp 
 )
 
