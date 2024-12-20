@@ -1,6 +1,5 @@
-
-
-const char *WIFI_SSID = "SSID";
-const char *WIFI_PASS = "PASS";
-const char *ASP_URL   = "xxx.xxx.xxx.xxx";
-const char *ASP_PORT  = "xxxx";
+const char *WIFI_SSID    = "SSID";
+const char *WIFI_PASS    = "PASS";
+const int   MAX_ATTEMPTS = 10;
+const char *ASP_URL      = "xxx.xxx.xxx.xxx";
+const char *ASP_PORT     = "xxxx";
