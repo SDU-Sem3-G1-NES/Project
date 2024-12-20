@@ -14,10 +14,15 @@
 rotary_encoder::input rotary_encoder_input(ROT_A, ROT_B, ROT_C);
 
 int height = 90;
-int last_rot_output = 0;
+int compare_height = 90;
+bool button_pressed = false;
 
 void on_rotary_encoder_change(uint gpio, uint32_t events) {
-    last_rot_output = rotary_encoder_input.read_rotary_encoder();
+    if(rotary_encoder_input.check_button()) {
+        button_pressed = true;
+        return;
+    };
+    rotary_encoder_input.read_rotary_encoder();
 }
 
 int main()
@@ -47,32 +52,44 @@ int main()
     gpio_set_irq_enabled_with_callback(ROT_C, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &on_rotary_encoder_change);
 
 
-    display oled;
-    oled.clear(true);
-    oled._printf(0, true, "Height: %dcm", height);
-    printf("Height: %dcm\n", height);
+    //display oled;
+    //oled.clear(true);
+    //oled._printf(0, true, "Height: %dcm", height);
+    //printf("Height: %dcm\n", height);
 
     while (true) {
         rotary_encoder_input.main_loop();
 
-        switch (last_rot_output) {
-            case 1:
-                if(height < 132) height++;
-                oled._printf(1, false, "");
-                last_rot_output = 0;
-                break;
-            case 2:
-                if(height > 68) height--;
-                oled._printf(1, false, "");
-                last_rot_output = 0;
-                break;
-            case 3:
-                oled._printf(1, true, "Button pressed");
-                last_rot_output = 0;
-                break;
-            default:
-                break;
+        if(button_pressed)
+        {
+            //oled._printf(1, true, "Button pressed");
+            printf("Button pressed\n");
+            button_pressed = false;
         }
-        oled._printf(0, true, "Height: %dcm", height);
+        else
+        {
+            switch (rotary_encoder_input.get_state()) {
+                case rotary_encoder::STATES::RIGHT_TURN:
+                    if(height < 132) height++;
+                    //oled._printf(1, false, "");
+                    rotary_encoder_input.reset_state();
+                    break;
+                case rotary_encoder::STATES::LEFT_TURN:
+                    if(height > 68) height--;
+                    //oled._printf(1, false, "");
+                    rotary_encoder_input.reset_state();
+                    break;
+                default:
+                    break;
+            }
+
+            if(compare_height != height)
+            {
+                //oled._printf(0, true, "Height: %dcm", height);
+                printf("Height: %dcm\n", height);
+                compare_height = height;
+            }
+        }
+        //oled._printf(0, true, "Height: %dcm", height);
     }
 }
