@@ -11,6 +11,9 @@
 #include "wifi.h"
 #include "font.h"
 
+// Bitmaps
+#include "bitmaps/LinakLogo.h"
+
 #define ROT_A 13
 #define ROT_B 14
 #define ROT_C 15
@@ -52,6 +55,7 @@ int main()
     display.external_vcc = false;
     ssd1306_init(&display, 128, 64, 0x3C, i2c_default);
     ssd1306_clear(&display);
+    ssd1306_bmp_show_image(&display, LinakLogo_bmp, sizeof(LinakLogo_bmp));
     ssd1306_show(&display);
 
     if (cyw43_arch_init()) {
@@ -88,6 +92,7 @@ int main()
     //oled._printf(0, true, "Height: %dcm", height);
     char buffer[20];
     snprintf(buffer, sizeof(buffer), "Height: %dcm", height);
+    ssd1306_clear(&display);
     ssd1306_draw_string_with_font(&display, 0, 0, 1, font_8x5, buffer);
     ssd1306_show(&display);
     printf("Height: %dcm\n", height);
