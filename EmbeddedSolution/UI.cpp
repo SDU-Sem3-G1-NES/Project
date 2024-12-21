@@ -32,15 +32,15 @@ std::vector<int> split_into_digits(int number) {
 
 void display_height() 
 {
-    const unsigned char (*numbers_bitmap)[194] = (HEIGHT == COMPARE_HEIGHT) ? normal_numbers : italic_numbers;
-    int x_offset = (HEIGHT > 99) ? 42 : 52;
+    const unsigned char (*numbers_bitmap)[226] = (HEIGHT == COMPARE_HEIGHT) ? normal_numbers : italic_numbers;
+    int x_offset = (HEIGHT > 99) ? 38 : 48;
 
-    ssd1306_clear_square(&display, 42, 28, 48, 16);
+    ssd1306_clear_square(&display, 38, 24, 50, 24);
     std::vector<int> digits = split_into_digits(HEIGHT);
 
     for (int digit : digits) {
-        ssd1306_bmp_show_image_with_offset(&display, numbers_bitmap[digit], 194, x_offset, 28);
-        x_offset += 14;
+        ssd1306_bmp_show_image_with_offset(&display, numbers_bitmap[digit], 226, x_offset, 24);
+        x_offset += 17;
         printf("%d", digit);
     }
     ssd1306_show(&display);

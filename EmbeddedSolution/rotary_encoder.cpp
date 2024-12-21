@@ -86,7 +86,6 @@ namespace rotary_encoder {
             {
                 last_button_push_time = to_ms_since_boot(get_absolute_time());
                 ROT_C_LAST_STATE = 0;
-                //printf("Button Pressed!\n");
                 return true;
             }
         } 
