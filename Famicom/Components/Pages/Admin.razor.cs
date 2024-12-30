@@ -99,7 +99,7 @@ namespace Famicom.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             fixedSalt = userCredentialsService.GetFixedSalt();
-            tableService = new TableService();
+            tableService = tableService;
             Table = tableService.GetAllTables();
             Users = userService.GetAllUsers();
             PanelTitle = GetUserType();

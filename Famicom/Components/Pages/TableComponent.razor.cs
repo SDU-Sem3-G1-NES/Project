@@ -23,7 +23,6 @@ namespace Famicom.Components.Pages
         
         [Parameter]
         public required ITable Table { get; set; }
-
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
         [Inject]
@@ -32,7 +31,9 @@ namespace Famicom.Components.Pages
         TableControllerService TableControllerService { get; set; } = default!;
         [Inject]
         public TableService TableService { get; set; } = default!;
-
+        [Inject]
+        private ISessionStorageService SessionStorage { get; set; } = default!;
+        private int userId { get; set; }
         private bool firstAccess = true;
 
         protected override async Task OnInitializedAsync()
