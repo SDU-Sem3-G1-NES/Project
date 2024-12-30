@@ -14,7 +14,7 @@
 #define LWIP_SOCKET                 0
 #endif
 #if PICO_CYW43_ARCH_POLL
-#define MEM_LIBC_MALLOC             1
+#define MEM_LIBC_MALLOC             0
 #else
 // MEM_LIBC_MALLOC is incompatible with non polling versions
 #define MEM_LIBC_MALLOC             0

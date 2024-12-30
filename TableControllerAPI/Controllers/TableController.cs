@@ -31,6 +31,7 @@ public class TableController : ControllerBase
     [HttpGet("{guid}")]
     public async Task<ActionResult<ITable>> GetFullTableInfo(string guid)
     {
+        Console.WriteLine("GetFullTableInfo");
         try
         {
             var _tableController = await _tableControllerService.GetTableController(guid, _client);

@@ -15,9 +15,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.1.0)
+set(sdkVersion 2.0.0)
 set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
+set(picotoolVersion 2.0.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -37,10 +37,13 @@ pico_sdk_init()
 
 add_executable(EmbeddedSolution 
     i2c.c
+    api_handler.cpp
     ssd1306.c
     rotary_encoder.cpp
+    example_http_client_util.c
     init.cpp
     UI.cpp
+    wifi.cpp
     EmbeddedSolution.cpp 
 )
 
@@ -51,10 +54,6 @@ pico_set_program_version(EmbeddedSolution "0.1")
 pico_enable_stdio_uart(EmbeddedSolution 1)
 pico_enable_stdio_usb(EmbeddedSolution 0)
 
-# Add the standard library to the build
-target_link_libraries(EmbeddedSolution
-        pico_stdlib)
-
 # Add the standard include files to the build
 target_include_directories(EmbeddedSolution PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
@@ -62,13 +61,25 @@ target_include_directories(EmbeddedSolution PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
+# add_definitions(-DMBEDTLS_USER_CONFIG_FILE="${CMAKE_CURRENT_LIST_DIR}/include/mbedtls_config.h")
+# add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/mbedtls)
+
 # Add any user requested libraries
 target_link_libraries(EmbeddedSolution 
         hardware_spi
         hardware_timer
         hardware_clocks
         pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_http
+        pico_lwip_mbedtls
+        pico_mbedtls
+        pico_stdlib
         )
 
 pico_add_extra_outputs(EmbeddedSolution)
 
+set_source_files_properties(
+        ${PICO_LWIP_PATH}/src/apps/altcp_tls/altcp_tls_mbedtls.c
+        PROPERTIES
+        COMPILE_OPTIONS "-Wno-unused-result"
+        )

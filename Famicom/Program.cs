@@ -9,7 +9,6 @@ using ApexCharts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 var handler = new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
@@ -19,6 +18,9 @@ builder.Services.AddHttpClient("default", client =>
 {
 
 }).ConfigurePrimaryHttpMessageHandler(() => handler);
+
+builder.WebHost.UseUrls("http://0.0.0.0:5016;https://0.0.0.0:5017");
+builder.WebHost.UseKestrel();
 
 builder.Services.AddSingleton<TableControllerService>();
 builder.Services.AddScoped<LoginStateService>();
@@ -50,11 +52,11 @@ var apiHost = Host.CreateDefaultBuilder()
         var disableHttpsRedirection = Environment.GetEnvironmentVariable("DISABLE_HTTPS_REDIRECTION");
         if (string.IsNullOrEmpty(disableHttpsRedirection) || !bool.Parse(disableHttpsRedirection))
         {
-            webBuilder.UseUrls("https://localhost:" + tcapiPort);
+            webBuilder.UseUrls("https://0.0.0.0:" + tcapiPort);
         }
         else
         {
-            webBuilder.UseUrls("http://localhost:" + tcapiPort);
+            webBuilder.UseUrls("http://0.0.0.0:" + tcapiPort);
         }
     }).ConfigureServices(services =>
     {

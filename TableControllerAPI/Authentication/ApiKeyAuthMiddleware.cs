@@ -15,6 +15,7 @@ public class ApiKeyAuthMiddleware
     }
     public async Task InvokeAsync(HttpContext context)
     {
+        Console.WriteLine("Reached Middleware");
         if (!context.Request.Headers.TryGetValue(AuthConstants.ApiKeyHeaderName, out var extractedApiKey))
         {
             context.Response.StatusCode = 401;

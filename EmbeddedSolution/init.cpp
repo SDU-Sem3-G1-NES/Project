@@ -8,9 +8,10 @@
 #include "hardware/irq.h"
 #include "rotary_encoder.h"
 #include "ssd1306.h"
-#include "wifi.h"
 #include "font.h"
 #include "shared.h"
+#include <malloc.h>
+#include "wifi.h"
 
 // Bitmaps
 #include "bitmaps/LinakLogo.h"
@@ -39,7 +40,6 @@ bool initialise_wifi() {
         snprintf(status_message, sizeof(status_message), "Connect WiFi(%d/%d)", attempt, MAX_ATTEMPTS);
         print_status_message(status_message);
 
-        cyw43_arch_enable_sta_mode();
         if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 5000)) {
             printf("Wi-Fi connect failed\n");
             attempt++;
@@ -55,13 +55,30 @@ void wifi_failed()
 {
     ssd1306_clear(&display);
     ssd1306_bmp_show_image_with_offset(&display, NoWifi_bmp, NoWifi_bmp_size, 48, 10);
-    ssd1306_draw_string_with_font(&display, 16, 42, 1, font_8x5, "Wifi init failed");
+    ssd1306_draw_string_with_font(&display, 16, 42, 1, font_8x5, "WiFi init failed");
     ssd1306_draw_string_with_font(&display, 28, 52, 1, font_8x5, "Please reset");
     ssd1306_show(&display);
 
     while (true) {
         sleep_ms(1000);
     }
+}
+
+bool initialise_api() {
+    attempt = 1;
+
+    while (attempt <= MAX_ATTEMPTS) {
+        char status_message[50];
+        snprintf(status_message, sizeof(status_message), "Init API(%d/%d)", attempt, MAX_ATTEMPTS);
+        print_status_message(status_message);
+        if(!api_handler::init()) {
+            attempt++;
+            sleep_ms(1000);
+            continue;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool tc_init
@@ -71,6 +88,7 @@ bool tc_init
     int ROT_B,
     int ROT_C
 ) {
+    mallopt(M_TRIM_THRESHOLD, 1024);
     stdio_init_all();
 
     i2c_init(i2c_default, 800000);
@@ -87,10 +105,16 @@ bool tc_init
         printf("Wi-Fi init failed\n");
         return false;
     }
+    cyw43_arch_enable_sta_mode();
 
     // Initialise the Wi-Fi chip
     if(!initialise_wifi()) 
     {
+        wifi_failed();
+    }
+
+    // Initialise LibCurl
+    if (!initialise_api()) {
         wifi_failed();
     }
 
