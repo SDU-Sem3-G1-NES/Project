@@ -12,17 +12,18 @@ namespace Famicom.Models
     {
         private readonly ITableControllerService tableControllerService;
         private readonly TableService tableService;
-
         private readonly HttpClient _httpClient;
+        
+        
 
         private readonly Progress<ITableStatusReport> _progress = new Progress<ITableStatusReport>(message =>
         {
             Debug.WriteLine(message);
         });
-        public CleanerService(ITableControllerService tableControllerService, HttpClient httpClient)
+        public CleanerService(ITableControllerService tableControllerService, HttpClient httpClient, TableService tableService)
         {
             this.tableControllerService = tableControllerService;
-            this.tableService = new TableService();
+            this.tableService = tableService;
             this._httpClient = httpClient;
         }
 

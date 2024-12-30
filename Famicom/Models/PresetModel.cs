@@ -9,14 +9,14 @@ namespace Famicom.Models
     {
         private readonly PresetService presetService;
         private readonly TableControllerService TableControllerService;
-        private readonly IHttpClientFactory? ClientFactory;
+        private readonly HttpClient client;
         private readonly Progress<ITableStatusReport> progress;
         
-        public PresetsModel(IHttpClientFactory clientFactory, TableControllerService tableControllerService)
+        public PresetsModel(HttpClient client, TableControllerService tableControllerService, PresetService presetService)
         {
-            this.presetService = new PresetService();
+            this.presetService = presetService;
             this.TableControllerService = tableControllerService;
-            this.ClientFactory = clientFactory;
+            this.client = client;
             this.progress = new Progress<ITableStatusReport>(message =>
             {
                 Debug.WriteLine(message);
@@ -40,7 +40,7 @@ namespace Famicom.Models
         }
         public async Task<ITableStatusReport> SetPresetHeight(int presetHeight, string tableGUID)
         {
-            var tableController = await TableControllerService.GetTableController(tableGUID, ClientFactory!.CreateClient("default"));
+            var tableController = await TableControllerService.GetTableController(tableGUID, client);
 
             var tcs = new TaskCompletionSource<ITableStatusReport>();
 

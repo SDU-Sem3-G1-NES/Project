@@ -1,10 +1,13 @@
 ﻿@page "/health"
 @inherits HealthBase
 
-
 <h2 style="text-align: center;">Health Panel</h2>
 <br />
 <MudContainer style="width: auto%; margin: auto; display: flex; justify-content: center; ">
-    
-    <WeeklyGraphComponent />
+    <div style="margin-right: 20px;">
+        <WeeklyGraphComponent />
+    </div>
+    <div>
+        <HealthPresetComponent />
+    </div> 
 </MudContainer>

@@ -12,11 +12,11 @@ namespace Famicom.Components.Pages
 {
     public partial class AddTableComponent : ComponentBase
     {
-        TableService tableService = new TableService();
         ApiService apiService = new ApiService();
         [Inject] IHttpClientFactory? ClientFactory { get; set; }
 
         [Inject] TableControllerService? TableControllerService { get; set; }
+        [Inject] TableService tableService {get; set; } = default!;
 
         private string? TableGuid { get; set; }
         private string? TableName { get; set; }
